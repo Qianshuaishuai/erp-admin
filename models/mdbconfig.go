@@ -10,6 +10,7 @@ var IsTestDB = true
 
 func InitGorm() {
 	ChangeDBToTest()
+
 }
 
 func ChangeDBToTest() {
