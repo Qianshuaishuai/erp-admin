@@ -1,6 +1,8 @@
 package models
 
 import (
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+
 	"github.com/astaxie/beego/config"
 	"github.com/jinzhu/gorm"
 	"os"
