@@ -11,6 +11,8 @@ WORKDIR /app/
 RUN mkdir -p ./conf/dev && touch ./conf/dev/app.conf
 COPY --from=0 ${APP_ROOT}/main .
 COPY --from=0 ${APP_ROOT}/conf/app.conf ./conf/app.conf
+COPY --from=0 ${APP_ROOT}/views ./views
+COPY --from=0 ${APP_ROOT}/static ./static
 ENV DREAMENV PRODUCTION
 ENV INDOCKER TRUE
 ENTRYPOINT ["/app/main"]
