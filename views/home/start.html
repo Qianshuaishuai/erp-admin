@@ -1,0 +1,61 @@
+<div class="layui-inline" style="margin-left: 10px">
+    环境设置(暂时没有测试环境到正式环境自动同步功能，需要手动切换环境)
+    <hr>
+    <form class="layui-form layui-form-pane">
+        <div class="layui-form-item" pane>
+            <label class="layui-form-label">测试</label>
+            <div class="layui-input-block">
+                <input type="checkbox" lay-skin="switch">
+            </div>
+        </div>
+    </form>
+    <script src="/static/layui/layui.js?t=1504439386550" charset="utf-8"></script>
+    <script type="text/javascript">
+        layui.use(['form', 'jquery', 'layer'], function () {
+            var form = layui.form;
+            var layer = layui.layer; //弹层
+            var $ = layui.jquery;
+            form.on('switch', function (data) {
+                if (data.elem.checked) {
+                    $('.layui-form-label').text("正式")
+                    $.get("/env/changetoproc", function (data, status) {
+                            }
+                    )
+                } else {
+                    $('.layui-form-label').text("测试")
+                    $.get("/env/changetotest", function (data, status) {
+                            }
+                    )
+                }
+            });
+        })
+    </script>
+</div>
+<hr>
+<div>
+    <fieldset class="layui-elem-field layui-field-title">
+        <legend> HOW TO USE? </legend>
+        <div class="layui-field-box">
+            <ol>
+                <li><p style="padding:10px">查看试卷界面截图：</p>
+                    <img src="/static/img/help/paper_list.png"/>
+                    <p style="padding: 20px">查看试卷，目前不能增加/删除试卷，但是可以编辑试卷，也可以搜索试卷，但是搜索功能不是狠强大，建议配合真题试卷的客户端一起使用，找到试卷的标题，然后复制进搜索框搜索。</p>
+                </li>
+                <li><p style="padding:10px">试卷详情界面截图：</p>
+                    <img src="/static/img/help/paper_detail.png"/>
+                    <p style="padding: 20px">编辑试卷详情，没什么好说的，上手就会。</p>
+                </li>
+                <li><p style="padding:10px">章节详情界面截图：</p>
+                    <img src="/static/img/help/chapter_detail.png"/>
+                    <p style="padding: 20px">编辑章节详情，题目列表只是用来看看，不能改的。注意章节标题，指的是真题试卷客户端的基础知识那块东西（见下图），章节描述指的是灰色字部分。小题个数不要随便改，改错了后果很严重。</p>
+                    <p style="padding: 20px">真题试卷客户端截图: <img src="/static/img/help/zhenti.png"> </p>
+                </li>
+                <li>
+                    <p style="padding: 20px"> 修改完了，可以点击顶部的<img src="/static/img/help/shuaxin.png">刷新，可以点击后退按钮后退，注意：使用浏览器的刷新、后退可能效果不佳。</p>
+                </li>
+            </ol>
+        </div>
+    </fieldset>
+</div>
+
+
