@@ -3,10 +3,6 @@
 *.tmp
 dreamEbagPapers*
 *.tar.gz
-*.jpeg
-*.png
-*.gif
-*.jpg
 *.zip
 *.mp4
 *.json
