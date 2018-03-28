@@ -28,9 +28,9 @@ func main() {
 	}
 
 	//如果服务器Panic ，返回500错，而不是错误信息。
-	beego.BConfig.RecoverFunc = recoverFuncForServer
-	beego.BConfig.RecoverPanic = false
-	beego.ErrorController(&controllers.ErrorController{})
+	//beego.BConfig.RecoverFunc = recoverFuncForServer
+	//beego.BConfig.RecoverPanic = false
+	//beego.ErrorController(&controllers.ErrorController{})
 	beego.Run()
 }
 
