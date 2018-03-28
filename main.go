@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 	"runtime"
-	"dreamEbagPaperAdmin/controllers"
 	"dreamEbagPaperAdmin/models"
 
 	"github.com/astaxie/beego/logs"
