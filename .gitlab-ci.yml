@@ -7,7 +7,7 @@ stages:
 
 variables:
   ALI_REGISTRY_HOST: "registry.cn-shenzhen.aliyuncs.com"
-  ALI_REGISTRY_IMAGE: "registry.cn-shenzhen.aliyuncs.com/ebag/ebag-papers"
+  ALI_REGISTRY_IMAGE: "registry.cn-shenzhen.aliyuncs.com/ebag/ebag-paper-admin"
   ALI_SERVICE_NAME: "ebag-prod_paper-admin"
   TEST_SERVICE_NAME: "ebag-test_paper-admin"
 
