@@ -101,7 +101,7 @@
     </div>
 </fieldset>
 {{range $index,$elem:= .Detail.QuestionSet.PaperQuestionSetChapters}}
-<fieldset class="layui-elem-field">
+<fieldset class="layui-elem-field" id="chapterIndex{{$index}}">
     <legend>章节{{$index}}</legend>
     <form class="layui-form layui-form-pane" id="form_chapter_{{$index}}">
         <div class="layui-form-item" pane>
@@ -167,10 +167,19 @@
 </fieldset>
 {{end}}
 
+<ul style="display:none;padding: 10px" id="chapterIndex">
+{{range $index,$elem:= .Detail.QuestionSet.PaperQuestionSetChapters}}
+    <li style="padding: 5px;">
+        <a href="#chapterIndex{{$index}}">章节{{$index}} - {{$elem.Name}}</a>
+    </li>
+{{end}}
+</ul>
+
 <script>
     layui.use(['form', 'element', 'layer', 'jquery', 'util'], function () {
         var form = layui.form;
         var $ = layui.jquery;
+        var layer = layui.layer;
         var util = layui.util;
 
         //Top按钮
@@ -266,22 +275,33 @@
             return false;
         })
 
+        //弹出层
+        layer.open({
+            type: 1,
+            title: '章节目录',
+            offset: 'r',
+            shade: 0,
+            closeBtn: 0,
+            maxHeight: 500,
+            content: $('#chapterIndex')
+        });
     });
 
     //供使用者调用
-    function trim(s){
+    function trim(s) {
         return trimRight(trimLeft(s));
     }
+
     //去掉左边的空白
-    function trimLeft(s){
-        if(s == null) {
+    function trimLeft(s) {
+        if (s == null) {
             return "";
         }
         var whitespace = String(" \t\n\r");
         var str = String(s);
         if (whitespace.indexOf(str.charAt(0)) != -1) {
-            var j=0, i = str.length;
-            while (j < i && whitespace.indexOf(str.charAt(j)) != -1){
+            var j = 0, i = str.length;
+            while (j < i && whitespace.indexOf(str.charAt(j)) != -1) {
                 j++;
             }
             str = str.substring(j, i);
@@ -289,16 +309,16 @@
         return str;
     }
 
-    function trimRight(s){
-        if(s == null) return "";
+    function trimRight(s) {
+        if (s == null) return "";
         var whitespace = String(" \t\n\r");
         var str = String(s);
-        if (whitespace.indexOf(str.charAt(str.length-1)) != -1){
+        if (whitespace.indexOf(str.charAt(str.length - 1)) != -1) {
             var i = str.length - 1;
-            while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1){
+            while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1) {
                 i--;
             }
-            str = str.substring(0, i+1);
+            str = str.substring(0, i + 1);
         }
         return str;
     }
