@@ -26,4 +26,5 @@ func init() {
 	beego.AutoRouter(&controllers.EnvController{})
 	beego.AutoRouter(&controllers.PaperController{})
 	beego.AutoRouter(&controllers.ChapterController{})
+	beego.AutoRouter(&controllers.QuestionController{})
 }

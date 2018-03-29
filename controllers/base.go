@@ -149,11 +149,12 @@ func (self *BaseController) SetTheStartMenu() {
 		Id: 1,
 		Pid: 0,
 		Icon: "fa-cubes",
-		AuthName: "试卷数据",
+		AuthName: "数据操作",
 		AuthUrl: " "})
 
+
 	list = append(list, StartMenu{
-		Id: 2,
+		Id: 100,
 		Pid: 0,
 		Icon: "fa-edit",
 		AuthName: "问题上报",
@@ -163,7 +164,7 @@ func (self *BaseController) SetTheStartMenu() {
 	list2 := make([]StartMenu, 0)
 
 	list2 = append(list2, StartMenu{
-		Id:       3,
+		Id:       10,
 		Pid:      1,
 		Icon:     "fa-file-text",
 		AuthName: "查看试卷",
@@ -171,8 +172,16 @@ func (self *BaseController) SetTheStartMenu() {
 	})
 
 	list2 = append(list2, StartMenu{
-		Id:       4,
-		Pid:      2,
+		Id:       11,
+		Pid:      1,
+		Icon:     "fa-search",
+		AuthName: "查找试题",
+		AuthUrl:  "/question/search",
+	})
+
+	list2 = append(list2, StartMenu{
+		Id:       1000,
+		Pid:      100,
 		Icon:     "fa-list",
 		AuthName: "查看问题",
 		AuthUrl:  " ",
