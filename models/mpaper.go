@@ -5,7 +5,6 @@ import (
 	"strings"
 	"errors"
 	"strconv"
-	"dreamEbagPaperAdmin/helper"
 )
 
 type PaperType struct {
@@ -240,21 +239,5 @@ func GetTheQuestionByQ(resIds []int64, q int, chapterQuestionCount int) (startIn
 		}
 	}
 	endIndex = q
-	return
-}
-
-//根据id确定这道题目是大题还是小题
-func GetQuestionTranslateTypeById(resId int64) (isBig bool, bigCount int) {
-	var s []string
-	GetDb().Table("t_large_questions").Where("F_big_question_id = ?", resId).Pluck("F_question_ids", &s)
-
-	if len(s) > 0 {
-		resIds, _ := helper.TransformStringToInt64Arr(s[0])
-		isBig = true
-		bigCount = len(resIds)
-	} else {
-		isBig = false
-		bigCount = 0
-	}
 	return
 }

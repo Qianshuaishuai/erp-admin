@@ -1,0 +1,143 @@
+<fieldset class="layui-elem-field">
+    <legend>试题详情</legend>
+    <div class="layui-layout layui-layout-admin" style="padding-left: 40px;margin-top: 20px;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="question_id" value="{{.Data.QuestionId}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题内容</label>
+                <div class="layui-input-block">
+                    <textarea name="question_content" class="layui-textarea">{{.Data.Content}}</textarea>
+                </div>
+            </div>
+        {{if .IsBig}}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题分数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="question_score" value="大题的分数由各小题分数相加得到" readonly
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">问题集合</label>
+                <div class="layui-input-block" style="padding: 10px">
+                    <div class="layui-fluid">
+                        <div class="layui-row layui-col-space10">
+                        {{range $i,$e := .Questions}}
+                            <div class="layui-col-md2">
+                                <a class="layui-btn layui-btn-primary"
+                                   href="/question/detail?question_id={{$e}}">{{$e}}</a>
+                            </div>
+                        {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{else}}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题解析</label>
+                <div class="layui-input-block">
+                    <textarea name="s_question_solution" class="layui-textarea">{{.Data.Solution}}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题分数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="s_question_score" value="{{.Data.Score}}"
+                           lay-verify="number" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题类型</label>
+                <div class="layui-input-block">
+                    {{/*仅仅支持客观填空 主观填空 互换*/}}
+                    <select name="s_question_type" id="s_question_type" lay-verify="required">
+                    {{range $key,$value := .QuestionTypeMap}}
+                        <option value="{{$key}}" {{if eq $key $.Data.RealType}} selected {{end}}>{{$value}}</option>
+                    {{end}}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题难度</label>
+                <div class="layui-input-block">
+                    <input type="text" name="s_question_difficulty" value="{{.Data.Difficulty}}"
+                           lay-verify="number" class="layui-input">
+                </div>
+            </div>
+        {{if .Data.Options}}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题选项</label>
+                <div class="layui-input-block">
+                {{range $i,$e := .Data.Options}}
+                    <input type="text" name="s_question_options{{$i}}" value="{{$e}}" class="layui-input">
+                {{end}}
+                </div>
+            </div>
+        {{end}}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题答案</label>
+                <div class="layui-input-block">
+                {{range $i,$e := .Data.RealAnswer}}
+                    <input type="text" name="s_question_answer{{$i}}" value="{{$e}}" class="layui-input">
+                {{end}}
+                </div>
+            </div>
+        {{end}}
+        </form>
+    </div>
+</fieldset>
+<script>
+    layui.use(['form', 'element', 'layer', 'jquery', 'util'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var util = layui.util;
+
+        //Top按钮
+        util.fixbar({
+            bar1: false
+        });
+
+    });
+
+    //供使用者调用
+    function trim(s) {
+        return trimRight(trimLeft(s));
+    }
+
+    //去掉左边的空白
+    function trimLeft(s) {
+        if (s == null) {
+            return "";
+        }
+        var whitespace = String(" \t\n\r");
+        var str = String(s);
+        if (whitespace.indexOf(str.charAt(0)) != -1) {
+            var j = 0, i = str.length;
+            while (j < i && whitespace.indexOf(str.charAt(j)) != -1) {
+                j++;
+            }
+            str = str.substring(j, i);
+        }
+        return str;
+    }
+
+    function trimRight(s) {
+        if (s == null) return "";
+        var whitespace = String(" \t\n\r");
+        var str = String(s);
+        if (whitespace.indexOf(str.charAt(str.length - 1)) != -1) {
+            var i = str.length - 1;
+            while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1) {
+                i--;
+            }
+            str = str.substring(0, i + 1);
+        }
+        return str;
+    }
+</script>

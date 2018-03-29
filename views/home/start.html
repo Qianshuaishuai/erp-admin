@@ -1,9 +1,9 @@
 <div class="layui-inline" style="margin-left: 10px">
-    记得发布修改到正式环境，不然改了也白改。
+    记得把修改发布到正式环境，不然改了也白改。
     <hr>
 
     <button class="layui-btn layui-btn-lg layui-btn-warm">
-        <i class="layui-icon">&#xe6b2;</i> 审核修改的数据
+        <i class="layui-icon">&#xe65c;</i> 这里审核修改的数据
     </button>
 
     <script src="/static/layui/layui.js?t=1504439386550" charset="utf-8"></script>
@@ -12,30 +12,36 @@
     </script>
 </div>
 <hr>
+
+
 <div>
     <fieldset class="layui-elem-field layui-field-title">
-        <legend> HOW TO USE? </legend>
-        <div class="layui-field-box">
-            <ol>
-                <li><p style="padding:10px">查看试卷界面截图：</p>
-                    <img src="/static/img/help/paper_list.png"/>
-                    <p style="padding: 20px">查看试卷，目前不能增加/删除试卷，但是可以编辑试卷，也可以搜索试卷，但是搜索功能不是狠强大，建议配合真题试卷的客户端一起使用，找到试卷的标题，然后复制进搜索框搜索。</p>
-                </li>
-                <li><p style="padding:10px">试卷详情界面截图：</p>
-                    <img src="/static/img/help/paper_detail.png"/>
-                    <p style="padding: 20px">编辑试卷详情，没什么好说的，上手就会。</p>
-                </li>
-                <li><p style="padding:10px">章节详情界面截图：</p>
-                    <img src="/static/img/help/chapter_detail.png"/>
-                    <p style="padding: 20px">编辑章节详情，题目列表只是用来看看，不能改的。注意章节标题，指的是真题试卷客户端的基础知识那块东西（见下图），章节描述指的是灰色字部分。小题个数不要随便改，改错了后果很严重。</p>
-                    <p style="padding: 20px">真题试卷客户端截图: <img src="/static/img/help/zhenti.png"> </p>
-                </li>
-                <li>
-                    <p style="padding: 20px"> 修改完了，可以点击顶部的<img src="/static/img/help/shuaxin.png">刷新，可以点击后退按钮后退，注意：使用浏览器的刷新、后退可能效果不佳。</p>
-                </li>
-            </ol>
+        <legend> HOW TO USE?</legend>
+        <div id="markdown-view" style="width: 95%;padding-top: 20px">
+        <textarea style="display:none;" name="markdown">
+## 1. 查看试卷使用说明
+
+查看试卷，目前不能增加/删除试卷，但是可以编辑试卷，也可以搜索试卷，但是搜索功能不是狠强大，建议配合真题试卷的客户端一起使用，找到试卷的标题，然后复制进搜索框搜索。
+
+![查看试卷界面截图](/static/img/help/paper_list.png)
+
+点击编辑按钮可以进入编辑界面．
+
+## 编辑试卷
+编辑试卷详情，没什么好说的，上手就会。
+
+## 章节详情
+编辑章节详情，题目列表只是用来看看，不能改的。注意章节标题，指的是真题试卷客户端的标题部分，章节描述指的是灰色字部分。```小题个数不要随便改，改错了后果很严重。```
+
+![章节详情界面截图](/static/img/help/chapter_detail.png)
+
+修改完了，可以点击顶部的刷新，可以点击后退按钮后退，**注意：使用浏览器的刷新、后退可能效果不佳。**
+![按钮](/static/img/help/shuaxin.png)
+
+        </textarea>
         </div>
     </fieldset>
 </div>
 
+{{template "public/editormd_show.html" .}}
 

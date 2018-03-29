@@ -148,7 +148,7 @@ func (self *BaseController) SetTheStartMenu() {
 	list = append(list, StartMenu{
 		Id: 1,
 		Pid: 0,
-		Icon: "fa-cubes",
+		Icon: "fa-database",
 		AuthName: "数据操作",
 		AuthUrl: " "})
 
@@ -176,6 +176,14 @@ func (self *BaseController) SetTheStartMenu() {
 		Pid:      1,
 		Icon:     "fa-search",
 		AuthName: "查找试题",
+		AuthUrl:  "/question/search",
+	})
+
+	list2 = append(list2, StartMenu{
+		Id:       12,
+		Pid:      1,
+		Icon:     "fa-eye",
+		AuthName: "审核数据",
 		AuthUrl:  "/question/search",
 	})
 
