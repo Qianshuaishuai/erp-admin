@@ -108,15 +108,15 @@ func (self *PaperController) Detail() {
 }
 
 func (self *PaperController) Edit() {
-	Paper_id, _ := self.GetInt64("paper_id")
-	if Paper_id != 0 {
+	PaperId, _ := self.GetInt64("paper_id")
+	if PaperId != 0 {
 		paper_name := strings.TrimSpace(self.GetString("paper_name"))
 		paper_full_score, _ := self.GetInt("full_score", -100)
 		paper_type, _ := self.GetInt("paper_type", -100)
 		difficulty, _ := self.GetFloat("difficulty", -100)
 		provinces := strings.TrimSpace(self.GetString("province"))
 
-		if err := models.UpdatePaper(Paper_id, paper_name, paper_full_score, paper_type, difficulty, provinces); err != nil {
+		if err := models.UpdatePaper(PaperId, paper_name, paper_full_score, paper_type, difficulty, provinces); err != nil {
 			self.ajaxMsg(err.Error(), -1)
 		}
 		self.ajaxMsg("", 0)

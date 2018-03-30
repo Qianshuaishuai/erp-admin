@@ -31,7 +31,6 @@
 
         form.on('submit(search)', function (data) {
             var field = data.field;
-            console.log(field);
             window.location.href = "/question/detail?question_id=" + field["q"];
             return false;
         });

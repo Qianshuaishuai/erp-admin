@@ -21,16 +21,16 @@ func (self *QuestionController) Detail() {
 	self.Data["ApiCss"] = true
 
 	questionId, _ := self.GetInt64("question_id", 0)
-	isBig ,data :=models.GetQuestion(questionId)
+	isBig, data := models.GetQuestion(questionId)
 
 	self.Data["IsBig"] = isBig
 	self.Data["Data"] = data
 
-	if isBig{
+	if isBig {
 		bigQuestion := data.(models.BigQuestion)
-		smallQuestionIds,_ := helper.TransformStringToInt64Arr(bigQuestion.BigQuestionIds)
+		smallQuestionIds, _ := helper.TransformStringToInt64Arr(bigQuestion.BigQuestionIds)
 		self.Data["Questions"] = smallQuestionIds
-	}else{
+	} else {
 		smallQuestion := data.(models.SmallQuestion)
 		tempMap := make(map[int]string)
 		tempMap[smallQuestion.RealType] = models.SmallQuestionType[smallQuestion.RealType]
@@ -42,4 +42,12 @@ func (self *QuestionController) Detail() {
 	}
 
 	self.display()
+}
+
+func (self *QuestionController) Edit() {
+	//QuestionId, _ := self.GetInt64("question_id")
+	//isBig, _ := self.GetBool("isBig")
+	//QuestionType, _ := self.GetInt("s_question_type")
+	//
+	//
 }

@@ -78,6 +78,13 @@ type BigQuestion struct {
 	QuestionId     int64  `gorm:"primary_key;column:F_big_question_id;type:BIGINT(20)" json:"id"`
 	Content        string `gorm:"column:F_content;type:LONGTEXT" json:"content"` //问题的内容
 	BigQuestionIds string `gorm:"column:F_question_ids;type:TEXT" json:"-"`
+
+	RealType       int
+	Options       []string
+	RealAnswer    []string
+	Solution      string  `gorm:"column:F_solution;type:LONGTEXT" json:"solution"`
+	Score         float32 `gorm:"column:F_score;type:FLOAT(4,1)" json:"score"`
+	Difficulty    float64 `gorm:"column:F_difficulty;" json:"difficulty"`
 }
 
 //问题的知识点
