@@ -1,22 +1,7 @@
-<div class="layui-inline" style="margin-left: 10px">
-    记得把修改发布到正式环境，不然改了也白改。
-    <hr>
-
-    <button class="layui-btn layui-btn-lg layui-btn-warm">
-        <i class="layui-icon">&#xe65c;</i> 这里审核修改的数据
-    </button>
-
-    <script src="/static/layui/layui.js?t=1504439386550" charset="utf-8"></script>
-    <script type="text/javascript">
-
-    </script>
-</div>
-
 <div style="margin-top: 30px">
-    <fieldset class="layui-elem-field layui-field-title">
-        <legend> HOW TO USE?</legend>
         <div id="test-editormd-view" style="width: 80%;margin: 0 auto;" class="markdown-body editormd-html-preview">
             <textarea id="mdarea" style="display: none">
+## HOW TO USE?
 [TOCM]
 ## 1. 查看试卷使用说明
 
@@ -26,10 +11,10 @@
 
 点击编辑按钮可以进入编辑界面．
 
-- ### 编辑试卷
+### 编辑试卷
 编辑试卷详情，没什么好说的，上手就会。
 
-- ### 章节详情
+### 章节详情
 编辑章节详情，题目列表只是用来看看，不能改的。注意章节标题，指的是真题试卷客户端的标题部分，章节描述指的是灰色字部分。*小题个数不要随便改，改错了后果很严重。*
 
 ![章节详情界面截图](/static/img/help/chapter_detail.png)
@@ -38,7 +23,11 @@
 
 ![按钮](/static/img/help/shuaxin.png)
 
-## 2. 试题编辑使用说明
+## 2. 试题模块使用说明
+
+### 试题搜索
+可以按ID或者题目内容搜索，搜不到的话，会显示一个试卷ID为0的界面。
+### 试题编辑
 具体说明下一些字段的编辑方式：
 
 |  字段 |  说明 |
@@ -59,7 +48,6 @@
 
             </textarea>
         </div>
-    </fieldset>
 </div>
 
 {{template "public/editormd_show.html" .}}

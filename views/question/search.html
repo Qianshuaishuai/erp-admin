@@ -16,7 +16,8 @@
     <form class="layui-form">
         <div class="layui-row layui-col-space10">
             <div class="layui-col-md9">
-                <input name="q" class="layui-input" autocomplete="off" lay-verify="required|number" placeholder="试题ID">
+                <input name="q" class="layui-input" autocomplete="off" lay-verify="required"
+                       placeholder="试题ID 或 试题内容">
             </div>
             <div class="layui-col-md3">
                 <button class="layui-btn" lay-filter="search" lay-submit>搜索一下</button>
@@ -26,12 +27,19 @@
 </div>
 
 <script>
-    layui.use(['form','jquery'], function () {
+    layui.use(['form', 'jquery'], function () {
         var form = layui.form;
 
         form.on('submit(search)', function (data) {
             var field = data.field;
-            window.location.href = "/question/detail?question_id=" + field["q"];
+            var id = parseInt(field["q"]);
+
+            layer.load(2, {time: 10*1000});
+            if (isNaN(id)) {
+                window.location.href = "/question/detail?question_q=" + field["q"];
+            } else {
+                window.location.href = "/question/detail?question_id=" + id;
+            }
             return false;
         });
 

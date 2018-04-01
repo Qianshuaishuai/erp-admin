@@ -164,9 +164,10 @@
             send_data.question_id = form_data["question_id"];
             var isB = '{{.IsBig}}';
             send_data.isBig = isB;
-            send_data.s_question_type = form_data["s_question_type"]
+            send_data.s_question_type = form_data["s_question_type"];
 
             var old_question_content = trim('{{.Data.Content}}');
+
             if (form_data["question_content"].toString() != old_question_content) {
                 send_data.question_content = form_data["question_content"]
             }
@@ -197,7 +198,9 @@
                     }
                     var length = Object.keys(op).length;
                     if (length !== 0) {
-                        send_data.options = op;
+                        for (var i in op) {
+                            send_data["options" + i] = op[i];
+                        }
                         send_data.op_len = options_len;
                     }
                 }
@@ -212,11 +215,12 @@
                 }
                 var lenan = Object.keys(an).length;
                 if (lenan !== 0) {
-                    send_data.answers = an;
+                    for (var i in an) {
+                        send_data["answers" + i] = an[i];
+                    }
                     send_data.an_len = answer_len;
                 }
             }
-            console.log(send_data);
 
             $.post('{{urlfor "QuestionController.Edit"}}', send_data, function (out) {
                 if (out.status == 0) {
