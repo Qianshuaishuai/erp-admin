@@ -5,6 +5,7 @@ import (
 	"strings"
 	"errors"
 	"strconv"
+	"dreamEbagPaperAdmin/helper"
 )
 
 type PaperType struct {
@@ -37,6 +38,7 @@ type PaperQuestionSetChapter struct {
 	PresetScore      float32 `gorm:"column:F_preset_score;" json:"presetScore"`                 //分数(有些章节题目有缺失，请注意计算时使用题目实际数量)
 
 	SetId            int64         `gorm:"column:F_set_id;type:BIGINT(20)" json:"setId"`
+	ChapterId        string        `gorm:"column:F_chapter_id;"`
 	QuestionsContent []interface{} `gorm:"-" json:"questionsContent"`
 }
 
@@ -159,10 +161,18 @@ func GetPaper(resourceId int64) (Paper) {
 func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, difficulty float64, provinces string) error {
 	//先处理省份
 	tx := GetDb().Begin()
+	var oldProvinces string
 
 	if len(provinces) > 0 {
+		provinces = strings.TrimRight(provinces, ",")
+
 		provincesSplit := strings.Split(provinces, ",")
 		if len(provincesSplit) > 0 {
+			//记录老省份
+			var tempOld []int64
+			tx.Table("t_paper_province").Where("paper_F_paper_id = ?", paperId).Pluck("province_F_province_id", &tempOld)
+			oldProvinces = helper.JoinInt64(tempOld, ",")
+
 			//删除这个试卷的关联省份
 			err := tx.Exec("DELETE FROM t_paper_province WHERE paper_F_paper_id = ?", paperId).Error
 
@@ -208,14 +218,67 @@ func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, 
 	//更新时间
 	updated["F_date"] = time.Now()
 
+	detail := makeHistoryDetailPaper(paperId, updated, oldProvinces, provinces)
+
 	err := tx.Model(&Paper{}).Where("F_paper_id = ?", paperId).Updates(updated).Error
 	if err != nil {
 		tx.Rollback()
 		return errors.New("更新试卷失败:" + err.Error())
 	}
 
+	AddOperateData(paperId, DATA_TYPE_PAPER, OP_EDIT, detail)
 	tx.Commit()
 	return nil
+}
+
+func makeHistoryDetailPaper(paperId int64, updated map[string]interface{}, oldProvince, newProvince string) []HistoryDetail {
+	result := make([]HistoryDetail, 0)
+
+	if len(newProvince) > 0 {
+		if newProvince != oldProvince {
+			var hisProvince HistoryDetail
+			hisProvince.FieldName = "F_province"
+			hisProvince.Old = oldProvince
+			hisProvince.New = newProvince
+
+			result = append(result, hisProvince)
+		}
+	}
+
+	for k, v := range updated {
+		var temp HistoryDetail
+		switch k {
+		case "F_name":
+			temp.FieldName = k
+			var z []string
+			GetDb().Table("t_papers").Where("F_paper_id = ?", paperId).Pluck(k, &z)
+			if len(z) > 0 {
+				temp.Old = z[0]
+				temp.New = v.(string)
+			}
+		case "F_full_score", "F_paper_type":
+			temp.FieldName = k
+			var z []int
+			GetDb().Table("t_papers").Where("F_paper_id = ?", paperId).Pluck(k, &z)
+			if len(z) > 0 {
+				temp.Old = strconv.Itoa(z[0])
+				temp.New = strconv.Itoa(v.(int))
+			}
+		case "F_difficulty":
+			temp.FieldName = k
+			var z []float64
+			GetDb().Table("t_papers").Where("F_paper_id = ?", paperId).Pluck(k, &z)
+			if len(z) > 0 {
+				temp.Old = strconv.FormatFloat(z[0], 'f', 1, 64)
+				temp.New = strconv.FormatFloat(v.(float64), 'f', 1, 64)
+			}
+		}
+
+		if len(temp.FieldName) > 0 {
+			result = append(result, temp)
+		}
+	}
+	return result
 }
 
 //找到resId中chapterQuestionCount和q指向的部分

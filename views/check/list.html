@@ -1,0 +1,49 @@
+<div class="layui-layout layui-layout-admin" style="padding-left: 20px;">
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-xs6">
+            <div class="layui-btn-group">
+                <button class="layui-btn " id="add_paper">提交记录</button>
+                <button class="layui-btn " id="add_paper">删除记录</button>
+                <button class="layui-btn " id="add_paper">撤销修改</button>
+            </div>
+        </div>
+    </div>
+
+    <table class="layui-hide" id="table_list" lay-filter="table_filter">
+    </table>
+
+    <script type="text/html" id="bar">
+        <a class="layui-btn layui-btn-xs" lay-event="detail">详细</a>
+    </script>
+</div>
+
+<script>
+    layui.use(['table', 'form', 'element'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var element = layui.element;
+        var $ = layui.$;
+
+        //方法级渲染
+        table.render({
+            elem: '#table_list'
+            , url: '/check/table'
+            , cols: [[
+                {checkbox: true, fixed: true}
+                , {field: 'modify_id', title: '修改ID', width: '10%'}
+                , {field: 'modify_date', title: '修改时间', width: '10%', sort: true}
+                , {field: 'modify_admin', title: '修改人', width: '20%'}
+                , {field: 'data_id', title: '数据ID', width: '15%'}
+                , {field: 'data_type', title: '数据类型'}
+                , {field: 'data_operate', title: '数据操作'}
+                , {field: 'commit_flag', title: '状态', align: 'center'}
+                , {fixed: 'right', width: '10%', align: 'center', toolbar: '#bar'}
+            ]]
+            , id: 'listReload'
+            , page: true
+            , height: "full-130"
+            , loading: true
+        });
+    });
+
+</script>

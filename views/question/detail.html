@@ -222,11 +222,14 @@
                 }
             }
 
+            data.elem.disabled = true;
             $.post('{{urlfor "QuestionController.Edit"}}', send_data, function (out) {
                 if (out.status == 0) {
-                    layer.msg("操作成功", {icon: 1}, function () {
+                    layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                        data.elem.disabled = false;
                     })
                 } else {
+                    data.elem.disabled = false;
                     layer.msg(out.message)
                 }
             }, "json");

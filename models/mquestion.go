@@ -7,6 +7,7 @@ import (
 	"errors"
 	"bytes"
 	"regexp"
+	"strconv"
 )
 
 const (
@@ -289,11 +290,14 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 		}
 
 		if len(updated) > 0 {
+			detail := makeHistoryDetailBigQuestion(questionId, updated)
+
 			err := tx.Table("t_large_questions").Where("F_big_question_id = ?", questionId).Updates(updated).Error
 			if err != nil {
 				tx.Rollback()
 				return errors.New("更新大题失败:" + err.Error())
 			}
+			AddOperateData(questionId, DATA_TYPE_BIG_QUESTION, OP_EDIT, detail)
 			tx.Commit()
 		}
 	} else {
@@ -340,18 +344,75 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 		}
 
 		if len(updated) > 0 {
-			//makeARow(questionId,"试题","编辑",updated)
+			detail := makeHistoryDetailSmallQuestion(questionId, updated)
 
 			err := tx.Table("t_questions").Where("F_question_id = ?", questionId).Updates(updated).Error
 			if err != nil {
 				tx.Rollback()
 				return errors.New("更新小题失败:" + err.Error())
 			}
+
+			AddOperateData(questionId, DATA_TYPE_SMALL_QUESTION, OP_EDIT, detail)
 			tx.Commit()
 		}
 	}
 	return nil
 }
+
+func makeHistoryDetailSmallQuestion(questionId int64, updated map[string]interface{}) []HistoryDetail {
+	result := make([]HistoryDetail, 0)
+
+	for k, v := range updated {
+		var temp HistoryDetail
+		switch k {
+		case "F_content","F_solution","F_accessories","F_correct_answer":
+			temp.FieldName = k
+			var z []string
+			GetDb().Table("t_large_questions").Where("F_big_question_id = ?", questionId).Pluck(k, &z)
+			if len(z) > 0 {
+				temp.Old = z[0]
+				temp.New = v.(string)
+			}
+		case "F_score", "F_difficulty":
+			temp.FieldName = k
+			var z []float64
+			GetDb().Table("t_large_questions").Where("F_big_question_id = ?", questionId).Pluck(k, &z)
+			if len(z) > 0 {
+				temp.Old = strconv.FormatFloat(z[0], 'f', 1, 64)
+				temp.New = strconv.FormatFloat(v.(float64), 'f', 1, 64)
+			}
+		}
+
+		if len(temp.FieldName) > 0 {
+			result = append(result, temp)
+		}
+	}
+	return result
+}
+
+func makeHistoryDetailBigQuestion(questionId int64, updated map[string]interface{}) []HistoryDetail {
+	result := make([]HistoryDetail, 0)
+
+	for k, v := range updated {
+		var temp HistoryDetail
+		switch k {
+		case "F_content":
+			temp.FieldName = k
+			var z []string
+			GetDb().Table("t_large_questions").Where("F_big_question_id = ?", questionId).Pluck(k, &z)
+			if len(z) > 0 {
+				temp.Old = z[0]
+				temp.New = v.(string)
+			}
+		}
+
+		if len(temp.FieldName) > 0 {
+			result = append(result, temp)
+		}
+	}
+	return result
+}
+
 func makeNewAnswers(questionId int64, answers map[int]string, questionType int, anLen int) string {
 	//查老答案
 	var answersDB []string

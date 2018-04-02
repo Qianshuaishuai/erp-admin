@@ -109,6 +109,7 @@
             <div class="layui-input-block">
                 <input type="text" name="chapter_name" value="{{$elem.Name}}" class="layui-input">
                 <input type="hidden" id="chapter_name_{{$index}}" value="{{$elem.Name}}">
+                <input type="hidden" id="chapter_id_{{$index}}" value="{{$elem.ChapterId}}">
             </div>
         </div>
         <div class="layui-form-item" pane>
@@ -223,11 +224,14 @@
 
             send_data.province = pro;
 
+            data.elem.disabled = true;
             $.post('{{urlfor "PaperController.Edit"}}', send_data, function (out) {
                 if (out.status == 0) {
-                    layer.msg("操作成功", {icon: 1}, function () {
+                    layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                        data.elem.disabled = false;
                     })
                 } else {
+                    data.elem.disabled = false;
                     layer.msg(out.message)
                 }
             }, "json");
@@ -261,14 +265,16 @@
                 send_data.chapter_score = form_data["chapter_score"]
             }
 
-            send_data.set_id = '{{.Detail.QuestionSet.SetId}}';
-            send_data.index = index;
+            send_data.chapter_id = $('#chapter_id_' + index).val();
 
+            data.elem.disabled = true;
             $.post('{{urlfor "ChapterController.Edit"}}', send_data, function (out) {
                 if (out.status == 0) {
-                    layer.msg("操作成功", {icon: 1}, function () {
+                    layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                        data.elem.disabled = false;
                     })
                 } else {
+                    data.elem.disabled = false;
                     layer.msg(out.message)
                 }
             }, "json");

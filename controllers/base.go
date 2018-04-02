@@ -184,7 +184,7 @@ func (self *BaseController) SetTheStartMenu() {
 		Pid:      1,
 		Icon:     "fa-eye",
 		AuthName: "审核数据",
-		AuthUrl:  "/question/search",
+		AuthUrl:  "/check/list",
 	})
 
 	list2 = append(list2, StartMenu{
