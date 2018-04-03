@@ -1,10 +1,3 @@
-/**********************************************
-** @Des: This file ...
-** @Author: haodaquan
-** @Date:   2017-09-16 15:42:43
-** @Last Modified by:   haodaquan
-** @Last Modified time: 2017-09-17 11:48:17
-***********************************************/
 package models
 
 import (

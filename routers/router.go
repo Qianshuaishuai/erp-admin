@@ -23,7 +23,6 @@ func init() {
 	beego.Router("/home/start", &controllers.HomeController{}, "*:Start")
 
 
-	beego.AutoRouter(&controllers.EnvController{})
 	beego.AutoRouter(&controllers.PaperController{})
 	beego.AutoRouter(&controllers.ChapterController{})
 	beego.AutoRouter(&controllers.QuestionController{})

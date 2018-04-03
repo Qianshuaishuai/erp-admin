@@ -2,9 +2,9 @@
     <div class="layui-row" style="margin-top: 20px;">
         <div class="layui-col-xs6">
             <div class="layui-btn-group">
-                <button class="layui-btn " id="add_paper">提交记录</button>
-                <button class="layui-btn " id="add_paper">删除记录</button>
-                <button class="layui-btn " id="add_paper">撤销修改</button>
+                <button class="layui-btn " id="commit_check_data">提交记录</button>
+                <button class="layui-btn " id="delete_check_data">删除记录</button>
+                <button class="layui-btn " id="revert_check_data">撤销修改</button>
             </div>
         </div>
     </div>
@@ -18,10 +18,9 @@
 </div>
 
 <script>
-    layui.use(['table', 'form', 'element'], function () {
+    layui.use(['table'], function () {
         var table = layui.table;
-        var form = layui.form;
-        var element = layui.element;
+        var layer = layui.layer;
         var $ = layui.$;
 
         //方法级渲染
@@ -36,13 +35,135 @@
                 , {field: 'data_id', title: '数据ID', width: '15%'}
                 , {field: 'data_type', title: '数据类型'}
                 , {field: 'data_operate', title: '数据操作'}
-                , {field: 'commit_flag', title: '状态', align: 'center'}
+                , {field: 'status_flag_text', title: '状态', align: 'center'}
                 , {fixed: 'right', width: '10%', align: 'center', toolbar: '#bar'}
             ]]
             , id: 'listReload'
             , page: true
+            , limit: 20
             , height: "full-130"
             , loading: true
+        });
+
+        $('#commit_check_data').on('click', function () {
+            var checkStatus = table.checkStatus('listReload');
+            var checkData = checkStatus["data"];
+            var ids = "";
+
+            if (checkData.length > 0) {
+                $('#commit_check_data').disabled = true;
+                var index = layer.load(1);
+
+                for (var vs in checkData) {
+                    //check
+                    if (checkData[vs].status_flag !== 0) {
+                        layer.msg("只能提交待提交状态的数据", {icon: 2, anim: 6});
+                        return false;
+                    }
+                    ids += checkData[vs].modify_id + ","
+                }
+
+                $.post("/check/commit", {ids: ids}, function (out) {
+                    $('#commit_check_data').disabled = false;
+                    layer.close(index);
+
+                    if (out.status === 0) {
+                        layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                            table.reload('listReload')
+                        })
+                    } else {
+                        layer.msg(out.message)
+                    }
+                }, "json");
+            } else {
+                layer.msg("请选择数据", {time: 1000});
+            }
+        });
+
+        $('#revert_check_data').on('click', function () {
+            var checkStatus = table.checkStatus('listReload');
+            var checkData = checkStatus["data"];
+            var ids = "";
+
+            if (checkData.length > 0) {
+                $('#revert_check_data').disabled = true;
+                var index = layer.load(1);
+                for (var vs in checkData) {
+                    //check
+                    if (checkData[vs].status_flag !== 0) {
+                        layer.msg("只能撤销待提交状态的数据", {icon: 2, anim: 6});
+                        return false;
+                    }
+                    ids += checkData[vs].modify_id + ","
+                }
+
+                $.post("/check/revert", {ids: ids}, function (out) {
+                    $('#revert_check_data').disabled = false;
+                    layer.close(index);
+
+                    if (out.status === 0) {
+                        layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                            table.reload('listReload')
+                        })
+                    } else {
+                        layer.msg(out.message)
+                    }
+                }, "json");
+            } else {
+                layer.msg("请选择数据", {time: 1000});
+            }
+        });
+
+        $('#delete_check_data').on('click', function () {
+            var checkStatus = table.checkStatus('listReload');
+            var checkData = checkStatus["data"];
+            var ids = "";
+
+            if (checkData.length > 0) {
+                $('#delete_check_data').disabled = true;
+                var index = layer.load(1);
+                for (var vs in checkData) {
+                    //check
+                    if (checkData[vs].status_flag !== 1 && checkData[vs].status_flag !== 2) {
+                        layer.msg("请选择状态为已提交或已撤销的数据", {icon: 2, anim: 6});
+                        return false;
+                    }
+
+                    ids += checkData[vs].modify_id + ","
+                }
+
+                $.post("/check/delete", {ids: ids}, function (out) {
+                    $('#delete_check_data').disabled = false;
+                    layer.close(index);
+
+                    if (out.status === 0) {
+                        layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                            table.reload('listReload')
+                        })
+                    } else {
+                        layer.msg(out.message)
+                    }
+                }, "json");
+            } else {
+                layer.msg("请选择数据", {time: 1000});
+            }
+        });
+
+        table.on('tool(table_filter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                $.get('/check/detail', {modify_id: data.modify_id}, function (str) {
+                    layer.open({
+                        area: '1000px',
+                        anim: 5,
+                        type: 1,
+                        title: "操作记录",
+                        content: str
+                    });
+                });
+            } else {
+                layer.msg('操作不存在');
+            }
         });
     });
 

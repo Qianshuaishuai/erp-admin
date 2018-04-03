@@ -42,9 +42,9 @@ func (self *BaseController) display(tpl ...string) {
 	if len(tpl) > 0 {
 		tplname = strings.Join([]string{tpl[0], "html"}, ".")
 	} else {
+		self.Layout = "public/layout.html"
 		tplname = self.controllerName + "/" + self.actionName + ".html"
 	}
-	self.Layout = "public/layout.html"
 	self.TplName = tplname
 }
 
@@ -146,20 +146,19 @@ func (self *BaseController) SetTheStartMenu() {
 	list := make([]StartMenu, 0)
 
 	list = append(list, StartMenu{
-		Id: 1,
-		Pid: 0,
-		Icon: "fa-database",
+		Id:       1,
+		Pid:      0,
+		Icon:     "fa-database",
 		AuthName: "数据操作",
-		AuthUrl: " "})
-
+		AuthUrl:  " "})
 
 	list = append(list, StartMenu{
-		Id: 100,
-		Pid: 0,
-		Icon: "fa-edit",
+		Id:       100,
+		Pid:      0,
+		Icon:     "fa-edit",
 		AuthName: "问题上报",
-		AuthUrl: " ",
-		})
+		AuthUrl:  " ",
+	})
 
 	list2 := make([]StartMenu, 0)
 

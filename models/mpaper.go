@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strconv"
 	"dreamEbagPaperAdmin/helper"
+	"github.com/jinzhu/gorm"
 )
 
 type PaperType struct {
@@ -144,28 +145,17 @@ func GetPaper(resourceId int64) (Paper) {
 
 	if resourceId > 0 {
 		isRecordNotFound = GetDb().Preload("Provinces").Find(&info, resourceId).RecordNotFound()
-
-		if isRecordNotFound {
-			//没找到试卷
-
-		} else {
+		if !isRecordNotFound {
 			var paperQuestionSet PaperQuestionSet
 			GetDb().Preload("PaperQuestionSetChapters").Find(&paperQuestionSet, "F_paper_id = ?", resourceId)
-
 			info.QuestionSet = paperQuestionSet
 		}
 	}
 	return info
 }
 
-func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, difficulty float64, provinces string) error {
-	//先处理省份
-	tx := GetDb().Begin()
-	var oldProvinces string
-
+func UpdatePaperProvince(paperId int64, provinces string, tx *gorm.DB) (oldProvinces string, err error) {
 	if len(provinces) > 0 {
-		provinces = strings.TrimRight(provinces, ",")
-
 		provincesSplit := strings.Split(provinces, ",")
 		if len(provincesSplit) > 0 {
 			//记录老省份
@@ -173,31 +163,41 @@ func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, 
 			tx.Table("t_paper_province").Where("paper_F_paper_id = ?", paperId).Pluck("province_F_province_id", &tempOld)
 			oldProvinces = helper.JoinInt64(tempOld, ",")
 
-			//删除这个试卷的关联省份
-			err := tx.Exec("DELETE FROM t_paper_province WHERE paper_F_paper_id = ?", paperId).Error
+			if oldProvinces != provinces {
+				//删除这个试卷的关联省份
+				err := tx.Exec("DELETE FROM t_paper_province WHERE paper_F_paper_id = ?", paperId).Error
 
-			if err != nil {
-				tx.Rollback()
-				return errors.New("删除省份失败:" + err.Error())
-			}
+				if err != nil {
+					return oldProvinces, HandleErrByTx(errors.New("删除省份失败:"+err.Error()), tx)
+				}
 
-			for i := range provincesSplit {
-				if len(provincesSplit[i]) > 0 {
-					newProvinceId, _ := strconv.ParseInt(provincesSplit[i], 10, 64)
-					if newProvinceId != 0 {
-						err = tx.Exec("INSERT INTO t_paper_province VALUES (?,?)", paperId, newProvinceId).Error
-						if err != nil {
-							tx.Rollback()
-							return errors.New("插入省份失败:" + err.Error())
+				for i := range provincesSplit {
+					if len(provincesSplit[i]) > 0 {
+						newProvinceId, _ := strconv.ParseInt(provincesSplit[i], 10, 64)
+						if newProvinceId != 0 {
+							err = tx.Exec("INSERT INTO t_paper_province VALUES (?,?)", paperId, newProvinceId).Error
+							if err != nil {
+								return oldProvinces, HandleErrByTx(errors.New("插入省份失败:"+err.Error()), tx)
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+	return oldProvinces, nil
+}
+
+func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, difficulty float64, provinces string) error {
+	tx := GetDb().Begin()
+	//先处理省份
+	provinces = strings.TrimRight(provinces, ",")
+	oldProvinces, err := UpdatePaperProvince(paperId, provinces, tx)
+	if err != nil {
+		return HandleErrByTx(err, tx)
+	}
 
 	updated := make(map[string]interface{})
-
 	//处理paperName
 	if len(paperName) > 0 {
 		updated["F_name"] = paperName
@@ -220,10 +220,9 @@ func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, 
 
 	detail := makeHistoryDetailPaper(paperId, updated, oldProvinces, provinces)
 
-	err := tx.Model(&Paper{}).Where("F_paper_id = ?", paperId).Updates(updated).Error
+	err = tx.Model(&Paper{}).Where("F_paper_id = ?", paperId).Updates(updated).Error
 	if err != nil {
-		tx.Rollback()
-		return errors.New("更新试卷失败:" + err.Error())
+		return HandleErrByTx(errors.New("更新试卷失败:"+err.Error()), tx)
 	}
 
 	AddOperateData(paperId, DATA_TYPE_PAPER, OP_EDIT, detail)
@@ -240,39 +239,12 @@ func makeHistoryDetailPaper(paperId int64, updated map[string]interface{}, oldPr
 			hisProvince.FieldName = "F_province"
 			hisProvince.Old = oldProvince
 			hisProvince.New = newProvince
-
 			result = append(result, hisProvince)
 		}
 	}
 
 	for k, v := range updated {
-		var temp HistoryDetail
-		switch k {
-		case "F_name":
-			temp.FieldName = k
-			var z []string
-			GetDb().Table("t_papers").Where("F_paper_id = ?", paperId).Pluck(k, &z)
-			if len(z) > 0 {
-				temp.Old = z[0]
-				temp.New = v.(string)
-			}
-		case "F_full_score", "F_paper_type":
-			temp.FieldName = k
-			var z []int
-			GetDb().Table("t_papers").Where("F_paper_id = ?", paperId).Pluck(k, &z)
-			if len(z) > 0 {
-				temp.Old = strconv.Itoa(z[0])
-				temp.New = strconv.Itoa(v.(int))
-			}
-		case "F_difficulty":
-			temp.FieldName = k
-			var z []float64
-			GetDb().Table("t_papers").Where("F_paper_id = ?", paperId).Pluck(k, &z)
-			if len(z) > 0 {
-				temp.Old = strconv.FormatFloat(z[0], 'f', 1, 64)
-				temp.New = strconv.FormatFloat(v.(float64), 'f', 1, 64)
-			}
-		}
+		temp := EvaluateHistoryDetailBy(k, v, "t_papers", "F_paper_id", paperId)
 
 		if len(temp.FieldName) > 0 {
 			result = append(result, temp)

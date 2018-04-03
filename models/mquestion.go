@@ -7,7 +7,6 @@ import (
 	"errors"
 	"bytes"
 	"regexp"
-	"strconv"
 )
 
 const (
@@ -55,27 +54,6 @@ func MapTypeSmallQuestion(oldType int) (newType int) {
 		newType = 0
 	}
 	return
-}
-
-// 反向映射小题问题类型
-func MapTypeSmallQuestionRevert(newType int) (oldType int) {
-	switch newType {
-	case RADIO_CHOICE:
-		return 1
-	case MULIT_CHOICE:
-		return 2
-	case INDETERMINATE_CHOICE:
-		return 3
-	case JUDGE_CHOICE:
-		return 5
-	case OBJECTIVELY_BLANK:
-		return 61
-	case SUBJECTIVITY_BLANK:
-		return 60
-	case QA_BLANK:
-		return 13
-	}
-	return 0
 }
 
 type BigQuestion struct {
@@ -155,7 +133,6 @@ func GetQuestion(resId int64, q string) (isBig bool, data interface{}) {
 			}
 		}
 	}
-
 	return
 }
 
@@ -294,8 +271,7 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 
 			err := tx.Table("t_large_questions").Where("F_big_question_id = ?", questionId).Updates(updated).Error
 			if err != nil {
-				tx.Rollback()
-				return errors.New("更新大题失败:" + err.Error())
+				return HandleErrByTx(errors.New("更新大题失败:"+err.Error()), tx)
 			}
 			AddOperateData(questionId, DATA_TYPE_BIG_QUESTION, OP_EDIT, detail)
 			tx.Commit()
@@ -347,9 +323,9 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 			detail := makeHistoryDetailSmallQuestion(questionId, updated)
 
 			err := tx.Table("t_questions").Where("F_question_id = ?", questionId).Updates(updated).Error
+
 			if err != nil {
-				tx.Rollback()
-				return errors.New("更新小题失败:" + err.Error())
+				return HandleErrByTx(errors.New("更新小题失败:"+err.Error()), tx)
 			}
 
 			AddOperateData(questionId, DATA_TYPE_SMALL_QUESTION, OP_EDIT, detail)
@@ -363,25 +339,7 @@ func makeHistoryDetailSmallQuestion(questionId int64, updated map[string]interfa
 	result := make([]HistoryDetail, 0)
 
 	for k, v := range updated {
-		var temp HistoryDetail
-		switch k {
-		case "F_content","F_solution","F_accessories","F_correct_answer":
-			temp.FieldName = k
-			var z []string
-			GetDb().Table("t_large_questions").Where("F_big_question_id = ?", questionId).Pluck(k, &z)
-			if len(z) > 0 {
-				temp.Old = z[0]
-				temp.New = v.(string)
-			}
-		case "F_score", "F_difficulty":
-			temp.FieldName = k
-			var z []float64
-			GetDb().Table("t_large_questions").Where("F_big_question_id = ?", questionId).Pluck(k, &z)
-			if len(z) > 0 {
-				temp.Old = strconv.FormatFloat(z[0], 'f', 1, 64)
-				temp.New = strconv.FormatFloat(v.(float64), 'f', 1, 64)
-			}
-		}
+		temp := EvaluateHistoryDetailBy(k, v, "t_questions", "F_question_id", questionId)
 
 		if len(temp.FieldName) > 0 {
 			result = append(result, temp)
@@ -394,17 +352,7 @@ func makeHistoryDetailBigQuestion(questionId int64, updated map[string]interface
 	result := make([]HistoryDetail, 0)
 
 	for k, v := range updated {
-		var temp HistoryDetail
-		switch k {
-		case "F_content":
-			temp.FieldName = k
-			var z []string
-			GetDb().Table("t_large_questions").Where("F_big_question_id = ?", questionId).Pluck(k, &z)
-			if len(z) > 0 {
-				temp.Old = z[0]
-				temp.New = v.(string)
-			}
-		}
+		temp := EvaluateHistoryDetailBy(k, v, "t_large_questions", "F_big_question_id", questionId)
 
 		if len(temp.FieldName) > 0 {
 			result = append(result, temp)
@@ -419,7 +367,6 @@ func makeNewAnswers(questionId int64, answers map[int]string, questionType int, 
 	GetDb().Table("t_questions").Where("F_question_id = ?", questionId).Pluck("F_correct_answer", &answersDB)
 	if len(answersDB) > 0 {
 		ans := answersDB[0]
-
 		switch questionType {
 		case RADIO_CHOICE, JUDGE_CHOICE, QA_BLANK, SUBJECTIVITY_BLANK:
 			return answers[0]

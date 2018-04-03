@@ -64,15 +64,6 @@ const (
 	RESP_PARAM_ERR = 10002
 	RESP_TOKEN_ERR = 10003
 	RESP_NO_ACCESS = 10004
-
-	//应用响应码
-	RESP_RESOURCE_NOT_FOUND   = 13300
-	RESP_SEARCH_ERR           = 13301
-	RESP_SAVE_ERR             = 13302
-	RESP_TOKEN_PAST           = 13303
-	RESP_TOKEN_CHECK_ERR      = 13304
-	RESP_DELETE_SUITPAPER_ERR = 13305
-	RESP_CORRECT_ERR          = 13306
 )
 
 //AccessToken 相关
@@ -83,13 +74,6 @@ const (
 	PLATFORM_ANDROID = 1
 	PLATFORM_WEB     = 2
 	PLATFORM_WEBCHAT = 3
-)
-
-// 默认的 “全部” 值
-const (
-	DEFAULT_PROVINCE_ALL   = 1
-	DEFAULT_GRADE_ALL      = 100 //不要用负数 不能用1，1为1年级.
-	DEFAULT_PAPER_TYPE_ALL = -1
 )
 
 const (

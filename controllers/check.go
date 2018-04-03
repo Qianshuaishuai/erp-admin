@@ -3,6 +3,9 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"dreamEbagPaperAdmin/models"
+	"encoding/json"
+	"strings"
+	"dreamEbagPaperAdmin/helper"
 )
 
 type CheckController struct {
@@ -23,9 +26,10 @@ var (
 		301: "删除",
 	}
 
-	COMMIT_FLAG = [2]string{
-		"<span class='layui-badge layui-bg-yellow'>待提交</span>",
+	STATUS_FLAG = [3]string{
+		"<span class='layui-badge layui-bg-orange'>待提交</span>",
 		"<span class='layui-badge layui-bg-green'>已提交</span>",
+		"<span class='layui-badge layui-bg-gray'>已撤销</span>",
 	}
 )
 
@@ -56,8 +60,55 @@ func (self *CheckController) Table() {
 		row["data_id"] = v.DataId
 		row["data_type"] = DATA_TYPA_MAP[v.DataType]
 		row["data_operate"] = DATA_OPERATE_MAP[v.DataOperate]
-		row["commit_flag"] = COMMIT_FLAG[v.CommitFlag]
+		row["status_flag_text"] = STATUS_FLAG[v.StatusFlag]
+		row["status_flag"] = v.StatusFlag
 		list[k] = row
 	}
 	self.ajaxList("", 0, count, list)
+}
+
+func (self *CheckController) Detail() {
+	self.Data["pageTitle"] = "审核列表"
+	self.Data["ApiCss"] = true
+
+	modifyId, _ := self.GetInt64("modify_id")
+
+	detailString := models.FindDetailById(modifyId)
+	var Data []models.HistoryDetail
+	json.Unmarshal([]byte(detailString), &Data)
+
+	self.Data["Detail"] = Data
+	self.display("check/detail")
+}
+
+func (self *CheckController) Delete() {
+	handler(models.DeleteCheckDataIds, self)
+}
+
+func (self *CheckController) Revert() {
+	handler(models.RevertCheckDataIds, self)
+}
+
+func (self *CheckController) Commit() {
+	handler(models.CommitCheckDataIds, self)
+}
+
+func handler(dataHandler func([]int64) error, self *CheckController) {
+	modifyIdsStr := strings.TrimSpace(self.GetString("ids"))
+
+	if len(modifyIdsStr) != 0 {
+		modifyIdsStr := strings.TrimRight(modifyIdsStr, ",")
+
+		modifyIds, err := helper.TransformStringToInt64Arr("[" + modifyIdsStr + "]")
+		if err != nil {
+			self.ajaxMsg(err.Error(), -1)
+		}
+
+		err = dataHandler(modifyIds)
+
+		if err != nil {
+			self.ajaxMsg(err.Error(), -1)
+		}
+		self.ajaxMsg("", 0)
+	}
 }

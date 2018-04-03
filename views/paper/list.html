@@ -91,19 +91,12 @@
 
                 layer.confirm(msg, function () {
                     var del_data = {"id": data.id}
-                    $.post('{{urlfor "ApiController.AjaxDel"}}', del_data, function (out) {
-                        if (out.status == 0) {
-                            layer.msg("操作成功", {icon: 1}, function () {
-                                $("#reload").click();
-                            })
-                        } else {
-                            layer.msg(out.message)
-                        }
-                    }, "json");
+                    layer.msg("这操作太危险，我还没想好怎么弄。", {icon: 5}, function () {
+                        $("#reload").click();
+                    });
                     return false;
                 });
                 return false;
-
             } else {
                 layer.msg('操作不存在');
             }

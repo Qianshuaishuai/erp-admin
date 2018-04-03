@@ -20,10 +20,8 @@ func main() {
 	db := models.GetDb()
 	defer db.Close()
 
-	//就问能不能ping通
-	errPing := db.DB().Ping()
-	if errPing != nil {
-		fmt.Println("can't connect db", errPing.Error())
+	if !models.CheckDB(db){
+		fmt.Println("数据库错误，无法启动")
 		return
 	}
 
