@@ -26,7 +26,7 @@ var (
 		301: "删除",
 	}
 
-	STATUS_FLAG = [3]string{
+	CHECK_STATUS_FLAG = [3]string{
 		"<span class='layui-badge layui-bg-orange'>待提交</span>",
 		"<span class='layui-badge layui-bg-green'>已提交</span>",
 		"<span class='layui-badge layui-bg-gray'>已撤销</span>",
@@ -60,7 +60,7 @@ func (self *CheckController) Table() {
 		row["data_id"] = v.DataId
 		row["data_type"] = DATA_TYPA_MAP[v.DataType]
 		row["data_operate"] = DATA_OPERATE_MAP[v.DataOperate]
-		row["status_flag_text"] = STATUS_FLAG[v.StatusFlag]
+		row["status_flag_text"] = CHECK_STATUS_FLAG[v.StatusFlag]
 		row["status_flag"] = v.StatusFlag
 		list[k] = row
 	}

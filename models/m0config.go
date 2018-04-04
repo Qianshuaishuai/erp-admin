@@ -92,15 +92,6 @@ const (
 	COURSE_ID_XXYY = 32 //小学英语课程ID
 )
 
-//收集问题接口的 类型集合
-const (
-	Word_Incorrect              = 1
-	Answer_Incorrect            = 2
-	Solution_Incorrect          = 3
-	Question_Overflow_Incorrect = 4
-	Other_Incorrect             = 5
-)
-
 //资源
 type ResourceInfo struct {
 	F_resource_id    int64       `json:"F_resource_id"`
