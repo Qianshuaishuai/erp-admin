@@ -248,6 +248,9 @@ func CommitCheckDataIds(modifyIds []int64) error {
 	}
 
 	for i := range result {
+		if result[i].DataType >= 3 {
+			ChangeTheStatus(2, result[i].DataId)
+		}
 		GetDb().Model(&result[i]).Updates(CheckData{ModifyDate: time.Now(), StatusFlag: 1})
 	}
 

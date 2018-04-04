@@ -191,7 +191,7 @@ func (self *BaseController) SetTheStartMenu() {
 		Pid:      100,
 		Icon:     "fa-list",
 		AuthName: "查看问题",
-		AuthUrl:  " ",
+		AuthUrl:  "/collect/list",
 	})
 
 	self.Data["SideMenu1"] = list  //一级菜单

@@ -274,6 +274,7 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 				return HandleErrByTx(errors.New("更新大题失败:"+err.Error()), tx)
 			}
 			AddOperateData(questionId, DATA_TYPE_BIG_QUESTION, OP_EDIT, detail)
+			ChangeTheStatus(1, questionId)
 			tx.Commit()
 		}
 	} else {
@@ -329,6 +330,7 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 			}
 
 			AddOperateData(questionId, DATA_TYPE_SMALL_QUESTION, OP_EDIT, detail)
+			ChangeTheStatus(1, questionId)
 			tx.Commit()
 		}
 	}

@@ -27,4 +27,5 @@ func init() {
 	beego.AutoRouter(&controllers.ChapterController{})
 	beego.AutoRouter(&controllers.QuestionController{})
 	beego.AutoRouter(&controllers.CheckController{})
+	beego.AutoRouter(&controllers.CollectController{})
 }
