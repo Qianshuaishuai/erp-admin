@@ -65,7 +65,7 @@ type PaperSimple struct {
 	Date          time.Time `gorm:"column:F_date;type:DATE" json:"date"`             //试卷的编写日期
 }
 
-func GetPaperListSimple(q string, limit int, page int, sort int) (list []PaperSimple, count int64) {
+func GetPaperListSimple(q string, limit int, page int, sort int, paperId int64) (list []PaperSimple, count int64) {
 	db := GetDb().Table("t_papers")
 	queryParams := make(map[string]interface{})
 	list = make([]PaperSimple, 0)
@@ -74,6 +74,11 @@ func GetPaperListSimple(q string, limit int, page int, sort int) (list []PaperSi
 	var offset int
 	if limit > 0 && page > 0 {
 		offset = (page - 1) * limit
+	}
+
+	//查ID
+	if paperId > 0{
+		db = db.Where("F_paper_id = ?",paperId)
 	}
 
 	// 将搜索字符串按空格拆分

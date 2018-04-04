@@ -1,10 +1,3 @@
-/**********************************************
-** @Des: login
-** @Author: haodaquan
-** @Date:   2017-09-07 16:30:10
-** @Last Modified by:   haodaquan
-** @Last Modified time: 2017-09-17 11:55:21
-***********************************************/
 package controllers
 
 import (

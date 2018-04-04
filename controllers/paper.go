@@ -5,6 +5,7 @@ import (
 	"dreamEbagPaperAdmin/models"
 	"strings"
 	"dreamEbagPaperAdmin/helper"
+	"strconv"
 )
 
 type PaperController struct {
@@ -31,12 +32,19 @@ func (self *PaperController) Table() {
 	// q 查询条件
 	q := self.GetString("q")
 
+	//看看q能不能变成ID
+	paperId, err := strconv.ParseInt(q, 10, 64)
+
+	if err == nil {
+		q = ""
+	}
+
 	sort, err := self.GetInt("sort")
 	if err != nil {
 		sort = 0
 	}
 
-	result, count := models.GetPaperListSimple(q, limit, page, sort)
+	result, count := models.GetPaperListSimple(q, limit, page, sort, paperId)
 	list := make([]map[string]interface{}, len(result))
 	for k, v := range result {
 		row := make(map[string]interface{})

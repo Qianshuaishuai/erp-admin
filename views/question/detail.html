@@ -1,3 +1,27 @@
+<style>
+    .main {
+        text-align: center; /*让div内部文字居中*/
+        background-color: #fff;
+        width: 800px;
+        margin: auto;
+        padding:10px;
+    }
+</style>
+
+<div class="main">
+    <form class="layui-form">
+        <div class="layui-row layui-col-space8">
+            <div class="layui-col-md9">
+                <input name="q" class="layui-input" autocomplete="off" lay-verify="required"
+                       placeholder="试题ID 或 试题内容">
+            </div>
+            <div class="layui-col-md3">
+                <button class="layui-btn" lay-filter="search" lay-submit>搜索一下</button>
+            </div>
+        </div>
+    </form>
+</div>
+
 <fieldset class="layui-elem-field">
     <legend>试题详情</legend>
     <div class="layui-layout layui-layout-admin" style="padding-left: 40px;margin-top: 20px;">
@@ -238,6 +262,18 @@
             return false;
         });
 
+        form.on('submit(search)', function (data) {
+            var field = data.field;
+            var id = parseInt(field["q"]);
+
+            layer.load(2, {time: 10*1000});
+            if (isNaN(id)) {
+                window.location.href = "/question/detail?question_q=" + field["q"];
+            } else {
+                window.location.href = "/question/detail?question_id=" + id;
+            }
+            return false;
+        });
     });
 
     window.onbeforeunload = function () {
