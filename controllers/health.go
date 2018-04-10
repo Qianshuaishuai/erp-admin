@@ -1,9 +1,5 @@
 package controllers
 
-import (
-	"dreamEbagPaperAdmin/models"
-)
-
 type HealthCheckController struct {
 	BaseController
 }
@@ -14,7 +10,5 @@ type HealthCheckController struct {
 //@OutParam F_responseMsg string false 业务错误描述
 //@Router / [get]
 func (c *HealthCheckController) HealthCheck() {
-	datas := map[string]interface{}{"F_responseNo": models.RESP_OK}
-
-	c.jsonEcho(datas)
+	c.ajaxMsg("ok", 0)
 }

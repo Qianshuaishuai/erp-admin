@@ -77,8 +77,8 @@ func GetPaperListSimple(q string, limit int, page int, sort int, paperId int64) 
 	}
 
 	//查ID
-	if paperId > 0{
-		db = db.Where("F_paper_id = ?",paperId)
+	if paperId > 0 {
+		db = db.Where("F_paper_id = ?", paperId)
 	}
 
 	// 将搜索字符串按空格拆分
@@ -193,7 +193,7 @@ func UpdatePaperProvince(paperId int64, provinces string, tx *gorm.DB) (oldProvi
 	return oldProvinces, nil
 }
 
-func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, difficulty float64, provinces string) error {
+func UpdatePaper(user *User, paperId int64, paperName string, fullScore int, paperType int, difficulty float64, provinces string) error {
 	tx := GetDb().Begin()
 	//先处理省份
 	provinces = strings.TrimRight(provinces, ",")
@@ -230,7 +230,7 @@ func UpdatePaper(paperId int64, paperName string, fullScore int, paperType int, 
 		return HandleErrByTx(errors.New("更新试卷失败:"+err.Error()), tx)
 	}
 
-	AddOperateData(paperId, DATA_TYPE_PAPER, OP_EDIT, detail)
+	AddOperateData(user, paperId, DATA_TYPE_PAPER, OP_EDIT, detail)
 	tx.Commit()
 	return nil
 }

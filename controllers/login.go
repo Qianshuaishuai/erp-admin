@@ -15,12 +15,11 @@ type LoginController struct {
 
 //登录
 func (self *LoginController) LoginIn() {
-	if self.userId > 0 {
+	if self.user != nil {
 		self.redirect(beego.URLFor("HomeController.Index"))
 	}
 	beego.ReadFromRequest(&self.Controller)
 	if self.isPost() {
-
 		username := strings.TrimSpace(self.GetString("username"))
 		password := strings.TrimSpace(self.GetString("password"))
 
@@ -31,7 +30,7 @@ func (self *LoginController) LoginIn() {
 			errorMsg := ""
 			if err != nil || user.Password != helper.Md5([]byte(password+user.Salt)) {
 				errorMsg = "帐号或密码错误"
-			} else if user.Status == -1 {
+			} else if user.Enable <= 0 {
 				errorMsg = "该帐号已禁用"
 			} else {
 				authkey := helper.Md5([]byte(self.getClientIp() + "|" + user.Password + user.Salt))

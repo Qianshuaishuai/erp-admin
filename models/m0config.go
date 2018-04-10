@@ -92,6 +92,12 @@ const (
 	COURSE_ID_XXYY = 32 //小学英语课程ID
 )
 
+const (
+	ADMIN_SUPER   = -1
+	ADMIN_DATAER  = 1
+	ADMIN_CHECKER = 2
+)
+
 //资源
 type ResourceInfo struct {
 	F_resource_id    int64       `json:"F_resource_id"`

@@ -124,7 +124,7 @@ func (self *PaperController) Edit() {
 		difficulty, _ := self.GetFloat("difficulty", -100)
 		provinces := strings.TrimSpace(self.GetString("province"))
 
-		if err := models.UpdatePaper(PaperId, paper_name, paper_full_score, paper_type, difficulty, provinces); err != nil {
+		if err := models.UpdatePaper(self.user, PaperId, paper_name, paper_full_score, paper_type, difficulty, provinces); err != nil {
 			self.ajaxMsg(err.Error(), -1)
 		}
 		self.ajaxMsg("", 0)

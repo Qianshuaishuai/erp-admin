@@ -109,7 +109,7 @@ func (self *QuestionController) Edit() {
 		data["an_len"] = an_len
 	}
 
-	if err := models.UpdateQuestion(questionId, isBig, questionType, data); err != nil {
+	if err := models.UpdateQuestion(self.user, questionId, isBig, questionType, data); err != nil {
 		self.ajaxMsg(err.Error(), -1)
 	}
 	self.ajaxMsg("", 0)

@@ -2,8 +2,10 @@
     <div class="layui-row" style="margin-top: 20px;">
         <div class="layui-col-xs6">
             <div class="layui-btn-group">
+            {{if .IsChecker}}
                 <button class="layui-btn " id="commit_check_data">提交记录</button>
                 <button class="layui-btn " id="delete_check_data">删除记录</button>
+            {{end}}
                 <button class="layui-btn " id="revert_check_data">撤销修改</button>
             </div>
         </div>
@@ -43,7 +45,7 @@
                 {checkbox: true, fixed: true}
                 , {field: 'modify_id', title: '修改ID', width: '10%'}
                 , {field: 'modify_date', title: '修改时间', width: '10%', sort: true}
-                , {field: 'modify_admin', title: '修改人', width: '20%'}
+                , {field: 'modify_admin', title: '修改人 - 联系方式', width: '20%'}
                 , {field: 'data_id', title: '数据ID', width: '15%'}
                 , {field: 'data_type', title: '数据类型'}
                 , {field: 'data_operate', title: '数据操作'}

@@ -254,7 +254,7 @@ func GetQuestionTranslateTypeById(resId int64) (isBig bool, bigCount int) {
 	return
 }
 
-func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[string]interface{}) error {
+func UpdateQuestion(user *User, questionId int64, isBig bool, questionType int, data map[string]interface{}) error {
 	tx := GetDb().Begin()
 
 	if isBig {
@@ -273,7 +273,7 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 			if err != nil {
 				return HandleErrByTx(errors.New("更新大题失败:"+err.Error()), tx)
 			}
-			AddOperateData(questionId, DATA_TYPE_BIG_QUESTION, OP_EDIT, detail)
+			AddOperateData(user, questionId, DATA_TYPE_BIG_QUESTION, OP_EDIT, detail)
 			ChangeTheStatus(1, questionId)
 			tx.Commit()
 		}
@@ -329,7 +329,7 @@ func UpdateQuestion(questionId int64, isBig bool, questionType int, data map[str
 				return HandleErrByTx(errors.New("更新小题失败:"+err.Error()), tx)
 			}
 
-			AddOperateData(questionId, DATA_TYPE_SMALL_QUESTION, OP_EDIT, detail)
+			AddOperateData(user, questionId, DATA_TYPE_SMALL_QUESTION, OP_EDIT, detail)
 			ChangeTheStatus(1, questionId)
 			tx.Commit()
 		}

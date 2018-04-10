@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"net/http"
 	"dreamEbagPaperAdmin/helper"
 	"dreamEbagPaperAdmin/models"
 	"strings"
@@ -12,10 +11,12 @@ import (
 //公共controller
 type BaseController struct {
 	beego.Controller
-	UniqueLogFlag  string
+	UniqueLogFlag string
+
 	controllerName string
 	actionName     string
-	userId         int
+
+	user *models.User
 }
 
 // 是否POST提交
@@ -48,6 +49,26 @@ func (self *BaseController) display(tpl ...string) {
 	self.TplName = tplname
 }
 
+//登录权限验证
+func (self *BaseController) auth() {
+	arr := strings.Split(self.Ctx.GetCookie("auth"), "|")
+	self.user = nil
+	if len(arr) == 2 {
+		idstr, authKey := arr[0], arr[1]
+		userId, _ := strconv.Atoi(idstr)
+		if userId > 0 {
+			user, err := models.AdminGetById(userId)
+			if err == nil && authKey == helper.Md5([]byte(self.getClientIp()+"|"+user.Password+user.Salt)) {
+				self.user = user
+			}
+		}
+	}
+
+	if self.user == nil && (self.controllerName != "login" && self.actionName != "loginin") {
+		self.redirect(beego.URLFor("LoginController.LoginIn"))
+	}
+}
+
 func (self *BaseController) Prepare() {
 	controllerName, actionName := self.GetControllerAndAction()
 	self.controllerName = strings.ToLower(controllerName[0: len(controllerName)-10])
@@ -59,30 +80,14 @@ func (self *BaseController) Prepare() {
 	//设置开始菜单
 	self.SetTheStartMenu()
 
+	if self.user != nil {
+		self.Data["loginUserName"] = self.user.LoginName
+	}
+
 	//生成用户记录日志的唯一id
 	self.UniqueLogFlag = helper.GetGuid()
 	//log请求
 	self.logRequest()
-}
-
-//登录权限验证
-func (self *BaseController) auth() {
-	arr := strings.Split(self.Ctx.GetCookie("auth"), "|")
-	self.userId = 0
-	if len(arr) == 2 {
-		idstr, password := arr[0], arr[1]
-		userId, _ := strconv.Atoi(idstr)
-		if userId > 0 {
-			user, err := models.AdminGetById(userId)
-			if err == nil && password == helper.Md5([]byte(self.getClientIp()+"|"+user.Password+user.Salt)) {
-				self.userId = user.Id
-			}
-		}
-	}
-
-	if self.userId == 0 && (self.controllerName != "login" && self.actionName != "loginin") {
-		self.redirect(beego.URLFor("LoginController.LoginIn"))
-	}
 }
 
 func (self *BaseController) Finish() {
@@ -91,35 +96,6 @@ func (self *BaseController) Finish() {
 	if ok {
 		self.logEcho(data)
 	}
-}
-
-//json echo
-func (self *BaseController) jsonEcho(datas map[string]interface{}) {
-	responseMsg, ok := datas["F_responseMsg"]
-	if !ok || (ok && len(responseMsg.(string)) <= 0) {
-		datas["F_responseMsg"] = ""
-		if models.MyConfig.NoticeLog {
-			msg, ok := models.MyConfig.ConfigMyResponse[datas["F_responseNo"].(int)]
-			if ok {
-				datas["F_responseMsg"] = msg
-			}
-		}
-	}
-	if datas["F_responseNo"].(int) == models.RESP_PARAM_ERR { //参数错误
-		self.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
-		self.Ctx.ResponseWriter.WriteHeader(http.StatusBadRequest)
-	}
-	if datas["F_responseNo"].(int) == models.RESP_TOKEN_ERR { //token(access token , refresh access token) 错误
-		self.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
-		self.Ctx.ResponseWriter.WriteHeader(http.StatusForbidden)
-	}
-
-	self.Data["json"] = datas
-
-	//跨域支持
-	self.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
-	//输出
-	self.ServeJSON()
 }
 
 //记录请求
@@ -160,23 +136,33 @@ func (self *BaseController) SetTheStartMenu() {
 		AuthUrl:  " ",
 	})
 
+	list = append(list, StartMenu{
+		Id:       200,
+		Pid:      0,
+		Icon:     "fa-id-card",
+		AuthName: "账户管理",
+		AuthUrl:  " ",
+	})
+
 	list2 := make([]StartMenu, 0)
 
-	list2 = append(list2, StartMenu{
-		Id:       10,
-		Pid:      1,
-		Icon:     "fa-file-text",
-		AuthName: "查看试卷",
-		AuthUrl:  "/paper/list",
-	})
+	if self.isDataer() {
+		list2 = append(list2, StartMenu{
+			Id:       10,
+			Pid:      1,
+			Icon:     "fa-file-text",
+			AuthName: "查看试卷",
+			AuthUrl:  "/paper/list",
+		})
 
-	list2 = append(list2, StartMenu{
-		Id:       11,
-		Pid:      1,
-		Icon:     "fa-search",
-		AuthName: "查找试题",
-		AuthUrl:  "/question/search",
-	})
+		list2 = append(list2, StartMenu{
+			Id:       11,
+			Pid:      1,
+			Icon:     "fa-search",
+			AuthName: "查找试题",
+			AuthUrl:  "/question/search",
+		})
+	}
 
 	list2 = append(list2, StartMenu{
 		Id:       12,
@@ -194,8 +180,42 @@ func (self *BaseController) SetTheStartMenu() {
 		AuthUrl:  "/collect/list",
 	})
 
+	list2 = append(list2, StartMenu{
+		Id:       2000,
+		Pid:      200,
+		Icon:     "fa-users",
+		AuthName: "查看账户",
+		AuthUrl:  "/admin/list",
+	})
+
+	list2 = append(list2, StartMenu{
+		Id:       2001,
+		Pid:      200,
+		Icon:     "fa-user-circle-o",
+		AuthName: "我的信息",
+		AuthUrl:  "/admin/info",
+	})
+
 	self.Data["SideMenu1"] = list  //一级菜单
 	self.Data["SideMenu2"] = list2 //二级菜单
+}
+
+func (self *BaseController) isDataer() bool {
+	if self.user != nil {
+		if self.user.Role == models.ADMIN_DATAER || self.user.Role == models.ADMIN_SUPER {
+			return true
+		}
+	}
+	return false
+}
+
+func (self *BaseController) isChecker() bool {
+	if self.user != nil {
+		if self.user.Role == models.ADMIN_CHECKER || self.user.Role == models.ADMIN_SUPER {
+			return true
+		}
+	}
+	return false
 }
 
 //ajax返回

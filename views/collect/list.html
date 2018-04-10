@@ -2,7 +2,9 @@
     <div class="layui-row" style="margin-top: 20px;">
         <div class="layui-col-xs6">
             <div class="layui-btn-group">
-                <button class="layui-btn " id="delete_correct_data">清除记录</button>
+            {{if .IsChecker}}
+                <button class="layui-btn" id="delete_correct_data">清除记录</button>
+            {{end}}
             </div>
         </div>
     </div>
@@ -11,7 +13,11 @@
     </table>
 
     <script type="text/html" id="bar">
+        {{if .IsChecker}}
         <a class="layui-btn layui-btn-xs" lay-event="change">修改状态</a>
+        {{else}}
+        <a class="layui-btn layui-btn-xs layui-btn-disabled">修改状态</a>
+        {{end}}
     </script>
 </div>
 
@@ -73,12 +79,12 @@
             var elemId = "#delete_correct_data";
 
             if (checkData.length > 0) {
-                openLoading(elemId,layer);
+                openLoading(elemId, layer);
 
                 for (var vs in checkData) {
                     //check
                     if (checkData[vs].status === 1) {
-                        closeLoading(elemId,layer);
+                        closeLoading(elemId, layer);
                         layer.msg("只能删除状态不是修改中的问题", {icon: 2, anim: 6});
                         return false;
                     }
@@ -87,7 +93,7 @@
                 }
 
                 $.post("/collect/delete", {ids: ids}, function (out) {
-                    closeLoading(elemId,layer);
+                    closeLoading(elemId, layer);
 
                     if (out.status === 0) {
                         layer.msg("操作成功", {icon: 1, time: 2000}, function () {
@@ -114,7 +120,10 @@
                     yes: function () {
                         var status = $("input[name='status']:checked").val();
                         if (status) {
-                            $.post("/collect/changestatus", {newStatus: status, questionId: data.question_id}, function (out) {
+                            $.post("/collect/changestatus", {
+                                newStatus: status,
+                                questionId: data.question_id
+                            }, function (out) {
                                 if (out.status === 0) {
                                     layer.msg("操作成功", {icon: 1, time: 2000}, function () {
                                         table.reload('listReload');

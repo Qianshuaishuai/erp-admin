@@ -36,6 +36,9 @@ var (
 func (self *CheckController) List() {
 	self.Data["pageTitle"] = "审核列表"
 	self.Data["ApiCss"] = true
+
+	self.Data["IsChecker"] = self.isChecker()
+
 	self.display()
 }
 
@@ -82,7 +85,11 @@ func (self *CheckController) Detail() {
 }
 
 func (self *CheckController) Delete() {
-	handler(models.DeleteCheckDataIds, self)
+	if self.isChecker() {
+		handler(models.DeleteCheckDataIds, self)
+	} else {
+		self.ajaxMsg("你没有对应权限", -1)
+	}
 }
 
 func (self *CheckController) Revert() {
@@ -90,7 +97,11 @@ func (self *CheckController) Revert() {
 }
 
 func (self *CheckController) Commit() {
-	handler(models.CommitCheckDataIds, self)
+	if self.isChecker() {
+		handler(models.CommitCheckDataIds, self)
+	} else {
+		self.ajaxMsg("你没有对应权限", -1)
+	}
 }
 
 func handler(dataHandler func([]int64) error, self *CheckController) {

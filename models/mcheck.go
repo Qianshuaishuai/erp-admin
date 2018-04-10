@@ -80,14 +80,14 @@ func EvaluateHistoryDetailBy(fieldName string, v interface{}, tableName, primary
 	return temp
 }
 
-func AddOperateData(resId int64, resType, resOperate int, details []HistoryDetail) {
+func AddOperateData(user *User, resId int64, resType, resOperate int, details []HistoryDetail) {
 	tx := GetDb().Begin()
 	var checkData CheckData
 	var snowCurl MSnowflakCurl
 	//生成ModifyId
 	checkData.ModifyId = int64(snowCurl.GetIntId(true))
 	checkData.ModifyDate = time.Now()
-	checkData.ModifyAdmin = "Admin"
+	checkData.ModifyAdmin = user.LoginName + " - " + user.Contact
 
 	checkData.DataId = resId
 	checkData.DataType = resType

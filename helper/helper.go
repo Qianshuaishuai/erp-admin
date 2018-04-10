@@ -343,7 +343,7 @@ func Md5(buf []byte) string {
 
 func Password(len int, pwdO string) (pwd string, salt string) {
 	salt = GetRandomString(len)
-	defaultPwd := "george518"
+	defaultPwd := "dream123"
 	if pwdO != "" {
 		defaultPwd = pwdO
 	}

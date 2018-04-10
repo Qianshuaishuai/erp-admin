@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func UpdateChapterByIndex(chapterId string, chapterName string, chapterDetail string, chapterQuestionCount int, chapterScore float64) error {
+func UpdateChapterByIndex(user *User, chapterId string, chapterName string, chapterDetail string, chapterQuestionCount int, chapterScore float64) error {
 	tx := GetDb().Begin()
 	updated := make(map[string]interface{})
 
@@ -46,7 +46,7 @@ func UpdateChapterByIndex(chapterId string, chapterName string, chapterDetail st
 	}
 
 	chapterIdInt, _ := strconv.ParseInt(chapterId, 10, 64)
-	AddOperateData(chapterIdInt, DATA_TYPE_CHAPTER, OP_EDIT, detail)
+	AddOperateData(user, chapterIdInt, DATA_TYPE_CHAPTER, OP_EDIT, detail)
 	tx.Commit()
 	return nil
 }
@@ -55,7 +55,7 @@ func makeHistoryDetailChapter(chapterId string, updated map[string]interface{}) 
 	result := make([]HistoryDetail, 0)
 
 	for k, v := range updated {
-		temp := EvaluateHistoryDetailBy(k,v,"t_paper_question_set_chapters","F_chapter_id",chapterId)
+		temp := EvaluateHistoryDetailBy(k, v, "t_paper_question_set_chapters", "F_chapter_id", chapterId)
 		if len(temp.FieldName) > 0 {
 			result = append(result, temp)
 		}

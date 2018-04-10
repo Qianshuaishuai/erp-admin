@@ -30,6 +30,9 @@ type CollectController struct {
 func (self *CollectController) List() {
 	self.Data["pageTitle"] = "问题列表"
 	self.Data["ApiCss"] = true
+
+	self.Data["IsChecker"] = self.isChecker()
+
 	self.display()
 }
 
@@ -50,6 +53,11 @@ func (self *CollectController) Table() {
 }
 
 func (self *CollectController) Delete() {
+	if !self.isChecker() {
+		self.ajaxMsg("你没有权限", -1)
+		return
+	}
+
 	questionIds := strings.TrimSpace(self.GetString("ids"))
 
 	if len(questionIds) != 0 {
@@ -70,6 +78,11 @@ func (self *CollectController) Delete() {
 }
 
 func (self *CollectController) ChangeStatus() {
+	if !self.isChecker() {
+		self.ajaxMsg("你没有权限", -1)
+		return
+	}
+
 	newStatus, _ := self.GetInt("newStatus", -1)
 	questionId, _ := self.GetInt64("questionId", 0)
 
