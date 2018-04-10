@@ -36,6 +36,7 @@ type CheckData struct {
 	DeletedAt   *time.Time
 
 	DataId      int64  `gorm:"column:F_data_id;type:BIGINT(20)"`
+	DataIdStr   string `gorm:"-"`
 	DataType    int    `gorm:"column:F_data_type;type:TINYINT"`
 	DataOperate int    `gorm:"column:F_data_operate;type:SMALLINT"`
 	StatusFlag  int    `gorm:"column:F_status_flag;type:TINYINT"`
@@ -110,8 +111,15 @@ func AddOperateData(user *User, resId int64, resType, resOperate int, details []
 	tx.Commit()
 }
 
-func GetCheckList(limit int, page int) (result []CheckData, count int64) {
+func GetCheckList(limit int, page int, q int64) (result []CheckData, count int64) {
 	result = make([]CheckData, 0)
+	db := GetDb().Table("t_check_data")
+
+	querys := make(map[string]interface{})
+
+	if q > 0 {
+		querys["F_data_id"] = q
+	}
 
 	//处理分页参数
 	var offset int
@@ -119,8 +127,12 @@ func GetCheckList(limit int, page int) (result []CheckData, count int64) {
 		offset = (page - 1) * limit
 	}
 
-	GetDb().Table("t_check_data").Where("deleted_at IS NULL").Count(&count)
-	GetDb().Limit(limit).Offset(offset).Order("F_modify_date DESC").Find(&result)
+	db.Where("deleted_at IS NULL").Count(&count)
+	db.Where(querys).Limit(limit).Offset(offset).Order("F_modify_date DESC").Find(&result)
+
+	for i := range result {
+		result[i].DataIdStr = strconv.FormatInt(result[i].DataId, 10)
+	}
 
 	return
 }

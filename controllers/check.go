@@ -53,7 +53,10 @@ func (self *CheckController) Table() {
 		limit = 10
 	}
 
-	result, count := models.GetCheckList(limit, page)
+	// q 查询条件
+	q, _ := self.GetInt64("q", 0)
+
+	result, count := models.GetCheckList(limit, page, q)
 	list := make([]map[string]interface{}, len(result))
 	for k, v := range result {
 		row := make(map[string]interface{})
@@ -61,6 +64,7 @@ func (self *CheckController) Table() {
 		row["modify_date"] = beego.Date(v.ModifyDate, "Y-m-d H:i:s")
 		row["modify_admin"] = v.ModifyAdmin
 		row["data_id"] = v.DataId
+		row["data_id_str"] = v.DataIdStr
 		row["data_type"] = DATA_TYPA_MAP[v.DataType]
 		row["data_operate"] = DATA_OPERATE_MAP[v.DataOperate]
 		row["status_flag_text"] = CHECK_STATUS_FLAG[v.StatusFlag]

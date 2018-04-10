@@ -9,6 +9,16 @@
                 <button class="layui-btn " id="revert_check_data">撤销修改</button>
             </div>
         </div>
+        <div class="layui-col-xs6 search_text">
+            <form class="layui-form" action="" onsubmit="javascript:return false;">
+                <div class="demoTable">
+                    <div class="layui-inline" style="width: 40%">
+                        <input class="layui-input" name="data_id" id="q" autocomplete="off" placeholder="数据ID">
+                    </div>
+                    <button class="layui-btn" data-type="reload" id="reload">查询</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <table class="layui-hide" id="table_list" lay-filter="table_filter">
@@ -37,6 +47,14 @@
             layer.close(loaded);
         }
 
+        $('.demoTable .layui-btn').on('click', function () {
+            table.reload('listReload', {
+                where: {
+                    q: $("#q").val()
+                }
+            });
+        });
+
         //方法级渲染
         table.render({
             elem: '#table_list'
@@ -46,7 +64,7 @@
                 , {field: 'modify_id', title: '修改ID', width: '10%'}
                 , {field: 'modify_date', title: '修改时间', width: '10%', sort: true}
                 , {field: 'modify_admin', title: '修改人 - 联系方式', width: '20%'}
-                , {field: 'data_id', title: '数据ID', width: '15%'}
+                , {field: 'data_id_str', title: '数据ID', width: '15%'}
                 , {field: 'data_type', title: '数据类型'}
                 , {field: 'data_operate', title: '数据操作'}
                 , {field: 'status_flag_text', title: '状态', align: 'center'}
