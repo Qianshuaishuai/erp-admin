@@ -10,5 +10,5 @@ type HealthCheckController struct {
 //@OutParam F_responseMsg string false 业务错误描述
 //@Router / [get]
 func (c *HealthCheckController) HealthCheck() {
-	c.ajaxMsg("ok", 0)
+	c.redirect("/home")
 }
