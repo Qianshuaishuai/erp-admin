@@ -53,7 +53,7 @@ type Paper struct {
 
 	SemesterId  uint             `gorm:"column:F_semester_id" json:"semesterId"`              //试卷对应的学期
 	CourseId    uint             `gorm:"column:F_course_id;type:TINYINT(2);" json:"courseId"` //试卷对应的课程
-	Provinces   []Province       `gorm:"many2many:t_paper_province;" json:"provinces"`        // 试卷适用的省份
+	Provinces   []Province       `gorm:"many2many:paper_province;" json:"provinces"`        // 试卷适用的省份
 	QuestionSet PaperQuestionSet `gorm:"ForeignKey:PaperId;" json:"questionSet"`
 }
 
