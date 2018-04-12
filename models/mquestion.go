@@ -82,13 +82,13 @@ type SmallQuestion struct {
 	Score         float32 `gorm:"column:F_score;type:FLOAT(4,1)" json:"score"`       //问题分数 最大值999.9
 	Accessories   string  `gorm:"column:F_accessories;type:TEXT" json:"accessories"` //问题的附加内容 （选择题选项等）
 	Solution      string  `gorm:"column:F_solution;type:LONGTEXT" json:"solution"`   // 问题的解答
+	Source        string  `gorm:"column:F_source;size:80" json:"source"`             //问题的来源 试卷名称
 	Difficulty    float64 `gorm:"column:F_difficulty;" json:"difficulty"`
 	CorrectAnswer string  `gorm:"column:F_correct_answer;type:TEXT" json:"correctAnswer"` //正确答案 （不一定有）
 	Type          int     `gorm:"column:F_type" json:"type"`
 	RealType      int
 	Options       []string
 	RealAnswer    []string
-	//Keypoints     []Keypoint `gorm:"many2many:t_keypoint_question;" json:"keypoints"`        //考察的知识点
 }
 
 func GetQuestion(resId int64, q string) (isBig bool, data interface{}) {
