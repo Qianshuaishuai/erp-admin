@@ -7,16 +7,13 @@ import (
 	"strings"
 	"time"
 	"dreamEbagPaperAdmin/helper"
+	"github.com/HYY-yu/LogLib"
+	"strconv"
 )
 
 var (
 	curlIdClient  *http.Client
-	curlIdClient2 *http.Client
 )
-
-type CurlReseponId struct {
-	F_id string `json:"F_id"`
-}
 
 type CurlReseponIntId struct {
 	F_id int `json:"F_id"`
@@ -24,13 +21,6 @@ type CurlReseponIntId struct {
 
 func init() {
 	curlIdClient = &http.Client{
-		Transport: &http.Transport{
-			//			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-			DisableCompression:    true,
-			ResponseHeaderTimeout: time.Second * 0,
-		},
-	}
-	curlIdClient2 = &http.Client{
 		Transport: &http.Transport{
 			//			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 			DisableCompression:    true,
@@ -45,6 +35,8 @@ type MSnowflakCurl struct {
 //获取发号器发出的ID(int类型,16位)
 func (u *MSnowflakCurl) GetIntId(test bool) (id int) {
 	id = 0
+	uniqueFlag := helper.GetGuid()
+
 	var uri,method string
 	var req *http.Request
 
@@ -62,11 +54,10 @@ func (u *MSnowflakCurl) GetIntId(test bool) (id int) {
 		req.Header.Set("Authentication", MyConfig.SnowProcFlakAuthUser+":"+helper.Md5([]byte(MyConfig.SnowProcFlakAuthUserSecurity)))
 	}
 
-	client := curlIdClient2
+	client := curlIdClient
 
 	//log request
-	var logObj *MLog
-	logObj.LogSnowflakCurlRequest(uri, method, map[string]string{})
+	loglib.GetLogger().LogSnowflakRequest(uniqueFlag, uri, "")
 
 	resp, err := client.Do(req)
 	idObj := CurlReseponIntId{}
@@ -82,10 +73,10 @@ func (u *MSnowflakCurl) GetIntId(test bool) (id int) {
 			id = idObj.F_id
 		}
 		//log response
-		logObj.LogSnowflakCurlResponse(idObj, resp.Header, resp.Status)
+		loglib.GetLogger().LogSnowflakResponse(uniqueFlag,  strconv.Itoa(idObj.F_id), resp.Status, string(bodyByte))
 	} else {
 		//log err
-		logObj.LogErr(err, "", "snowflak module")
+		loglib.GetLogger().LogErr(err, "snowflak module")
 	}
 	return
 }

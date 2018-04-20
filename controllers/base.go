@@ -6,6 +6,8 @@ import (
 	"dreamEbagPaperAdmin/models"
 	"strings"
 	"strconv"
+	"github.com/HYY-yu/LogLib"
+	"time"
 )
 
 //公共controller
@@ -17,6 +19,7 @@ type BaseController struct {
 	actionName     string
 
 	user *models.User
+	startTime     time.Time
 }
 
 // 是否POST提交
@@ -86,28 +89,26 @@ func (self *BaseController) Prepare() {
 
 	//生成用户记录日志的唯一id
 	self.UniqueLogFlag = helper.GetGuid()
+	self.startTime = time.Now()
 	//log请求
 	self.logRequest()
 }
 
 func (self *BaseController) Finish() {
-	//log 输出
-	data, ok := self.Data["json"]
-	if ok {
-		self.logEcho(data)
-	}
+	//Log
+	self.logEcho(self.Ctx.ResponseWriter.Status,
+		200, "成功",
+		time.Since(self.startTime).String())
 }
 
 //记录请求
 func (self *BaseController) logRequest() {
-	var logObj *models.MLog
-	logObj.LogRequest(self.Ctx, self.UniqueLogFlag)
+	loglib.GetLogger().LogRequest(self.Ctx, self.UniqueLogFlag)
 }
 
 //记录输出
-func (self *BaseController) logEcho(datas interface{}) {
-	var logObj *models.MLog
-	logObj.LogEcho(datas, self.UniqueLogFlag)
+func (self *BaseController) logEcho(statusCode int, responseNo int, responseMsg string, apiTime string) {
+	loglib.GetLogger().LogResponse(statusCode, responseNo, responseMsg, apiTime, self.UniqueLogFlag)
 }
 
 type StartMenu struct {

@@ -5,7 +5,6 @@ import (
 	"dreamEbagPaperAdmin/helper"
 	"strings"
 	"strconv"
-	"regexp"
 )
 
 type QuestionController struct {
@@ -42,7 +41,7 @@ func (self *QuestionController) Detail() {
 			//如果这道题是客观填空题，而且还没答案
 			if smallQuestion.RealType == models.OBJECTIVELY_BLANK {
 				if len(smallQuestion.RealAnswer) == 0 {
-					input := generateBlanks(smallQuestion.Content)
+					input := models.FindBlankNum(smallQuestion.Content)
 					smallQuestion.RealAnswer = make([]string, input)
 					data = smallQuestion
 				}
@@ -54,10 +53,6 @@ func (self *QuestionController) Detail() {
 	self.Data["IsBig"] = isBig
 	self.Data["Data"] = data
 	self.display()
-}
-
-func generateBlanks(s string) int {
-	return len(regexp.MustCompile(`[\[<]/input[\]>]`).FindAllString(s, -1))
 }
 
 func (self *QuestionController) Edit() {

@@ -33,12 +33,6 @@
                 </div>
             </div>
             <div class="layui-form-item" pane>
-                <label class="layui-form-label">试题来源</label>
-                <div class="layui-input-block">
-                    <input type="text" name="question_source" value="{{.Data.Source}}" readonly class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item" pane>
                 <label class="layui-form-label">试题内容</label>
                 <div class="layui-input-block">
                     <textarea name="question_content" class="layui-textarea">{{.Data.Content}}</textarea>
@@ -72,6 +66,12 @@
                 <label class="layui-form-label">试题解析</label>
                 <div class="layui-input-block">
                     <textarea name="s_question_solution" class="layui-textarea">{{.Data.Solution}}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">试题来源</label>
+                <div class="layui-input-block">
+                    <input type="text" name="question_source" value="{{.Data.Source}}" readonly class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item" pane>

@@ -8,6 +8,7 @@ import (
 	"errors"
 	"strconv"
 	"github.com/astaxie/beego"
+	"github.com/HYY-yu/LogLib"
 )
 
 const (
@@ -104,7 +105,7 @@ func AddOperateData(user *User, resId int64, resType, resOperate int, details []
 	err := tx.Create(&checkData).Error
 
 	if err != nil {
-		GetLogger().LogErr(err, "add_operate_data")
+		loglib.GetLogger().LogErr(err, "add_operate_data")
 		tx.Rollback()
 		return
 	}
@@ -247,7 +248,7 @@ func CommitCheckDataIds(modifyIds []int64) error {
 			case 1:
 				err = tx.Table("t_papers").Where("F_paper_id = ?", result[i].DataId).UpdateColumns(updated).Error
 			case 2:
-				err = tx.Table("t_paper_question_set_chapters").Where("F_chapter_id = ?", result[i].DataId).UpdateColumns(updated).Error
+				err = tx.Table("t_paper_question_set_chapters").Where("F_chapter_id = ?", strconv.FormatInt(result[i].DataId,10)).UpdateColumns(updated).Error
 			case 3:
 				err = tx.Table("t_questions").Where("F_question_id = ?", result[i].DataId).UpdateColumns(updated).Error
 			case 4:
