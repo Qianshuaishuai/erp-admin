@@ -47,6 +47,7 @@ func (self *BaseController) display(tpl ...string) {
 		tplname = strings.Join([]string{tpl[0], "html"}, ".")
 	} else {
 		self.Layout = "public/layout.html"
+
 		tplname = self.controllerName + "/" + self.actionName + ".html"
 	}
 	self.TplName = tplname
