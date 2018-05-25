@@ -64,6 +64,20 @@ func GetProvinces() (provinces []Province) {
 	return provinces
 }
 
+func GetCourses() []Course {
+	var NotReturnCourses = []int{62, 63, 98, 99, 64, 65}
+	var courses []Course
+	// 去掉　文理综　信息技术　通用技术　科学　历史与社会
+	GetDb().Where("F_sprint = 0").Not("F_course_id", NotReturnCourses).Order("F_phase DESC").Find(&courses)
+	return courses
+}
+
+func GetSemesters() []Semester {
+	var semesters []Semester
+	GetDb().Table("t_semesters").Find(&semesters)
+	return semesters
+}
+
 func GetPaperType(typeId int8) PaperType {
 	var paperType PaperType
 	GetDb().Find(&paperType, typeId)

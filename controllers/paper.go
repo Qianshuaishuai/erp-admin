@@ -62,7 +62,6 @@ func (self *PaperController) Detail() {
 	self.Data["pageTitle"] = "试卷详情"
 	id, _ := self.GetInt64("paper_id", 0)
 	provinces := models.GetProvinces()
-
 	paperTypes := models.GetAllPaperType()
 	papers := models.GetPaper(id)
 
@@ -111,6 +110,37 @@ func (self *PaperController) Detail() {
 	}
 
 	self.Data["ChapterResult"] = ChapterResult
+
+	self.display()
+}
+
+func (self *PaperController) AddPaper() {
+	self.Data["pageTitle"] = "增加试卷"
+	self.Data["ApiCss"] = true
+
+	provinces := models.GetProvinces()
+	paperTypes := models.GetAllPaperType()
+	courses := models.GetCourses()
+
+	for i := range courses {
+		var perfix = ""
+		switch courses[i].Phase {
+		case 3:
+			perfix = "小学"
+		case 1:
+			perfix = "初中"
+		case 2:
+			perfix = "高中"
+		}
+		courses[i].Name = perfix + courses[i].Name
+	}
+
+	semesters := models.GetSemesters()
+
+	self.Data["TypeList"] = paperTypes
+	self.Data["ProvinceList"] = provinces
+	self.Data["CourseList"] = courses
+	self.Data["SemesterList"] = semesters
 
 	self.display()
 }

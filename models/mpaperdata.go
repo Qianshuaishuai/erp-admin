@@ -2,6 +2,21 @@ package models
 
 import "time"
 
+type Course struct {
+	CourseId  uint   `gorm:"primary_key;column:F_course_id;type:TINYINT(2) UNSIGNED" json:"id"`
+	SubjectId uint   `gorm:"column:F_subject_id" json:"subjectId"`
+	Name      string `gorm:"column:F_name;size:8" json:"name"`
+	Prefix    string `gorm:"column:F_prefix;size:4" json:"prefix"` //该课程的缩写
+	Phase     int8   `gorm:"column:F_phase;type:TINYINT(4)" json:"phase"`
+	Sprint    bool   `gorm:"column:F_sprint" json:"-"`
+	Major     int8   `gorm:"column:F_major;type:TINYINT(4)" json:"-"`
+}
+
+type Semester struct {
+	SemesterId uint   `gorm:"primary_key;column:F_semester_id;type:TINYINT(2) UNSIGNED" json:"id"`
+	Name       string `gorm:"column:F_name;size:8" json:"name"`
+}
+
 type PaperType struct {
 	Id   int8   `gorm:"primary_key;column:F_paper_type_id;type:TINYINT(4)" json:"id"`
 	Name string `gorm:"column:F_name;size:20" json:"name"`
@@ -46,7 +61,7 @@ type Paper struct {
 
 	SemesterId  uint             `gorm:"column:F_semester_id" json:"semesterId"`              //试卷对应的学期
 	CourseId    uint             `gorm:"column:F_course_id;type:TINYINT(2);" json:"courseId"` //试卷对应的课程
-	Provinces   []Province       `gorm:"many2many:paper_province;" json:"provinces"`        // 试卷适用的省份
+	Provinces   []Province       `gorm:"many2many:paper_province;" json:"provinces"`          // 试卷适用的省份
 	QuestionSet PaperQuestionSet `gorm:"ForeignKey:PaperId;" json:"questionSet"`
 }
 
@@ -56,6 +71,18 @@ type PaperSimple struct {
 	PaperType     int8      `gorm:"column:F_paper_type;type:TINYINT(4)" json:"type"` //试卷类型 真题 or 模拟题
 	PaperTypeName string    `gorm:"-" json:"typeName"`                               //试卷类型的名称（描述）
 	Date          time.Time `gorm:"column:F_date;type:DATE" json:"date"`             //试卷的编写日期
+}
+
+type AddPaperTemp struct {
+	PaperId          int64   `gorm:"primary_key;column:F_paper_id;type:BIGINT(20)"`
+	Name             string  `gorm:"column:F_name;size:80" json:"name"`
+	FullScore        int     `gorm:"column:F_full_score" json:"fullScore"`
+	TimeToAccomplish int     `gorm:"column:F_time;" json:"time"`
+	PaperYear        int     `gorm:"column:F_paper_year;"`
+	CourseId         int     `gorm:"column:F_course_id;type:TINYINT(2);" json:"courseId"`
+	SemesterId       int     `gorm:"column:F_semester_id;"`
+	Difficulty       float32 `gorm:"column:F_difficulty" json:"difficulty"`
+	ProvinceIds      string  `gorm:"column:F_province_ids;"`
 }
 
 func findPaperType(list []PaperSimple) {

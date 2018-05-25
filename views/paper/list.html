@@ -1,7 +1,7 @@
 <div class="layui-layout layui-layout-admin" style="padding-left: 20px;">
     <div class="layui-row" style="margin-top: 20px;">
         <div class="layui-col-xs6">
-            <button class="layui-btn layui-btn-disabled" id="add_paper">增加试卷</button>
+            <button class="layui-btn" id="add_paper">增加试卷</button>
         </div>
         <div class="layui-col-xs6 search_text">
             <form class="layui-form" action="" onsubmit="javascript:return false;">
@@ -28,7 +28,7 @@
         var table = layui.table;
         var form = layui.form;
         var element = layui.element;
-        var $ =layui.$;
+        var $ = layui.$;
 
         //方法级渲染
         table.render({
@@ -46,6 +46,10 @@
             , limit: 20
             , height: "full-130"
             , loading: true
+        });
+
+        $('#add_paper').on('click', function () {
+            window.location.href = "/paper/addpaper"
         });
 
         $('.demoTable .layui-btn').on('click', function () {

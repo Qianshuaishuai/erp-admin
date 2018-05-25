@@ -1,0 +1,155 @@
+<style>
+    .site-block {
+        border: 1px solid #f0f0f0;
+        padding: 10px;
+    }
+</style>
+
+<div class="layui-layout layui-layout-admin" style="padding-left: 20px;margin-top: 20px;">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">试卷名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="paper_name" name="paper_name"
+                       placeholder="统一格式：试卷年份+省市+学校+学期+试卷类型：课程名   例：2018年广东广州市白云区白云小学八年级上期末测试：语文" class="layui-input">
+                <button style="margin-top: 8px" class="layui-btn layui-btn-sm" id="autoGenerate">自动生成</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">试卷总分</label>
+            <div class="layui-input-block">
+                <input type="text" name="paper_full_score" placeholder="100" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">试卷用时(分)</label>
+            <div class="layui-input-block">
+                <input type="text" name="paper_time" placeholder="120" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">试卷年份</label>
+            <div class="layui-input-block">
+                <input type="text" id="paper_years" name="paper_years" placeholder="2018" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属课程</label>
+            <div class="layui-input-block">
+                <select name="paper_type" id="paper_courses" lay-verify="required">
+                {{range $index,$elem := .CourseList}}
+                    <option value="{{$elem.CourseId}}">{{$elem.Name}}
+                    </option>
+                {{end}}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属学期</label>
+            <div class="layui-input-block">
+                <select name="paper_type" id="paper_semesters" lay-verify="required">
+                {{range $index,$elem := .SemesterList}}
+                    <option value="{{$elem.SemesterId}}">{{$elem.Name}}
+                    </option>
+                {{end}}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">试卷类型</label>
+            <div class="layui-input-block">
+                <select name="paper_type" id="paper_types" lay-verify="required">
+                {{range $index,$elem := .TypeList}}
+                    <option value="{{$elem.Id}}">{{$elem.Name}}
+                    </option>
+                {{end}}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">试卷难度</label>
+            <div class="layui-input-block">
+                <div class="site-block">
+                    <input type="radio" name="difficulty" value="1" title="超困难">
+                    <input type="radio" name="difficulty" value="3" title="困难">
+                    <input type="radio" name="difficulty" value="4.5" title="中等">
+                    <input type="radio" name="difficulty" value="5.5" title="简单">
+                    <input type="radio" name="difficulty" value="6.5" title="炒鸡简单">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">适用省份</label>
+            <div class="layui-input-block">
+                <div class="site-block">
+                {{range $index,$elem := .ProvinceList}}
+                    <input type="checkbox" name="province{{$index}}" value="{{$elem.ProvinceId}}"
+                           title="{{$elem.Name}}">
+                {{end}}
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="changePaper">下一步</button>
+                <button class="layui-btn" lay-submit="" lay-filter="changePaper">保存</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['table', 'form', 'element'], function () {
+        var $ = layui.$;
+
+        $('#autoGenerate').on('click', function () {
+            var years = $('#paper_years').val()
+            if (years.length === 0){
+                years = $('#paper_years').attr("placeholder")
+            }
+
+            var courses = $('#paper_courses').find("option:selected").text();;
+            var semesters = $('#paper_semesters').find("option:selected").text();;
+            var type = $('#paper_types').find("option:selected").text();;
+
+            $('#paper_name').val(years+"年"+trim(semesters)+trim(type)+"："+trim(courses).substring(2));
+            return false
+        });
+    });
+
+    //供使用者调用
+    function trim(s) {
+        return trimRight(trimLeft(s));
+    }
+
+    //去掉左边的空白
+    function trimLeft(s) {
+        if (s == null) {
+            return "";
+        }
+        var whitespace = String(" \t\n\r");
+        var str = String(s);
+        if (whitespace.indexOf(str.charAt(0)) != -1) {
+            var j = 0, i = str.length;
+            while (j < i && whitespace.indexOf(str.charAt(j)) != -1) {
+                j++;
+            }
+            str = str.substring(j, i);
+        }
+        return str;
+    }
+
+    function trimRight(s) {
+        if (s == null) return "";
+        var whitespace = String(" \t\n\r");
+        var str = String(s);
+        if (whitespace.indexOf(str.charAt(str.length - 1)) != -1) {
+            var i = str.length - 1;
+            while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1) {
+                i--;
+            }
+            str = str.substring(0, i + 1);
+        }
+        return str;
+    }
+</script>
