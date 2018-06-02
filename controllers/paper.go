@@ -145,6 +145,10 @@ func (self *PaperController) AddPaper() {
 	self.display()
 }
 
+func(self *PaperController) SaveAddPaper(){
+
+}
+
 func (self *PaperController) Edit() {
 	PaperId, _ := self.GetInt64("paper_id")
 	if PaperId != 0 {

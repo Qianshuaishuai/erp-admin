@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+	"strings"
+	"strconv"
+)
 
 type Course struct {
 	CourseId  uint   `gorm:"primary_key;column:F_course_id;type:TINYINT(2) UNSIGNED" json:"id"`
@@ -81,6 +85,7 @@ type AddPaperTemp struct {
 	PaperYear        int     `gorm:"column:F_paper_year;"`
 	CourseId         int     `gorm:"column:F_course_id;type:TINYINT(2);" json:"courseId"`
 	SemesterId       int     `gorm:"column:F_semester_id;"`
+	TypeId           int     `gorm:"column:F_type_id;"`
 	Difficulty       float32 `gorm:"column:F_difficulty" json:"difficulty"`
 	ProvinceIds      string  `gorm:"column:F_province_ids;"`
 }
@@ -94,6 +99,7 @@ func findPaperType(list []PaperSimple) {
 		}
 		list[i].PaperTypeName = paperType.Name
 	}
+
 }
 
 func makeHistoryDetailPaper(paperId int64, updated map[string]interface{}, oldProvince, newProvince string) []HistoryDetail {
@@ -117,4 +123,21 @@ func makeHistoryDetailPaper(paperId int64, updated map[string]interface{}, oldPr
 		}
 	}
 	return result
+}
+
+// 1023,1234,5667  >>>>> 北京，青海，云南
+func provinceId2ProvinceName(provinceIds string) string {
+	provinceIdsStrs := strings.Split(provinceIds, ",")
+	result := make([]string, len(provinceIdsStrs))
+
+	for i, e := range provinceIdsStrs {
+		id, err := strconv.Atoi(e)
+		if err != nil {
+			return "Fuck Err"
+		}
+		var temp Province
+		GetDb().Find(&temp, id)
+		result[i] = temp.Name
+	}
+	return strings.Join(result, "，")
 }

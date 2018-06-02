@@ -103,53 +103,17 @@
         var $ = layui.$;
 
         $('#autoGenerate').on('click', function () {
-            var years = $('#paper_years').val()
+            var years = $('#paper_years').val();
             if (years.length === 0){
                 years = $('#paper_years').attr("placeholder")
             }
 
-            var courses = $('#paper_courses').find("option:selected").text();;
-            var semesters = $('#paper_semesters').find("option:selected").text();;
-            var type = $('#paper_types').find("option:selected").text();;
+            var courses = $('#paper_courses').find("option:selected").text();
+            var semesters = $('#paper_semesters').find("option:selected").text();
+            var type = $('#paper_types').find("option:selected").text();
 
             $('#paper_name').val(years+"年"+trim(semesters)+trim(type)+"："+trim(courses).substring(2));
             return false
         });
     });
-
-    //供使用者调用
-    function trim(s) {
-        return trimRight(trimLeft(s));
-    }
-
-    //去掉左边的空白
-    function trimLeft(s) {
-        if (s == null) {
-            return "";
-        }
-        var whitespace = String(" \t\n\r");
-        var str = String(s);
-        if (whitespace.indexOf(str.charAt(0)) != -1) {
-            var j = 0, i = str.length;
-            while (j < i && whitespace.indexOf(str.charAt(j)) != -1) {
-                j++;
-            }
-            str = str.substring(j, i);
-        }
-        return str;
-    }
-
-    function trimRight(s) {
-        if (s == null) return "";
-        var whitespace = String(" \t\n\r");
-        var str = String(s);
-        if (whitespace.indexOf(str.charAt(str.length - 1)) != -1) {
-            var i = str.length - 1;
-            while (i >= 0 && whitespace.indexOf(str.charAt(i)) != -1) {
-                i--;
-            }
-            str = str.substring(0, i + 1);
-        }
-        return str;
-    }
 </script>
