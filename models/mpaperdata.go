@@ -86,7 +86,7 @@ type AddPaperTemp struct {
 	CourseId         int     `gorm:"column:F_course_id;type:TINYINT(2);" json:"courseId"`
 	SemesterId       int     `gorm:"column:F_semester_id;"`
 	TypeId           int     `gorm:"column:F_type_id;"`
-	Difficulty       float32 `gorm:"column:F_difficulty" json:"difficulty"`
+	Difficulty       float64 `gorm:"column:F_difficulty" json:"difficulty"`
 	ProvinceIds      string  `gorm:"column:F_province_ids;"`
 }
 

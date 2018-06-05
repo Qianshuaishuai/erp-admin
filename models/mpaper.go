@@ -207,7 +207,7 @@ func GetTheQuestionByQ(resIds []int64, q int, chapterQuestionCount int) (startIn
 }
 
 func SaveAddPaperTemp(name string, fullScore int, timeToAccomplish int, paperYear int,
-	courseId int, semesterId int, typeId int, diffculty float32, provinceIds string) error {
+	courseId int, semesterId int, typeId int, difficulty float64, provinceIds string) error {
 	var snowCurl MSnowflakCurl
 	add := AddPaperTemp{
 		PaperId:          int64(snowCurl.GetIntId(true)),
@@ -218,7 +218,7 @@ func SaveAddPaperTemp(name string, fullScore int, timeToAccomplish int, paperYea
 		CourseId:         courseId,
 		SemesterId:       semesterId,
 		TypeId:           typeId,
-		Difficulty:       diffculty,
+		Difficulty:       difficulty,
 		ProvinceIds:      provinceIds,
 	}
 

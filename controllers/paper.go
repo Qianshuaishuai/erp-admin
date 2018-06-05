@@ -145,8 +145,25 @@ func (self *PaperController) AddPaper() {
 	self.display()
 }
 
-func(self *PaperController) SaveAddPaper(){
+func (self *PaperController) SaveAddPaper() {
+	paper_name := strings.TrimSpace(self.GetString("paper_name"))
+	paper_full_score, _ := self.GetInt("paper_full_score", -100)
+	paper_time, _ := self.GetInt("paper_time", -100)
+	paper_years, _ := self.GetInt("paper_years", -100)
+	paper_course, _ := self.GetInt("paper_course", -100)
+	paper_semester, _ := self.GetInt("paper_semester", -100)
+	paper_type, _ := self.GetInt("paper_type", -100)
+	paper_difficulty, _ := self.GetFloat("paper_difficulty", -100)
+	paper_provinces := strings.TrimSpace(self.GetString("paper_provinces"))
 
+	//去掉最后的逗号
+	paper_provinces= strings.TrimRight(paper_provinces,",")
+
+	if err := models.SaveAddPaperTemp(paper_name, paper_full_score, paper_time, paper_years,
+		paper_course, paper_semester, paper_type, paper_difficulty, paper_provinces); err != nil {
+		self.ajaxMsg(err.Error(), -1)
+	}
+	self.ajaxMsg("", 0)
 }
 
 func (self *PaperController) Edit() {
