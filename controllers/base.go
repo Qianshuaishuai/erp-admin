@@ -18,8 +18,8 @@ type BaseController struct {
 	controllerName string
 	actionName     string
 
-	user *models.User
-	startTime     time.Time
+	user      *models.User
+	startTime time.Time
 }
 
 // 是否POST提交
@@ -156,7 +156,13 @@ func (self *BaseController) SetTheStartMenu() {
 			AuthName: "查看试卷",
 			AuthUrl:  "/paper/list",
 		})
-
+		list2 = append(list2, StartMenu{
+			Id:       12,
+			Pid:      1,
+			Icon:     "fa-plus-circle",
+			AuthName: "添加试卷",
+			AuthUrl:  "/paper/addpaperlist",
+		})
 		list2 = append(list2, StartMenu{
 			Id:       11,
 			Pid:      1,

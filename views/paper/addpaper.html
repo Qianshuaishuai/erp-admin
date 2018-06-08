@@ -11,7 +11,7 @@
             <label class="layui-form-label">试卷名称</label>
             <div class="layui-input-block">
                 <input type="text" id="paper_name" name="paper_name"
-                       placeholder="统一格式：试卷年份+省市+学校+学期+试卷类型：课程名   例：2018年广东广州市白云区白云小学八年级上期末测试：语文" class="layui-input"
+                       placeholder="统一格式：试卷年份+省市+学校+学期+课程名+试卷类型   例：2018年广东广州市白云区白云小学八年级上语文期末测试" class="layui-input"
                        lay-verify="required">
                 <button style="margin-top: 8px" class="layui-btn layui-btn-sm" id="autoGenerate">自动生成</button>
             </div>
@@ -111,7 +111,7 @@
             var semesters = $('#paper_semesters').find("option:selected").text();
             var type = $('#paper_types').find("option:selected").text();
 
-            $('#paper_name').val(years + "年" + trim(semesters) + trim(type) + "：" + trim(courses).substring(2));
+            $('#paper_name').val(years + "年" + trim(semesters) + trim(courses).substring(2) + trim(type));
             return false
         });
 

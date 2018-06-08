@@ -108,7 +108,6 @@ func (self *PaperController) Detail() {
 		ChapterResult[i] = resIds[a:b]
 		q = b
 	}
-
 	self.Data["ChapterResult"] = ChapterResult
 
 	self.display()
@@ -157,13 +156,19 @@ func (self *PaperController) SaveAddPaper() {
 	paper_provinces := strings.TrimSpace(self.GetString("paper_provinces"))
 
 	//去掉最后的逗号
-	paper_provinces= strings.TrimRight(paper_provinces,",")
+	paper_provinces = strings.TrimRight(paper_provinces, ",")
 
 	if err := models.SaveAddPaperTemp(paper_name, paper_full_score, paper_time, paper_years,
 		paper_course, paper_semester, paper_type, paper_difficulty, paper_provinces); err != nil {
 		self.ajaxMsg(err.Error(), -1)
 	}
 	self.ajaxMsg("", 0)
+}
+
+func (self *PaperController) AddPaperList() {
+	self.Data["pageTitle"] = "添加试卷"
+	self.Data["ApiCss"] = true
+	self.display()
 }
 
 func (self *PaperController) Edit() {
