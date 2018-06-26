@@ -161,7 +161,7 @@ func (self *BaseController) SetTheStartMenu() {
 			Pid:      1,
 			Icon:     "fa-plus-circle",
 			AuthName: "添加试卷",
-			AuthUrl:  "/paper/addpaperlist",
+			AuthUrl:  "/temp/addpaperlist",
 		})
 		list2 = append(list2, StartMenu{
 			Id:       11,

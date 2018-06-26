@@ -170,7 +170,7 @@
 
             data.elem.disabled = true;
             layer.load(2);
-            $.post('{{urlfor "PaperController.AddPaperEdit"}}', send_data, function (out) {
+            $.post('{{urlfor "TempController.AddPaperEdit"}}', send_data, function (out) {
                 if (out.status === 0) {
                     layer.msg("操作成功", {icon: 1, time: 2000}, function () {
                         window.location.reload();

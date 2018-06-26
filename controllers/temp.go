@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-type PaperTempController struct {
+type TempController struct {
 	BaseController
 }
 
@@ -19,7 +19,7 @@ var (
 	}
 )
 
-func (self *PaperController) AddPaper() {
+func (self *TempController) AddPaper() {
 	self.Data["pageTitle"] = "增加试卷"
 	self.Data["ApiCss"] = true
 
@@ -50,7 +50,7 @@ func (self *PaperController) AddPaper() {
 	self.display()
 }
 
-func (self *PaperController) SaveAddPaper() {
+func (self *TempController) SaveAddPaper() {
 	paper_name := strings.TrimSpace(self.GetString("paper_name"))
 	paper_full_score, _ := self.GetInt("paper_full_score", -100)
 	paper_time, _ := self.GetInt("paper_time", -100)
@@ -71,13 +71,13 @@ func (self *PaperController) SaveAddPaper() {
 	self.ajaxMsg("", 0)
 }
 
-func (self *PaperController) AddPaperList() {
+func (self *TempController) AddPaperList() {
 	self.Data["pageTitle"] = "添加试卷"
 	self.Data["ApiCss"] = true
 	self.display()
 }
 
-func (self *PaperController) AddPaperTable() {
+func (self *TempController) AddPaperTable() {
 	//列表
 	page, err := self.GetInt("page")
 	if err != nil {
@@ -121,7 +121,7 @@ func (self *PaperController) AddPaperTable() {
 
 }
 
-func (self *PaperController) DeleteAddPaper() {
+func (self *TempController) DeleteAddPaper() {
 	paperId, err := self.GetInt64("paper_id")
 	if err != nil {
 		self.ajaxMsg("paper_id err :"+err.Error(), -1)
@@ -134,7 +134,7 @@ func (self *PaperController) DeleteAddPaper() {
 	self.ajaxMsg("success", 0)
 }
 
-func (self *PaperController) AddPaperDetail() {
+func (self *TempController) AddPaperDetail() {
 	self.Data["ApiCss"] = true
 	self.Data["pageTitle"] = "编辑新试卷"
 
@@ -183,7 +183,7 @@ func (self *PaperController) AddPaperDetail() {
 	self.display()
 }
 
-func (self *PaperController) AddPaperEdit() {
+func (self *TempController) AddPaperEdit() {
 	PaperId, _ := self.GetInt64("paper_id")
 	if PaperId != 0 {
 		paperName := strings.TrimSpace(self.GetString("paper_name"))

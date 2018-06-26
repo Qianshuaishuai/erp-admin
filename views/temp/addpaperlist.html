@@ -23,7 +23,7 @@
         //方法级渲染
         table.render({
             elem: '#table_list'
-            , url: '/paper/addpapertable'
+            , url: '/temp/addpapertable'
             , cols: [[
                 {field: 'paper_id', title: '试卷ID', width: '10%'}
                 , {field: 'paper_name', title: '试卷标题', width: '30%'}
@@ -43,7 +43,7 @@
         });
 
         $('#add_paper').on('click', function () {
-            window.location.href = "/paper/addpaper"
+            window.location.href = "/temp/addpaper"
         });
 
         table.on('sort(table_filter)', function (obj) {
@@ -74,14 +74,14 @@
         table.on('tool(table_filter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
-                window.location.href = "/paper/addpaperdetail?paper_id=" + data.paper_id
+                window.location.href = "/temp/addpaperdetail?paper_id=" + data.paper_id
             } else if (obj.event === 'del') {
                 var msg = "你确定要删除这张卷子？";
 
                 layer.confirm(msg, function () {
                     var del_data = {"paper_id": data.paper_id};
                     $.post(
-                            '{{urlfor "PaperController.DeleteAddPaper"}}',
+                            '{{urlfor "TempController.DeleteAddPaper"}}',
                             del_data,
                             function (out) {
                                 if (out.status === 0) {
