@@ -19,19 +19,23 @@
         <div class="layui-form-item">
             <label class="layui-form-label">试卷总分</label>
             <div class="layui-input-block">
-                <input type="text" id="paper_full_score" name="paper_full_score" placeholder="100" class="layui-input">
+                <input type="text" id="paper_full_score" lay-verify="integer"
+                       name="paper_full_score" value="100"
+                       class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">试卷用时(分)</label>
             <div class="layui-input-block">
-                <input type="text" id="paper_time" name="paper_time" placeholder="120" class="layui-input">
+                <input type="text" id="paper_time" name="paper_time" lay-verify="integer" value="120"
+                       class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">试卷年份</label>
             <div class="layui-input-block">
-                <input type="text" id="paper_years" name="paper_years" placeholder="2018" class="layui-input">
+                <input type="text" id="paper_years" name="paper_years" lay-verify="integer" value="2018"
+                       class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -123,6 +127,15 @@
             return re
         }
 
+        form.verify({
+            integer: function (value, item) {
+                value = trim(value);
+                if (/[^0-9]/.test(value)) {
+                    return '只能为正整数';
+                }
+            }
+        });
+
         form.on('submit(saveAddPaper)', function (data) {
             var form_data = data.field;
             var send_data = {};
@@ -159,7 +172,7 @@
                 if (out.status === 0) {
                     layer.msg("操作成功", {icon: 1, time: 2000}, function () {
                         // 跳转到列表页
-                        window.location.reload();
+                        window.location.href = "/paper/addpaperlist";
                         data.elem.disabled = false;
                     })
                 } else {

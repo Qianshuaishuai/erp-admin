@@ -77,19 +77,6 @@ type PaperSimple struct {
 	Date          time.Time `gorm:"column:F_date;type:DATE" json:"date"`             //试卷的编写日期
 }
 
-type AddPaperTemp struct {
-	PaperId          int64   `gorm:"primary_key;column:F_paper_id;type:BIGINT(20)"`
-	Name             string  `gorm:"column:F_name;size:80" json:"name"`
-	FullScore        int     `gorm:"column:F_full_score" json:"fullScore"`
-	TimeToAccomplish int     `gorm:"column:F_time;" json:"time"`
-	PaperYear        int     `gorm:"column:F_paper_year;"`
-	CourseId         int     `gorm:"column:F_course_id;type:TINYINT(2);" json:"courseId"`
-	SemesterId       int     `gorm:"column:F_semester_id;"`
-	TypeId           int     `gorm:"column:F_type_id;"`
-	Difficulty       float64 `gorm:"column:F_difficulty" json:"difficulty"`
-	ProvinceIds      string  `gorm:"column:F_province_ids;"`
-}
-
 func findPaperType(list []PaperSimple) {
 	for i := range list {
 		paperType := GetPaperType(list[i].PaperType)
@@ -140,4 +127,37 @@ func provinceId2ProvinceName(provinceIds string) string {
 		result[i] = temp.Name
 	}
 	return strings.Join(result, "，")
+}
+
+func GetCourseNameById(courseId int) string {
+	db := GetDb()
+	var result []string
+	db.Table("t_courses").Where("F_course_id = ?", courseId).Pluck("F_name", &result)
+
+	if len(result) > 0 {
+		return result[0]
+	}
+	return " "
+}
+
+func GetTypeNameById(typeId int) string {
+	db := GetDb()
+	var result []string
+	db.Table("t_paper_types").Where("F_paper_type_id = ?", typeId).Pluck("F_name", &result)
+
+	if len(result) > 0 {
+		return result[0]
+	}
+	return " "
+}
+
+func GetSemesterNameById(semesterId int) string {
+	db := GetDb()
+	var result []string
+	db.Table("t_semesters").Where("F_semester_id = ?", semesterId).Pluck("F_name", &result)
+
+	if len(result) > 0 {
+		return result[0]
+	}
+	return " "
 }

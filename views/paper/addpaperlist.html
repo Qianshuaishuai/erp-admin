@@ -10,26 +10,30 @@
 
     <script type="text/html" id="bar">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="text">提交测试</a>
+        <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
 </div>
 <script>
     layui.use(['table', 'form', 'element'], function () {
         var table = layui.table;
-        var form = layui.form;
-        var element = layui.element;
         var $ = layui.$;
 
         //方法级渲染
         table.render({
             elem: '#table_list'
-            , url: '/paper/table'
+            , url: '/paper/addpapertable'
             , cols: [[
-                {field: 'paper_id', title: '试卷ID', width: '15%'}
-                , {field: 'paper_name', title: '试卷标题', width: '50%'}
-                , {field: 'paper_type_name', title: '类型', width: '10%'}
-                , {field: 'paper_update_time', title: '更新时间', sort: true}
-                , {fixed: 'right', width: '10%', align: 'center', toolbar: '#bar'}
+                {field: 'paper_id', title: '试卷ID', width: '10%'}
+                , {field: 'paper_name', title: '试卷标题', width: '30%'}
+                , {field: 'paper_course', title: '课程', width: '5%'}
+                , {field: 'paper_semester', title: '学期', width: '5%'}
+                , {field: 'paper_type', title: '类型', width: '8%'}
+                , {field: 'paper_create_time', title: '创建时间', sort: true, width: '10%'}
+                , {field: 'paper_update_time', title: '更新时间', sort: true, width: '10%'}
+                , {field: 'paper_status', title: '当前状态', width: '8%', align: 'center'}
+                , {fixed: 'right', align: 'center', toolbar: '#bar'}
             ]]
             , id: 'listReload'
             , page: true
@@ -42,52 +46,54 @@
             window.location.href = "/paper/addpaper"
         });
 
-        $('.demoTable .layui-btn').on('click', function () {
+        table.on('sort(table_filter)', function (obj) {
+            sf = 0;
+            sn = '';
+
+            if (obj.field === 'paper_create_time') {
+                sn = 'createSort'
+            } else {
+                sn = 'updateSort'
+            }
+
+            if (obj.type === 'asc') {
+                sf = 1; //ASC
+            } else {
+                sf = 2; //DESC
+            }
+
             table.reload('listReload', {
-                where: {
-                    q: $("#q").val()
-                    , sort: 0
+                initSort: obj
+                , where: {
+                    sort: sortX
                 }
             });
-        });
-
-        table.on('sort(table_filter)', function (obj) {
-            sortX = 0;
-            if (obj.type === 'asc') {
-                sortX = 1;
-            }
-
-            if ($('#q').val()) {
-                table.reload('listReload', {
-                    initSort: obj
-                    , where: {
-                        sort: sortX,
-                        q: $('#q').val()
-                    }
-                });
-            } else {
-                table.reload('listReload', {
-                    initSort: obj
-                    , where: {
-                        sort: sortX
-                    }
-                });
-            }
         });
 
         //监听工具条
         table.on('tool(table_filter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
-                window.location.href = "/paper/detail?paper_id=" + data.paper_id
+                window.location.href = "/paper/addpaperdetail?paper_id=" + data.paper_id
             } else if (obj.event === 'del') {
                 var msg = "你确定要删除这张卷子？";
 
                 layer.confirm(msg, function () {
-                    var del_data = {"id": data.id}
-                    layer.msg("这操作太危险，我还没想好怎么弄。", {icon: 5}, function () {
-                        $("#reload").click();
-                    });
+                    var del_data = {"paper_id": data.paper_id};
+                    $.post(
+                            '{{urlfor "PaperController.DeleteAddPaper"}}',
+                            del_data,
+                            function (out) {
+                                if (out.status === 0) {
+                                    layer.msg("操作成功", {icon: 1, time: 2000}, function () {
+                                        window.location.reload();
+                                    })
+                                } else {
+                                    layer.msg(out.message)
+                                }
+                            }
+                    );
+
                     return false;
                 });
                 return false;

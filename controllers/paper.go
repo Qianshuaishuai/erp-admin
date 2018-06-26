@@ -63,43 +63,42 @@ func (self *PaperController) Detail() {
 	id, _ := self.GetInt64("paper_id", 0)
 	provinces := models.GetProvinces()
 	paperTypes := models.GetAllPaperType()
-	papers := models.GetPaper(id)
+	paper := models.GetPaper(id)
 
 	//PaperType
 	var difficulty = 0
 
-	if papers.Difficulty < 2.0 {
+	if paper.Difficulty < 2.0 {
 		difficulty = 2
-	} else if papers.Difficulty >= 2.0 && papers.Difficulty < 3.9 {
+	} else if paper.Difficulty >= 2.0 && paper.Difficulty < 3.9 {
 		difficulty = 3
-	} else if papers.Difficulty >= 3.9 && papers.Difficulty < 5.0 {
+	} else if paper.Difficulty >= 3.9 && paper.Difficulty < 5.0 {
 		difficulty = 4
-	} else if papers.Difficulty >= 5.0 && papers.Difficulty < 6.1 {
+	} else if paper.Difficulty >= 5.0 && paper.Difficulty < 6.1 {
 		difficulty = 5
-	} else if papers.Difficulty >= 6.1 {
+	} else if paper.Difficulty >= 6.1 {
 		difficulty = 6
 	}
 
 	self.Data["Difficulty"] = difficulty
 	self.Data["typeList"] = paperTypes
-	self.Data["PaperType"] = int(papers.PaperType)
-	self.Data["Detail"] = papers
-	self.Data["UpdateTime"] = beego.Date(papers.Date, "Y-m-d H:i:s")
+	self.Data["Detail"] = paper
+	self.Data["UpdateTime"] = beego.Date(paper.Date, "Y-m-d H:i:s")
 	self.Data["ProvinceList"] = provinces
 
 	provinceMap := make(map[uint]string)
 	for i := range provinces {
-		for j := range papers.Provinces {
-			if provinces[i].ProvinceId == papers.Provinces[j].ProvinceId {
+		for j := range paper.Provinces {
+			if provinces[i].ProvinceId == paper.Provinces[j].ProvinceId {
 				provinceMap[provinces[i].ProvinceId] = "checked"
 			}
 		}
 	}
 	self.Data["ProvinceMap"] = provinceMap
-	resIds, _ := helper.TransformStringToInt64Arr(papers.QuestionSet.QuestionIds)
+	resIds, _ := helper.TransformStringToInt64Arr(paper.QuestionSet.QuestionIds)
 	self.Data["QuestionLens"] = len(resIds)
 
-	chapters := papers.QuestionSet.PaperQuestionSetChapters
+	chapters := paper.QuestionSet.PaperQuestionSetChapters
 	var q = 0
 	ChapterResult := make(map[int][]int64)
 	for i := range chapters {
@@ -113,74 +112,16 @@ func (self *PaperController) Detail() {
 	self.display()
 }
 
-func (self *PaperController) AddPaper() {
-	self.Data["pageTitle"] = "增加试卷"
-	self.Data["ApiCss"] = true
-
-	provinces := models.GetProvinces()
-	paperTypes := models.GetAllPaperType()
-	courses := models.GetCourses()
-
-	for i := range courses {
-		var perfix = ""
-		switch courses[i].Phase {
-		case 3:
-			perfix = "小学"
-		case 1:
-			perfix = "初中"
-		case 2:
-			perfix = "高中"
-		}
-		courses[i].Name = perfix + courses[i].Name
-	}
-
-	semesters := models.GetSemesters()
-
-	self.Data["TypeList"] = paperTypes
-	self.Data["ProvinceList"] = provinces
-	self.Data["CourseList"] = courses
-	self.Data["SemesterList"] = semesters
-
-	self.display()
-}
-
-func (self *PaperController) SaveAddPaper() {
-	paper_name := strings.TrimSpace(self.GetString("paper_name"))
-	paper_full_score, _ := self.GetInt("paper_full_score", -100)
-	paper_time, _ := self.GetInt("paper_time", -100)
-	paper_years, _ := self.GetInt("paper_years", -100)
-	paper_course, _ := self.GetInt("paper_course", -100)
-	paper_semester, _ := self.GetInt("paper_semester", -100)
-	paper_type, _ := self.GetInt("paper_type", -100)
-	paper_difficulty, _ := self.GetFloat("paper_difficulty", -100)
-	paper_provinces := strings.TrimSpace(self.GetString("paper_provinces"))
-
-	//去掉最后的逗号
-	paper_provinces = strings.TrimRight(paper_provinces, ",")
-
-	if err := models.SaveAddPaperTemp(paper_name, paper_full_score, paper_time, paper_years,
-		paper_course, paper_semester, paper_type, paper_difficulty, paper_provinces); err != nil {
-		self.ajaxMsg(err.Error(), -1)
-	}
-	self.ajaxMsg("", 0)
-}
-
-func (self *PaperController) AddPaperList() {
-	self.Data["pageTitle"] = "添加试卷"
-	self.Data["ApiCss"] = true
-	self.display()
-}
-
 func (self *PaperController) Edit() {
-	PaperId, _ := self.GetInt64("paper_id")
-	if PaperId != 0 {
-		paper_name := strings.TrimSpace(self.GetString("paper_name"))
-		paper_full_score, _ := self.GetInt("full_score", -100)
-		paper_type, _ := self.GetInt("paper_type", -100)
+	paperId, _ := self.GetInt64("paper_id")
+	if paperId != 0 {
+		paperName := strings.TrimSpace(self.GetString("paper_name"))
+		paperFullScore, _ := self.GetInt("full_score", -100)
+		paperType, _ := self.GetInt("paper_type", -100)
 		difficulty, _ := self.GetFloat("difficulty", -100)
 		provinces := strings.TrimSpace(self.GetString("province"))
 
-		if err := models.UpdatePaper(self.user, PaperId, paper_name, paper_full_score, paper_type, difficulty, provinces); err != nil {
+		if err := models.UpdatePaper(self.user, paperId, paperName, paperFullScore, paperType, difficulty, provinces); err != nil {
 			self.ajaxMsg(err.Error(), -1)
 		}
 		self.ajaxMsg("", 0)

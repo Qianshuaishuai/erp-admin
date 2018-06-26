@@ -25,7 +25,8 @@
                 <div class="layui-input-block">
                     <select name="paper_type" id="paper_type" lay-verify="required">
                     {{range $index,$elem := .typeList}}
-                        <option value="{{$elem.Id}}" {{if eq $elem.Id $.PaperType}} selected {{end}}>{{$elem.Name}}
+                        <option value="{{$elem.Id}}"
+                        {{if eq $elem.Id $.Detail.PaperType}} selected {{end}}>{{$elem.Name}}
                         </option>
                     {{end}}
                     </select>
@@ -100,6 +101,7 @@
         </form>
     </div>
 </fieldset>
+
 {{range $index,$elem:= .Detail.QuestionSet.PaperQuestionSetChapters}}
 <fieldset class="layui-elem-field" id="chapterIndex{{$index}}">
     <legend>章节{{$index}}</legend>
@@ -217,7 +219,6 @@
             var pro = "";
             for (var i = 0; i < 31; i++) {
                 if (form_data["province" + i]) {
-                    console.log(form_data["province" + i])
                     pro += form_data["province" + i] + ","
                 }
             }

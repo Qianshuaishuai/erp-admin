@@ -205,26 +205,3 @@ func GetTheQuestionByQ(resIds []int64, q int, chapterQuestionCount int) (startIn
 	endIndex = q
 	return
 }
-
-func SaveAddPaperTemp(name string, fullScore int, timeToAccomplish int, paperYear int,
-	courseId int, semesterId int, typeId int, difficulty float64, provinceIds string) error {
-	var snowCurl MSnowflakCurl
-	add := AddPaperTemp{
-		PaperId:          int64(snowCurl.GetIntId(true)),
-		Name:             name,
-		FullScore:        fullScore,
-		TimeToAccomplish: timeToAccomplish,
-		PaperYear:        paperYear,
-		CourseId:         courseId,
-		SemesterId:       semesterId,
-		TypeId:           typeId,
-		Difficulty:       difficulty,
-		ProvinceIds:      provinceIds,
-	}
-
-	err := GetDb().Create(&add).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
