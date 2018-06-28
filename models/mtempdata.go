@@ -30,4 +30,12 @@ type AddPaperTemp struct {
 	DeletedAt        *time.Time `sql:"index"`
 }
 
+type ChapterTemp struct {
+	ChapterId string `gorm:"column:F_chapter_id;"`
+	PaperId   int64  `gorm:"column:F_paper_id;"`
+	Name      string `gorm:"column:F_name;" json:"name"`
+	Detail    string `gorm:"column:F_detail" `
 
+	QuestionCount int     `gorm:"column:F_question_count;"`
+	PresetScore   float32 `gorm:"column:F_preset_score;"`
+}

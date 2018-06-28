@@ -3,6 +3,8 @@ package models
 import (
 	"strings"
 	"errors"
+	"strconv"
+	"encoding/json"
 )
 
 func SaveAddPaperTemp(name string, fullScore int, timeToAccomplish int, paperYear int,
@@ -134,4 +136,87 @@ func UpdateAddPaper(
 
 	tx.Commit()
 	return nil
+}
+
+func GetChapterTempByPaperId(paperId int64) (result []ChapterTemp) {
+	result = make([]ChapterTemp, 0)
+	if paperId > 0 {
+		GetDb().Where("F_paper_id = ?", paperId).Order("F_chapter_id ASC").Find(&result)
+	}
+	return
+}
+
+func AddChapterTemp(paperId int64, chapterName, chapterDetail string) error {
+	if paperId <= 0 {
+		return errors.New("PaperId不正确")
+	}
+
+	if len(chapterName) == 0 {
+		return errors.New("章节名不能为空")
+	}
+
+	var sonwCurl MSnowflakCurl
+	id := sonwCurl.GetIntId(false)
+	idString := strconv.Itoa(id)
+
+	chapter := ChapterTemp{
+		ChapterId: idString,
+		Name:      chapterName,
+		Detail:    chapterDetail,
+		PaperId:   paperId,
+	}
+
+	return GetDb().Create(&chapter).Error
+}
+
+func AddChapterTempEdit(chapterId, chapterName, chapterDetail string) error {
+	if len(chapterId) <= 0 {
+		return errors.New("chapterId 不能为空")
+	}
+
+	updated := make(map[string]interface{})
+
+	if len(chapterName) > 0 {
+		updated["F_name"] = chapterName
+	}
+
+	if len(chapterDetail) > 0 {
+		updated["F_detail"] = chapterDetail
+	}
+
+	return GetDb().Model(&ChapterTemp{}).Where("F_chapter_id = ?", chapterId).UpdateColumns(updated).Error
+}
+
+func DeleteChapterTemp(chapterId string) error {
+	if len(chapterId) <= 0 {
+		return errors.New("chapterId 不能为空")
+	}
+
+	return GetDb().Delete(&ChapterTemp{}, "F_chapter_id = ?", chapterId).Error
+}
+
+type ResortChapter struct {
+	O string `json:"o"`
+	N string `json:"n"`
+}
+
+func ResortChapterTemp(chapterIdsJson string) error {
+	var resorts []ResortChapter
+
+	json.Unmarshal([]byte(chapterIdsJson), &resorts)
+
+	if len(resorts) > 0 {
+		lastOld := resorts[len(resorts)-1].O
+		resortChapterDB(lastOld, "temp")
+		resorts[len(resorts)-1].O = "temp"
+		for i := range resorts {
+			resortChapterDB(resorts[i].O, resorts[i].N)
+		}
+	}
+	return errors.New("JSON Null")
+}
+
+func resortChapterDB(oldChapterId, newChapterId string) {
+	db := GetDb().Model(&ChapterTemp{})
+	db.Where("F_chapter_id = ?", oldChapterId).UpdateColumn("F_chapter_id", newChapterId)
 }

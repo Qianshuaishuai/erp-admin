@@ -5,6 +5,7 @@ import (
 	"strings"
 	"github.com/astaxie/beego"
 	"strconv"
+	"encoding/json"
 )
 
 type TempController struct {
@@ -180,6 +181,18 @@ func (self *TempController) AddPaperDetail() {
 
 	self.Data["Detail"] = info
 	self.Data["UpdateTime"] = beego.Date(info.UpdatedAt, "Y-m-d H:i:s")
+
+	// -- chapter --
+	chapters := models.GetChapterTempByPaperId(info.PaperId)
+	chapterIds := make([]string, len(chapters))
+
+	for i := range chapters {
+		chapterIds[i] = chapters[i].ChapterId
+	}
+	chapterString, _ := json.Marshal(&chapterIds)
+
+	self.Data["Chapters"] = chapters
+	self.Data["ChapterIds"] = string(chapterString)
 	self.display()
 }
 
@@ -202,4 +215,48 @@ func (self *TempController) AddPaperEdit() {
 		}
 		self.ajaxMsg("", 0)
 	}
+}
+
+func (self *TempController) AddChapterTemp() {
+	paperId, _ := self.GetInt64("paper_id")
+	chapterName := self.GetString("chapter_name")
+	chapterDetail := self.GetString("chapter_detail")
+
+	err := models.AddChapterTemp(paperId, chapterName, chapterDetail)
+
+	if err != nil {
+		self.ajaxMsg("添加章节失败 :"+err.Error(), -1)
+	}
+	self.ajaxMsg("success", 0)
+}
+
+func (self *TempController) AddChapterEdit() {
+	chapterId := self.GetString("chapter_id")
+	chapterName := self.GetString("chapter_name")
+	chapterDetail := self.GetString("chapter_detail")
+
+	err := models.AddChapterTempEdit(chapterId, chapterName, chapterDetail)
+	if err != nil {
+		self.ajaxMsg("更新章节失败 :"+err.Error(), -1)
+	}
+	self.ajaxMsg("success", 0)
+}
+
+func (self *TempController) DeleteChapterTemp() {
+	chapterId := self.GetString("chapter_id")
+	err := models.DeleteChapterTemp(chapterId)
+	if err != nil {
+		self.ajaxMsg("删除章节失败 :"+err.Error(), -1)
+	}
+	self.ajaxMsg("success", 0)
+}
+
+func (self *TempController) ChangeChapterIndex() {
+	chapterIdJson := self.GetString("sort")
+
+	err := models.ResortChapterTemp(chapterIdJson)
+	if err != nil {
+		self.ajaxMsg("重排序章节失败 :"+err.Error(), -1)
+	}
+	self.ajaxMsg("success", 0)
 }
