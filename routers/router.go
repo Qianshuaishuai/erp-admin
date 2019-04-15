@@ -9,8 +9,9 @@
 package routers
 
 import (
-	"github.com/astaxie/beego"
 	"dreamEbagPaperAdmin/controllers"
+
+	"github.com/astaxie/beego"
 )
 
 func init() {
@@ -22,8 +23,11 @@ func init() {
 	beego.Router("/home", &controllers.HomeController{}, "*:Index")
 	beego.Router("/home/start", &controllers.HomeController{}, "*:Start")
 
-
-	beego.AutoRouter(&controllers.PaperController{})
+	beego.AutoRouter(&controllers.UserController{})
+	beego.AutoRouter(&controllers.ConnectionController{})
+	beego.AutoRouter(&controllers.PersonController{})
+	beego.AutoRouter(&controllers.IndustryController{})
+	beego.AutoRouter(&controllers.ProjectController{})
 	beego.AutoRouter(&controllers.ChapterController{})
 	beego.AutoRouter(&controllers.QuestionController{})
 	beego.AutoRouter(&controllers.CheckController{})

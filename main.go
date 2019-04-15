@@ -1,26 +1,29 @@
 package main
 
 import (
-	"github.com/astaxie/beego"
+	"dreamEbagPaperAdmin/models"
 	"fmt"
 	"runtime"
-	"dreamEbagPaperAdmin/models"
+
+	"github.com/astaxie/beego"
 
 	"github.com/astaxie/beego/context"
 
-	_ "dreamEbagPaperAdmin/routers"
 	"dreamEbagPaperAdmin/controllers"
-	"github.com/HYY-yu/LogLib"
+	_ "dreamEbagPaperAdmin/routers"
 	"errors"
+
+	"github.com/HYY-yu/LogLib"
 )
 
 func main() {
 	//连接数据库
 	models.InitGorm()
+	models.InitEliteDb()
 	db := models.GetDb()
 	defer db.Close()
 
-	if !models.CheckDB(db){
+	if !models.CheckDB(db) {
 		fmt.Println("数据库错误，无法启动")
 		return
 	}

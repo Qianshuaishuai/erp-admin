@@ -1,16 +1,17 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
-	"errors"
-	"github.com/HYY-yu/LogLib"
-	"fmt"
-	"time"
-	"reflect"
 	"database/sql/driver"
+	"errors"
+	"fmt"
+	"reflect"
 	"regexp"
 	"strconv"
+	"time"
 	"unicode"
+
+	"github.com/HYY-yu/LogLib"
+	"github.com/jinzhu/gorm"
 )
 
 func InitGorm() {
@@ -19,6 +20,14 @@ func InitGorm() {
 	}
 	db := LinkDBToTest()
 	dbOrmDefault = db
+}
+
+func InitEliteDb() {
+	if dbOrmElite != nil {
+		return
+	}
+	db := LinkDBToElite()
+	dbOrmElite = db
 }
 
 func CheckDB(db *gorm.DB) bool {
@@ -38,6 +47,19 @@ func CheckDB(db *gorm.DB) bool {
 func LinkDBToTest() *gorm.DB {
 	//db
 	db, er := gorm.Open("mysql", MyConfig.dBTestUsername+":"+MyConfig.dBTestPassword+"@tcp("+MyConfig.dBTestHost+")/"+MyConfig.dBTestName+"?charset=utf8&parseTime=True&loc=Asia%2FShanghai")
+	if er != nil {
+		//数据库都连不上，启动个毛啊
+		loglib.GetLogger().LogErr(er, "无法连接测试数据库")
+		return nil
+	}
+	setTheDB(db)
+
+	return db
+}
+
+func LinkDBToElite() *gorm.DB {
+	//db
+	db, er := gorm.Open("mysql", MyConfig.dBEliteUsername+":"+MyConfig.dBElitePassword+"@tcp("+MyConfig.dBEliteHost+")/"+MyConfig.dBEliteName+"?charset=utf8&parseTime=True&loc=Asia%2FShanghai")
 	if er != nil {
 		//数据库都连不上，启动个毛啊
 		loglib.GetLogger().LogErr(er, "无法连接测试数据库")

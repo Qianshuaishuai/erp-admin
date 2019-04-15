@@ -1,13 +1,14 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
 	"dreamEbagPaperAdmin/helper"
 	"dreamEbagPaperAdmin/models"
-	"strings"
 	"strconv"
-	"github.com/HYY-yu/LogLib"
+	"strings"
 	"time"
+
+	"github.com/HYY-yu/LogLib"
+	"github.com/astaxie/beego"
 )
 
 //公共controller
@@ -75,9 +76,9 @@ func (self *BaseController) auth() {
 
 func (self *BaseController) Prepare() {
 	controllerName, actionName := self.GetControllerAndAction()
-	self.controllerName = strings.ToLower(controllerName[0: len(controllerName)-10])
+	self.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	self.actionName = strings.ToLower(actionName)
-	self.Data["siteName"] = "真题试卷后台管理"
+	self.Data["siteName"] = "中南菁英网站后台管理"
 
 	self.auth()
 
@@ -153,22 +154,36 @@ func (self *BaseController) SetTheStartMenu() {
 			Id:       10,
 			Pid:      1,
 			Icon:     "fa-file-text",
-			AuthName: "查看试卷",
-			AuthUrl:  "/paper/list",
+			AuthName: "用户列表",
+			AuthUrl:  "/user/list",
 		})
 		list2 = append(list2, StartMenu{
 			Id:       12,
 			Pid:      1,
 			Icon:     "fa-plus-circle",
-			AuthName: "添加试卷",
-			AuthUrl:  "/temp/addpaperlist",
+			AuthName: "人脉列表",
+			AuthUrl:  "/connection/list",
 		})
 		list2 = append(list2, StartMenu{
 			Id:       11,
 			Pid:      1,
 			Icon:     "fa-search",
-			AuthName: "查找试题",
-			AuthUrl:  "/question/search",
+			AuthName: "项目列表",
+			AuthUrl:  "/project/list",
+		})
+		list2 = append(list2, StartMenu{
+			Id:       13,
+			Pid:      1,
+			Icon:     "fa-search",
+			AuthName: "个人标签",
+			AuthUrl:  "/person/list",
+		})
+		list2 = append(list2, StartMenu{
+			Id:       14,
+			Pid:      1,
+			Icon:     "fa-search",
+			AuthName: "行业标签",
+			AuthUrl:  "/industry/list",
 		})
 	}
 

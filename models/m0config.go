@@ -3,10 +3,11 @@ package models
 import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
+	"os"
+
+	"github.com/HYY-yu/LogLib"
 	"github.com/astaxie/beego/config"
 	"github.com/jinzhu/gorm"
-	"os"
-	"github.com/HYY-yu/LogLib"
 )
 
 type Mconfig struct {
@@ -18,6 +19,11 @@ type Mconfig struct {
 	dBTestName     string
 	dBTestUsername string
 	dBTestPassword string
+
+	dBEliteHost     string
+	dBEliteName     string
+	dBEliteUsername string
+	dBElitePassword string
 
 	dBProcHost     string
 	dBProcName     string
@@ -42,11 +48,17 @@ type Mconfig struct {
 
 	//错误处理
 	RecoverPanic bool
+
+	QiniuAccessKey string
+	QiniuSecretKey string
+	QiniuBucket    string
+	QiniuBaseURL   string
 }
 
 var (
 	MyConfig     Mconfig
 	dbOrmDefault *gorm.DB
+	dbOrmElite   *gorm.DB
 )
 
 const (
@@ -97,6 +109,11 @@ func init() {
 		MyConfig.dBProcUsername = appConf.String(DREAMENV + "::dBProcUsername")
 		MyConfig.dBProcPassword = appConf.String(DREAMENV + "::dBProcPassword")
 
+		MyConfig.dBEliteHost = appConf.String(DREAMENV + "::dBEliteHost")
+		MyConfig.dBEliteName = appConf.String(DREAMENV + "::dBEliteName")
+		MyConfig.dBEliteUsername = appConf.String(DREAMENV + "::dBEliteUsername")
+		MyConfig.dBElitePassword = appConf.String(DREAMENV + "::dBElitePassword")
+
 		MyConfig.dBMaxIdle, _ = appConf.Int(DREAMENV + "::dBMaxIdle")
 		MyConfig.dBMaxConn, _ = appConf.Int(DREAMENV + "::dBMaxConn")
 
@@ -109,6 +126,11 @@ func init() {
 		MyConfig.SnowProcFlakAuthUserSecurity = appConf.String(DREAMENV + "::snowProcFlakAuthUserSecurity")
 
 		MyConfig.ApiToken = appConf.String(DREAMENV + "::apiToken")
+
+		MyConfig.QiniuAccessKey = appConf.String(DREAMENV + "::accessKey")
+		MyConfig.QiniuSecretKey = appConf.String(DREAMENV + "::secretKey")
+		MyConfig.QiniuBucket = appConf.String(DREAMENV + "::bucket")
+		MyConfig.QiniuBaseURL = appConf.String(DREAMENV + "::qiniuBaseUrl")
 	}
 	initLog()
 }
@@ -125,6 +147,11 @@ func initLog() {
 //获取对应的db对象
 func GetDb() *gorm.DB {
 	return dbOrmDefault
+}
+
+//获取新的db对象
+func GetEliteDb() *gorm.DB {
+	return dbOrmElite
 }
 
 func Indocker() bool {

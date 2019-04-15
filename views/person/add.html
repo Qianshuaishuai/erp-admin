@@ -1,0 +1,77 @@
+<div class="layui-layout layui-layout-admin" style="padding-left: 20px;">
+    <form class="layui-form">
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">标签名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="name" name="name" placeholder="最大标签名为4个字" class="layui-input" lay-verify="required" maxlength="4">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">标签图标</label>
+            <!-- <div class="layui-input-block">
+                <input type="text" readonly id="icon_label" name="icon_label" placeholder="" class="layui-input" lay-verify="required" maxlength="4">
+            </div> -->
+            <input type="file" id="icon_upload" name="icon_upload" placeholder="" style="margin-left:30px;margin-top:10px">
+        </div>
+        <button class="layui-btn" id="add" lay-submit="" lay-filter="addTag" style="margin-left:30px;margin-top:20px">确定添加</button>
+    </form>
+    
+</div>
+<script>
+    layui.use(['table', 'form', 'element'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var element = layui.element;
+        var $ = layui.$;
+
+        // $(document).on('click', '#add', function () {
+        //     if ($("#name").val() == ""){
+        //         alert("标签名称不能为空")
+        //         return
+        //     }
+        //     if ($("#icon_upload").val() == ""){
+        //         alert("请先选择标签图标")
+        //         return
+        //     }
+
+        //     var send_data = {};
+        //     send_data.name = $("#name").val()
+        //     send_data.file = $("#icon_upload").val()
+        //     $.post('{{urlfor "PersonController.AddTag"}}', send_data, function (out) {
+        //         console.log("aa")
+        //         if (out.status === 0) {
+        //             layer.msg("操作成功", {icon: 1, time: 1500}, function () {
+        //                 // 跳转到列表页
+        //                 window.location.href = "/person/list";
+        //             })
+        //         } else {
+        //             layer.msg(out.message)
+        //         }
+        //     }, "json");
+        // });
+
+        form.on('submit(addTag)', function (data) {
+            var form_data = data.field;
+            var send_data = {};
+
+            //名称
+            send_data.name = form_data["name"];
+            send_data.file = form_data["icon_upload"];
+
+            layer.load(2);
+
+            $.post('{{urlfor "PersonController.AddTag"}}', send_data, function (out) {
+                if (out.status === 0) {
+                    layer.msg("操作成功", {icon: 1, time: 1500}, function () {
+                        // 跳转到列表页
+                        window.location.href = "/person/list";
+                    })
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");
+
+            return false;
+        });
+    });
+</script>

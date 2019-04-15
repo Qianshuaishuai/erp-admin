@@ -1,11 +1,12 @@
 package models
 
 import (
-	"time"
-	"strings"
+	"dreamEbagPaperAdmin/helper"
 	"errors"
 	"strconv"
-	"dreamEbagPaperAdmin/helper"
+	"strings"
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -91,7 +92,7 @@ func GetAllPaperType() []PaperType {
 }
 
 //根据resourceId去t_papers表找
-func GetPaper(resourceId int64) (Paper) {
+func GetPaper(resourceId int64) Paper {
 	var info Paper
 	var isRecordNotFound bool
 
