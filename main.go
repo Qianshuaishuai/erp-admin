@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/models"
 	"fmt"
 	"runtime"
 
@@ -9,11 +9,11 @@ import (
 
 	"github.com/astaxie/beego/context"
 
-	"dreamEbagPaperAdmin/controllers"
-	_ "dreamEbagPaperAdmin/routers"
+	"elite-admin/controllers"
+	_ "elite-admin/routers"
 	"errors"
 
-	"github.com/HYY-yu/LogLib"
+	loglib "github.com/HYY-yu/LogLib"
 )
 
 func main() {

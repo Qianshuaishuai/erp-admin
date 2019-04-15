@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/models"
 	"strconv"
 
 	"github.com/astaxie/beego"

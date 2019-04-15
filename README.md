@@ -15,7 +15,7 @@ http://120.77.238.241:7730/home
 ### 运行
 ```
 go build main.go
-./dreamEbagPaperAdmin
+./elite-admin
 ```
 
 ### 目录介绍

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/models"
-	"dreamEbagPaperAdmin/helper"
-	"strings"
+	"elite-admin/helper"
+	"elite-admin/models"
 	"strconv"
+	"strings"
 )
 
 type QuestionController struct {

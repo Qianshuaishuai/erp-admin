@@ -1,7 +1,10 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/models"
+	"io/ioutil"
+
+	"github.com/astaxie/beego"
 )
 
 type PersonController struct {
@@ -57,15 +60,10 @@ func (self *PersonController) Add() {
 }
 
 func (self *PersonController) AddTag() {
-	// name := self.GetString("name")
-	// file, fileHandler, _ := self.GetFile("file")
+	req := self.Ctx.Request
+	body, err := ioutil.ReadAll(req.Body)
+	beego.Debug(body)
+	beego.Debug(err)
 
-	// imageUrl, _ := models.UploadFile(models.TYPE_USER_HEAD_ID, fileHandler.Filename, file)
-
-	// err := models.AddPersonTag(name, imageUrl)
-
-	// if err != nil {
-	// 	self.ajaxMsg("添加标签失败 :"+err.Error(), -1)
-	// }
 	self.ajaxMsg("success", 0)
 }

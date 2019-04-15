@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/helper"
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/helper"
+	"elite-admin/models"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/HYY-yu/LogLib"
+	loglib "github.com/HYY-yu/LogLib"
 	"github.com/astaxie/beego"
 )
 

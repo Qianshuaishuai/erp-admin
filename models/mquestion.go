@@ -1,7 +1,7 @@
 package models
 
 import (
-	"dreamEbagPaperAdmin/helper"
+	"elite-admin/helper"
 	"errors"
 	"regexp"
 )

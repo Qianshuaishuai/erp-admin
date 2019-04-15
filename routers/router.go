@@ -9,7 +9,7 @@
 package routers
 
 import (
-	"dreamEbagPaperAdmin/controllers"
+	"elite-admin/controllers"
 
 	"github.com/astaxie/beego"
 )

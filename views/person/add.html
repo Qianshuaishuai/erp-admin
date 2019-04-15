@@ -3,7 +3,8 @@
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">标签名称</label>
             <div class="layui-input-block">
-                <input type="text" id="name" name="name" placeholder="最大标签名为4个字" class="layui-input" lay-verify="required" maxlength="4">
+                <input type="text" id="name" name="name" placeholder="最大标签名为4个字" class="layui-input"
+                    lay-verify="required" maxlength="4">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
@@ -11,65 +12,168 @@
             <!-- <div class="layui-input-block">
                 <input type="text" readonly id="icon_label" name="icon_label" placeholder="" class="layui-input" lay-verify="required" maxlength="4">
             </div> -->
-            <input type="file" id="icon_upload" name="icon_upload" placeholder="" style="margin-left:30px;margin-top:10px">
+            <input type="file" id="icon_upload" name="icon_upload" placeholder=""
+                style="margin-left:30px;margin-top:10px">
         </div>
-        <button class="layui-btn" id="add" lay-submit="" lay-filter="addTag" style="margin-left:30px;margin-top:20px">确定添加</button>
+        <button class="layui-btn" id="add" lay-submit="" lay-filter="addTag"
+            style="margin-left:30px;margin-top:20px">确定添加</button>
     </form>
-    
+
 </div>
 <script>
-    layui.use(['table', 'form', 'element'], function () {
+    layui.use(['table', 'form', 'element', 'upload'], function () {
         var table = layui.table;
         var form = layui.form;
         var element = layui.element;
         var $ = layui.$;
+        var upload = layui.upload;
 
-        // $(document).on('click', '#add', function () {
-        //     if ($("#name").val() == ""){
-        //         alert("标签名称不能为空")
-        //         return
-        //     }
-        //     if ($("#icon_upload").val() == ""){
-        //         alert("请先选择标签图标")
-        //         return
-        //     }
+        var filearr = [];
+        var file = document.getElementById('icon_upload');
 
-        //     var send_data = {};
-        //     send_data.name = $("#name").val()
-        //     send_data.file = $("#icon_upload").val()
-        //     $.post('{{urlfor "PersonController.AddTag"}}', send_data, function (out) {
-        //         console.log("aa")
-        //         if (out.status === 0) {
-        //             layer.msg("操作成功", {icon: 1, time: 1500}, function () {
-        //                 // 跳转到列表页
-        //                 window.location.href = "/person/list";
-        //             })
-        //         } else {
-        //             layer.msg(out.message)
-        //         }
-        //     }, "json");
-        // });
+        file.onchange = function () {
+            var files = this.files;
+            for (var i = 0; i < files.length; i++) {
+                filearr.push(files[i]);
+            }
+        }
 
         form.on('submit(addTag)', function (data) {
             var form_data = data.field;
             var send_data = {};
 
+            if (send_data.name == "") {
+                alert("标签名称不能为空")
+                return false
+            }
+            if (send_data.file == "") {
+                alert("请先选择标签图标")
+                return false
+            }
+
             //名称
             send_data.name = form_data["name"];
-            send_data.file = form_data["icon_upload"];
+            send_data.file = filearr[0];
 
             layer.load(2);
 
-            $.post('{{urlfor "PersonController.AddTag"}}', send_data, function (out) {
-                if (out.status === 0) {
-                    layer.msg("操作成功", {icon: 1, time: 1500}, function () {
-                        // 跳转到列表页
-                        window.location.href = "/person/list";
-                    })
+            // $.post('{{urlfor "PersonController.AddTag"}}', send_data, function (out) {
+            //     if (out.status === 0) {
+            //         layer.msg("操作成功", { icon: 1, time: 1500 }, function () {
+            //             // 跳转到列表页
+            //             // window.location.href = "/person/list";
+            //         })
+            //     } else {
+            //         layer.msg(out.message)
+            //     }
+            // }, "multipart/form-data");
+
+            // upload.render({
+            //     elem: '#icon_upload',
+            //     url: '/person/addtag' //必填项
+            //     ,accept: 'file'
+            //     , method: 'post'  //可选项。HTTP类型，默认post
+            //     , done: function (res, index, upload) {
+            //         console.log(res)
+            //     }
+            //     , error: function () {
+            //         console.log("ddd")
+            //     }
+            // });
+            console.log("ss")
+
+            var dataObject = {
+                "name": send_data.name,
+                "file": send_data.file,
+            }
+
+            var formData = new FormData();
+            formData.append("name" ,send_data.name)
+            formData.append("file",send_data.file)
+
+            $.ajax({
+                url: '/person/addtag',
+                type: 'post',
+                data:  formData,
+                processData: false,
+                mimeType: "multipart/form-data",
+                beforeSend: function () {
+                    console.log("before")
+                },
+                success: function (data) {
+                    console.log(data)
+                },
+                complete: function () {
+                    console.log("complete")
+                },
+
+            });
+
+            function convertImgToDataURLviaCanvas(url, callback) {
+                var img = new Image();
+                img.src = url
+                img.crossOrigin = 'Anonymous';
+                img.onload = function () {
+                    var canvas = document.createElement('CANVAS');
+                    var ctx = canvas.getContext('2d');
+                    var dataURL;
+                    canvas.height = this.height;
+                    canvas.width = this.width;
+                    ctx.drawImage(this, 0, 0);
+                    dataURL = canvas.toDataURL("image/jpeg");
+                    callback(dataURL);
+                    canvas = null;
+                };
+            }
+
+            function compress(img, Orientation) {
+                let canvas = document.createElement("canvas");
+                let ctx = canvas.getContext('2d');
+                //瓦片canvas  
+                let tCanvas = document.createElement("canvas");
+                let tctx = tCanvas.getContext("2d");
+                let initSize = img.src.length;
+                let width = img.width;
+                let height = img.height;
+                //如果图片大于四百万像素，计算压缩比并将大小压至400万以下  
+                let ratio;
+                if ((ratio = width * height / 4000000) > 1) {
+                    console.log("大于400万像素")
+                    ratio = Math.sqrt(ratio);
+                    width /= ratio;
+                    height /= ratio;
                 } else {
-                    layer.msg(out.message)
+                    ratio = 1;
                 }
-            }, "json");
+                canvas.width = width;
+                canvas.height = height;
+                //        铺底色  
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                //如果图片像素大于100万则使用瓦片绘制  
+                let count;
+                if ((count = width * height / 1000000) > 1) {
+                    console.log("超过100W像素");
+                    count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片  
+                    //            计算每块瓦片的宽和高  
+                    let nw = ~~(width / count);
+                    let nh = ~~(height / count);
+                    tCanvas.width = nw;
+                    tCanvas.height = nh;
+                    for (let i = 0; i < count; i++) {
+                        for (let j = 0; j < count; j++) {
+                            tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+                            ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+                        }
+                    }
+                } else {
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
+                //进行最小压缩  
+                let ndata = canvas.toDataURL('image/jpeg', 0.3);
+                tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+                return ndata;
+            }
 
             return false;
         });

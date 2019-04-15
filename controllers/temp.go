@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/models"
-	"strings"
-	"github.com/astaxie/beego"
-	"strconv"
+	"elite-admin/models"
 	"encoding/json"
+	"strconv"
+	"strings"
+
+	"github.com/astaxie/beego"
 )
 
 type TempController struct {

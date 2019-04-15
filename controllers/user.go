@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/helper"
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/helper"
+	"elite-admin/models"
 	"strconv"
 	"strings"
 

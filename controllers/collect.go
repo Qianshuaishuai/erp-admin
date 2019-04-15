@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/helper"
+	"elite-admin/models"
 	"strings"
-	"dreamEbagPaperAdmin/helper"
 )
 
 var (

@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"elite-admin/helper"
+	"elite-admin/models"
 	"fmt"
 	"strconv"
 	"strings"
+
 	"github.com/astaxie/beego"
-	"dreamEbagPaperAdmin/models"
-	"dreamEbagPaperAdmin/helper"
 )
 
 type LoginController struct {

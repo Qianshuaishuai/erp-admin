@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-	"dreamEbagPaperAdmin/models"
+	"elite-admin/helper"
+	"elite-admin/models"
 	"encoding/json"
 	"strings"
-	"dreamEbagPaperAdmin/helper"
+
+	"github.com/astaxie/beego"
 )
 
 type CheckController struct {

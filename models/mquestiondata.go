@@ -1,11 +1,11 @@
 package models
 
 import (
+	"bytes"
+	"elite-admin/helper"
+	"encoding/json"
 	"regexp"
 	"strings"
-	"encoding/json"
-	"dreamEbagPaperAdmin/helper"
-	"bytes"
 )
 
 type BigQuestion struct {
@@ -58,7 +58,6 @@ type Accessories struct {
 	Audio  Audio  `json:"audio"`
 	Option Option `json:"option"`
 }
-
 
 func makeHistoryDetailSmallQuestion(questionId int64, updated map[string]interface{}) []HistoryDetail {
 	result := make([]HistoryDetail, 0)

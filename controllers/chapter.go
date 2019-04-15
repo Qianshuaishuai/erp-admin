@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"elite-admin/models"
 	"strings"
-	"dreamEbagPaperAdmin/models"
 )
 
 type ChapterController struct {
