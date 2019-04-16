@@ -78,3 +78,38 @@ func (self *ProjectController) Table() {
 	}
 	self.ajaxList("", 0, count, list)
 }
+
+func (self *ProjectController) Add() {
+	industrys, _ := models.GetIndustryTagListSimple("", 1000, 1)
+	self.Data["pageTitle"] = "添加新项目"
+	self.Data["ApiCss"] = true
+	self.Data["IndustryList"] = industrys
+	self.display()
+}
+
+func (self *ProjectController) AddProject() {
+	name := self.GetString("name")
+	typeName := self.GetString("type")
+	address := self.GetString("address")
+	money := self.GetString("money")
+	agency := self.GetString("agency")
+	introduce := self.GetString("introduce")
+	addtip := self.GetString("addtip")
+	idcard := self.GetString("idcard")
+	phone, _ := self.GetInt("phone")
+	industrys := self.GetString("industrys")
+
+	cFile, cHandler, _ := self.GetFile("cardFile")
+	bFile, bHandler, _ := self.GetFile("backgroundFile")
+
+	cImageURL, _ := models.UploadFile(models.TYPE_PROJECT_CARD_ID, cHandler.Filename, cFile)
+	bImageURL, _ := models.UploadFile(models.TYPE_PROJECT_BACKGROUND_ID, bHandler.Filename, bFile)
+
+	err := models.AddProject(name, typeName, address, money, agency, introduce, addtip, idcard, phone, cImageURL, bImageURL, industrys)
+
+	if err != nil {
+		self.ajaxMsg("添加失败 :"+err.Error(), -1)
+	}
+
+	self.ajaxMsg("success", 0)
+}

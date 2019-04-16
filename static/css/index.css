@@ -419,4 +419,6 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
   .site-demo-code{position: static; height: 350px;}
 }
 
-
+.layui-table-tips-main{
+  white-space: pre;
+}

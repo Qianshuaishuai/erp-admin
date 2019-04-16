@@ -9,9 +9,6 @@
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">标签图标</label>
-            <!-- <div class="layui-input-block">
-                <input type="text" readonly id="icon_label" name="icon_label" placeholder="" class="layui-input" lay-verify="required" maxlength="4">
-            </div> -->
             <input type="file" id="icon_upload" name="icon_upload" placeholder=""
                 style="margin-left:30px;margin-top:10px">
         </div>
@@ -57,56 +54,33 @@
 
             layer.load(2);
 
-            // $.post('{{urlfor "PersonController.AddTag"}}', send_data, function (out) {
-            //     if (out.status === 0) {
-            //         layer.msg("操作成功", { icon: 1, time: 1500 }, function () {
-            //             // 跳转到列表页
-            //             // window.location.href = "/person/list";
-            //         })
-            //     } else {
-            //         layer.msg(out.message)
-            //     }
-            // }, "multipart/form-data");
-
-            // upload.render({
-            //     elem: '#icon_upload',
-            //     url: '/person/addtag' //必填项
-            //     ,accept: 'file'
-            //     , method: 'post'  //可选项。HTTP类型，默认post
-            //     , done: function (res, index, upload) {
-            //         console.log(res)
-            //     }
-            //     , error: function () {
-            //         console.log("ddd")
-            //     }
-            // });
-            console.log("ss")
-
             var dataObject = {
                 "name": send_data.name,
                 "file": send_data.file,
             }
 
             var formData = new FormData();
-            formData.append("name" ,send_data.name)
-            formData.append("file",send_data.file)
+            formData.append("name", send_data.name)
+            formData.append("file", send_data.file)
 
             $.ajax({
                 url: '/person/addtag',
                 type: 'post',
-                data:  formData,
+                data: formData,
                 processData: false,
                 mimeType: "multipart/form-data",
-                beforeSend: function () {
-                    console.log("before")
-                },
+                contentType: false,
                 success: function (data) {
-                    console.log(data)
+                    var obj = JSON.parse(data);
+                    if (obj.status == 0) {
+                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+                            // 跳转到列表页
+                            window.location.href = "/person/list";
+                        })
+                    } else {
+                        layer.msg(obj.message)
+                    }
                 },
-                complete: function () {
-                    console.log("complete")
-                },
-
             });
 
             function convertImgToDataURLviaCanvas(url, callback) {

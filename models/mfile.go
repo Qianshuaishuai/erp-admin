@@ -6,22 +6,24 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
-
-	"github.com/astaxie/beego"
+	"strconv"
 
 	"github.com/qiniu/api.v7/auth/qbox"
 	"github.com/qiniu/api.v7/storage"
 )
 
 const (
-	TYPE_USER_HEAD_ID          = 101
-	TYPE_CONNECTION_CARD_ID    = 102
+	TYPE_ADD_PERSON_TAG        = 101
+	TYPE_ADD_INDUSTRY_TAG      = 102
 	TYPE_PROJECT_CARD_ID       = 103
 	TYPE_PROJECT_BACKGROUND_ID = 104
+	TYPE_CONNECTION_ICON_ID    = 105
+	TYPE_CONNECTION_CARD_ID    = 106
 )
 
 func UploadFile(typeID int, fileName string, file multipart.File) (imageUrl string, err error) {
-	fileDir := "./"
+	var snowCurl MSnowflakCurl
+	fileDir := "./admin-file/"
 	os.RemoveAll(fileDir)
 	os.Mkdir(fileDir, 0766)
 
@@ -29,28 +31,39 @@ func UploadFile(typeID int, fileName string, file multipart.File) (imageUrl stri
 	io.Copy(f, file)
 
 	tag := ""
+	nFileName := ""
 
 	switch typeID {
-	case TYPE_USER_HEAD_ID:
-		tag = "headicon"
+	case TYPE_ADD_PERSON_TAG:
+		tag = "person/tag"
+		nFileName = fileName
 		break
-	case TYPE_CONNECTION_CARD_ID:
-		tag = "card"
+	case TYPE_ADD_INDUSTRY_TAG:
+		tag = "industry/tag"
+		nFileName = fileName
 		break
 	case TYPE_PROJECT_CARD_ID:
-		tag = "project/card/"
+		tag = "project/system/card"
+		nFileName = strconv.Itoa(snowCurl.GetIntId(true)) + "-card" + ".png"
 		break
 	case TYPE_PROJECT_BACKGROUND_ID:
-		tag = "project/background/"
+		tag = "project/system/background"
+		nFileName = strconv.Itoa(snowCurl.GetIntId(true)) + "-back" + ".png"
+		break
+	case TYPE_CONNECTION_ICON_ID:
+		tag = "connection/system/icon"
+		nFileName = strconv.Itoa(snowCurl.GetIntId(true)) + "-icon" + ".png"
+		break
+	case TYPE_CONNECTION_CARD_ID:
+		tag = "connection/system/card"
+		nFileName = strconv.Itoa(snowCurl.GetIntId(true)) + "-card" + ".png"
 		break
 	default:
 		tag = "default"
 		break
 	}
 
-	beego.Debug(tag)
-
-	newFileName := "admin" + "/" + fileName
+	newFileName := "admin" + "/" + tag + "/" + nFileName
 	imageURL, err := UploadFileToQiniu(newFileName, fileDir+fileName)
 
 	os.RemoveAll(fileDir)

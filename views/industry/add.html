@@ -1,0 +1,133 @@
+<div class="layui-layout layui-layout-admin" style="padding-left: 20px;">
+    <form class="layui-form">
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">标签名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="name" name="name" placeholder="最大标签名为4个字" class="layui-input"
+                    lay-verify="required" maxlength="4">
+            </div>
+        </div>
+        <button class="layui-btn" id="add" lay-submit="" lay-filter="addTag"
+            style="margin-left:30px;margin-top:20px">确定添加</button>
+    </form>
+
+</div>
+<script>
+    layui.use(['table', 'form', 'element', 'upload'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var element = layui.element;
+        var $ = layui.$;
+        var upload = layui.upload;
+
+        form.on('submit(addTag)', function (data) {
+            var form_data = data.field;
+            var send_data = {};
+
+            if (send_data.name == "") {
+                alert("标签名称不能为空")
+                return false
+            }
+
+            //名称
+            send_data.name = form_data["name"];
+
+            layer.load(2);
+
+            var dataObject = {
+                "name": send_data.name,
+            }
+
+            var formData = new FormData();
+            formData.append("name", send_data.name)
+
+            $.ajax({
+                url: '/industry/addtag',
+                type: 'post',
+                data: formData,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 0) {
+                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+                            // 跳转到列表页
+                            window.location.href = "/industry/list";
+                        })
+                    } else {
+                        layer.msg(obj.message)
+                    }
+                },
+            });
+
+            function convertImgToDataURLviaCanvas(url, callback) {
+                var img = new Image();
+                img.src = url
+                img.crossOrigin = 'Anonymous';
+                img.onload = function () {
+                    var canvas = document.createElement('CANVAS');
+                    var ctx = canvas.getContext('2d');
+                    var dataURL;
+                    canvas.height = this.height;
+                    canvas.width = this.width;
+                    ctx.drawImage(this, 0, 0);
+                    dataURL = canvas.toDataURL("image/jpeg");
+                    callback(dataURL);
+                    canvas = null;
+                };
+            }
+
+            function compress(img, Orientation) {
+                let canvas = document.createElement("canvas");
+                let ctx = canvas.getContext('2d');
+                //瓦片canvas  
+                let tCanvas = document.createElement("canvas");
+                let tctx = tCanvas.getContext("2d");
+                let initSize = img.src.length;
+                let width = img.width;
+                let height = img.height;
+                //如果图片大于四百万像素，计算压缩比并将大小压至400万以下  
+                let ratio;
+                if ((ratio = width * height / 4000000) > 1) {
+                    console.log("大于400万像素")
+                    ratio = Math.sqrt(ratio);
+                    width /= ratio;
+                    height /= ratio;
+                } else {
+                    ratio = 1;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                //        铺底色  
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                //如果图片像素大于100万则使用瓦片绘制  
+                let count;
+                if ((count = width * height / 1000000) > 1) {
+                    console.log("超过100W像素");
+                    count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片  
+                    //            计算每块瓦片的宽和高  
+                    let nw = ~~(width / count);
+                    let nh = ~~(height / count);
+                    tCanvas.width = nw;
+                    tCanvas.height = nh;
+                    for (let i = 0; i < count; i++) {
+                        for (let j = 0; j < count; j++) {
+                            tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+                            ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+                        }
+                    }
+                } else {
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
+                //进行最小压缩  
+                let ndata = canvas.toDataURL('image/jpeg', 0.3);
+                tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+                return ndata;
+            }
+
+            return false;
+        });
+    });
+</script>

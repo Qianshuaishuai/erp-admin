@@ -24,6 +24,7 @@ func init() {
 	beego.Router("/home/start", &controllers.HomeController{}, "*:Start")
 
 	beego.AutoRouter(&controllers.UserController{})
+	beego.AutoRouter(&controllers.HomePageController{})
 	beego.AutoRouter(&controllers.ConnectionController{})
 	beego.AutoRouter(&controllers.PersonController{})
 	beego.AutoRouter(&controllers.IndustryController{})

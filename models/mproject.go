@@ -1,8 +1,10 @@
 package models
 
 import (
+	"elite-admin/helper"
 	"errors"
 	"strings"
+	"time"
 )
 
 func GetProjectListSimple(q string, limit int, page int, sort int, phone int64) (list []Project, count int64) {
@@ -54,6 +56,43 @@ func ChangeProjectStatus(id int, status int) error {
 
 	if count <= 0 {
 		return errors.New("更新失败")
+	}
+
+	return nil
+}
+
+func AddProject(name, typeName, address, money, agency, introduce, addtip, idcard string, phone int, cardImageURL, backgroundImageURL string, industrys string) error {
+	var snowCurl MSnowflakCurl
+	var project Project
+	project.Name = name
+	project.Type = typeName
+	project.Address = address
+	project.Money = money
+	project.Agency = agency
+	project.Introduce = introduce
+	project.AddTip = addtip
+	project.IDCard = idcard
+	project.Phone = phone
+	project.Icon = cardImageURL
+	project.Background = backgroundImageURL
+	project.Time = time.Now()
+	project.Status = 1
+	project.ID = snowCurl.GetIntId(true)
+
+	err := GetEliteDb().Table("t_projects").Create(&project).Error
+
+	if err != nil {
+		return errors.New("添加失败")
+	}
+
+	industryIDs, _ := helper.TransformStringToInt64Arr(industrys)
+	industryTags, _ := GetIndustryTagListSimple("", 100, 1)
+
+	for i := range industryIDs {
+		var industry ProjectIndustry
+		industry.Industry = industryTags[industryIDs[i]-1].ID
+		industry.Project = project.ID
+		GetEliteDb().Table("t_project_industrys").Create(&industry)
 	}
 
 	return nil

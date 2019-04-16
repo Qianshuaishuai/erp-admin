@@ -1,9 +1,11 @@
 package models
 
 import (
+	"elite-admin/helper"
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func GetConnectionListSimple(q string, limit int, page int, sort int, phone int64) (list []Connection, count int64) {
@@ -62,5 +64,75 @@ func ChangeConnectionStatus(phone int, status int) error {
 		return errors.New("更新失败")
 	}
 
+	return nil
+}
+
+func AddConnection(phone, look, good int, username, job, position, profess, agency, address, introduce, achieve, school, iconImageURL, cardImageURL string, tags string) error {
+	tx := GetEliteDb().Begin()
+
+	var userInfo UserInfoSimple
+	userInfo.Phone = phone
+	userInfo.Password = "111111"
+	userInfo.Username = username
+	userInfo.Job = job
+	userInfo.Position = position
+	userInfo.Profess = profess
+	userInfo.Agency = agency
+	userInfo.Address = address
+	userInfo.Introduce = introduce
+	userInfo.Achieve = achieve
+	userInfo.School = school
+	userInfo.Icon = iconImageURL
+	userInfo.Register = time.Now()
+
+	var count int
+	tx.Table("t_users").Where("phone = ?", phone).Count(&count)
+
+	if count > 0 {
+		tx.Rollback()
+		return errors.New("手机号已存在")
+	}
+
+	err := tx.Table("t_users").Create(&userInfo).Error
+
+	if err != nil {
+		tx.Rollback()
+		return errors.New("创建失败")
+	}
+
+	var connection Connection
+	connection.Card = cardImageURL
+	connection.Good = good
+	connection.Look = look
+	connection.Phone = phone
+	connection.Status = 1
+	connection.Time = time.Now()
+
+	var aCount int
+	tx.Table("t_connections").Where("phone = ?", phone).Count(&aCount)
+
+	if aCount > 0 {
+		tx.Rollback()
+		return errors.New("手机号已存在")
+	}
+
+	err = tx.Table("t_connections").Create(&connection).Error
+
+	if err != nil {
+		tx.Rollback()
+		return errors.New("创建失败")
+	}
+
+	tagIDs, _ := helper.TransformStringToInt64Arr(tags)
+	personTags, _ := GetPersonTagListSimple("", 100, 1)
+
+	for t := range tagIDs {
+		var userTag UserTag
+		userTag.Person = personTags[tagIDs[t]-1].ID
+		userTag.Phone = phone
+		GetEliteDb().Table("t_user_tags").Create(&userTag)
+	}
+
+	tx.Commit()
 	return nil
 }

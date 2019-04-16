@@ -6,6 +6,7 @@
                     <input class="layui-input" name="PaperName" id="q" autocomplete="off" placeholder="用户手机号">
                 </div>
                 <button class="layui-btn" data-type="reload" id="reload">查询</button>
+                <button class="layui-btn" data-type="add" id="add">添加专家</button>
             </form>
         </div>
     </div>
@@ -45,8 +46,8 @@
             , loading: true
         });
 
-        $('#add_paper').on('click', function () {
-            window.location.href = "/paper/addpaper"
+        $('#add').on('click', function () {
+            window.location.href = "/connection/add"
         });
 
         $('.demoTable .layui-btn').on('click', function () {

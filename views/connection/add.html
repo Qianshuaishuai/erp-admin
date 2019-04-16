@@ -1,0 +1,317 @@
+<div class="layui-layout layui-layout-admin" style="padding-left: 20px;">
+    <form class="layui-form">
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">专家名称</label>
+            <div class="layui-input-block">
+                <input type="text" id="username" name="username" placeholder="" class="layui-input"
+                    lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-block">
+                <input type="number" id="phone" name="phone" placeholder="" class="layui-input" lay-verify="required"
+                    maxlength="11">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">职业</label>
+            <div class="layui-input-block">
+                <input type="text" id="job" name="job" placeholder="" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">所在地</label>
+            <div class="layui-input-block">
+                <input type="text" id="address" name="address" placeholder="按照格式，每一个层级空一格，例：中国 广东 深圳"
+                    class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">毕业院校</label>
+            <div class="layui-input-block">
+                <input type="text" id="school" name="school" placeholder="" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">机构</label>
+            <div class="layui-input-block">
+                <input type="text" id="agency" name="agency" placeholder="" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">所属领域</label>
+            <div class="layui-input-block">
+                <input type="text" id="profess" name="profess" placeholder="" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">职位</label>
+            <div class="layui-input-block">
+                <input type="text" id="position" name="position" placeholder="" class="layui-input"
+                    lay-verify="required">
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">个人简介</label>
+            <div class="layui-input-block">
+                <input type="text" id="introduce" name="introduce" placeholder="" class="layui-input"
+                    lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">专业成就</label>
+            <div class="layui-input-block">
+                <input type="text" id="achieve" name="achieve" placeholder="" class="layui-input" lay-verify="required">
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">默认观看数</label>
+            <div class="layui-input-block">
+                <input type="number" id="look" name="look" placeholder="" class="layui-input" lay-verify="required"
+                    maxlength="5" value="0">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">默认点赞数</label>
+            <div class="layui-input-block">
+                <input type="number" id="good" name="good" placeholder="" class="layui-input" lay-verify="required"
+                    maxlength="5" value="0">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">头像</label>
+            <input type="file" id="icon_upload_icon" name="icon_upload_icon" placeholder=""
+                style="margin-left:30px;margin-top:10px">
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;">
+            <label class="layui-form-label">个人名片</label>
+            <input type="file" id="icon_upload_card" name="icon_upload_card" placeholder=""
+                style="margin-left:30px;margin-top:10px">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">个人标签</label>
+            <div class="layui-input-block">
+                <div class="site-block">
+                    {{range $index,$elem := .PersonTagList}}
+                    <input type="checkbox" name="person{{$index}}" value="{{$elem.ID}}" title="{{$elem.Name}}">
+                    {{end}}
+                </div>
+            </div>
+        </div>
+        <button class="layui-btn" id="add" lay-submit="" lay-filter="addTag"
+            style="margin-left:30px;margin-top:20px">确定添加</button>
+    </form>
+
+</div>
+<script>
+    layui.use(['table', 'form', 'element', 'upload'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var element = layui.element;
+        var $ = layui.$;
+        var upload = layui.upload;
+
+        var filearr = new Array(2);
+        var iconFile = document.getElementById('icon_upload_icon');
+        var cardFile = document.getElementById('icon_upload_card');
+
+        iconFile.onchange = function () {
+            var files = this.files;
+            if (files.length > 0) {
+                filearr[0] = files[0]
+            }
+        }
+
+        cardFile.onchange = function () {
+            var files = this.files;
+
+            if (files.length > 0) {
+                filearr[1] = files[0]
+            }
+        }
+
+        form.on('submit(addTag)', function (data) {
+            var form_data = data.field;
+
+            if (form_data.username == "") {
+                alert("专家名字不能为空")
+                return false
+            }
+            if (form_data.phone == "") {
+                alert("联系方式不能为空")
+                return false
+            }
+            if (form_data.job == "") {
+                alert("职业不能为空")
+                return false
+            }
+            if (form_data.address == "") {
+                alert("所在地不能为空")
+                return false
+            }
+            if (form_data.school == "") {
+                alert("毕业院校不能为空")
+                return false
+            }
+            if (form_data.agency == "") {
+                alert("机构不能为空")
+                return false
+            }
+            if (form_data.profess == "") {
+                alert("所属领域不能为空")
+                return false
+            }
+            if (form_data.position == "") {
+                alert("职位不能为空")
+                return false
+            }
+            if (form_data.introduce == "") {
+                alert("个人简介不能为空")
+                return false
+            }
+            if (form_data.achieve == "") {
+                alert("专业成就不能为空")
+                return false
+            }
+            if (!filearr[0]) {
+                alert("请先上传专家头像")
+                return false
+            }
+            if (!filearr[1]) {
+                alert("请先上传专家名片")
+                return false
+            }
+
+            var pro = "";
+            var count = 0;
+            for (var i = 0; i < 100; i++) {
+                if (form_data["person" + i]) {
+                    if (count == 0) {
+                        pro += "[" + form_data["person" + i]
+                    } else {
+                        pro += "," + form_data["person" + i]
+                    }
+                    count = count + 1;
+                }
+            }
+
+            pro += "]"
+
+            if (count > 3) {
+                alert("所属个人标签最多3个")
+                return false
+            }
+
+            layer.load(2);
+
+            var formData = new FormData();
+            formData.append("username", form_data.username)
+            formData.append("phone", form_data.phone)
+            formData.append("job", form_data.job)
+            formData.append("address", form_data.address)
+            formData.append("school", form_data.school)
+            formData.append("agency", form_data.agency)
+            formData.append("profess", form_data.profess)
+            formData.append("position", form_data.position)
+            formData.append("introduce", form_data.introduce)
+            formData.append("achieve", form_data.achieve)
+            formData.append("good", form_data.good)
+            formData.append("look", form_data.look)
+            formData.append("iconFile", filearr[0])
+            formData.append("cardFile", filearr[1])
+            formData.append("tags", pro)
+
+            $.ajax({
+                url: '/connection/addconnection',
+                type: 'post',
+                data: formData,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 0) {
+                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+                            // 跳转到列表页
+                            window.location.href = "/connection/list";
+                        })
+                    } else {
+                        layer.msg(obj.message)
+                    }
+                },
+            });
+
+            function convertImgToDataURLviaCanvas(url, callback) {
+                var img = new Image();
+                img.src = url
+                img.crossOrigin = 'Anonymous';
+                img.onload = function () {
+                    var canvas = document.createElement('CANVAS');
+                    var ctx = canvas.getContext('2d');
+                    var dataURL;
+                    canvas.height = this.height;
+                    canvas.width = this.width;
+                    ctx.drawImage(this, 0, 0);
+                    dataURL = canvas.toDataURL("image/jpeg");
+                    callback(dataURL);
+                    canvas = null;
+                };
+            }
+
+            function compress(img, Orientation) {
+                let canvas = document.createElement("canvas");
+                let ctx = canvas.getContext('2d');
+                //瓦片canvas  
+                let tCanvas = document.createElement("canvas");
+                let tctx = tCanvas.getContext("2d");
+                let initSize = img.src.length;
+                let width = img.width;
+                let height = img.height;
+                //如果图片大于四百万像素，计算压缩比并将大小压至400万以下  
+                let ratio;
+                if ((ratio = width * height / 4000000) > 1) {
+                    console.log("大于400万像素")
+                    ratio = Math.sqrt(ratio);
+                    width /= ratio;
+                    height /= ratio;
+                } else {
+                    ratio = 1;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                //        铺底色  
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                //如果图片像素大于100万则使用瓦片绘制  
+                let count;
+                if ((count = width * height / 1000000) > 1) {
+                    console.log("超过100W像素");
+                    count = ~~(Math.sqrt(count) + 1); //计算要分成多少块瓦片  
+                    //            计算每块瓦片的宽和高  
+                    let nw = ~~(width / count);
+                    let nh = ~~(height / count);
+                    tCanvas.width = nw;
+                    tCanvas.height = nh;
+                    for (let i = 0; i < count; i++) {
+                        for (let j = 0; j < count; j++) {
+                            tctx.drawImage(img, i * nw * ratio, j * nh * ratio, nw * ratio, nh * ratio, 0, 0, nw, nh);
+                            ctx.drawImage(tCanvas, i * nw, j * nh, nw, nh);
+                        }
+                    }
+                } else {
+                    ctx.drawImage(img, 0, 0, width, height);
+                }
+                //进行最小压缩  
+                let ndata = canvas.toDataURL('image/jpeg', 0.3);
+                tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
+                return ndata;
+            }
+
+            return false;
+        });
+    });
+</script>

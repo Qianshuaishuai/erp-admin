@@ -70,3 +70,41 @@ func (self *ConnectionController) Table() {
 	}
 	self.ajaxList("", 0, count, list)
 }
+
+func (self *ConnectionController) Add() {
+	personTags, _ := models.GetPersonTagListSimple("", 1000, 1)
+	self.Data["pageTitle"] = "添加新专家"
+	self.Data["ApiCss"] = true
+	self.Data["PersonTagList"] = personTags
+	self.display()
+}
+
+func (self *ConnectionController) AddConnection() {
+	username := self.GetString("username")
+	job := self.GetString("job")
+	position := self.GetString("position")
+	profess := self.GetString("profess")
+	agency := self.GetString("agency")
+	address := self.GetString("address")
+	introduce := self.GetString("introduce")
+	achieve := self.GetString("achieve")
+	school := self.GetString("school")
+	phone, _ := self.GetInt("phone")
+	look, _ := self.GetInt("look")
+	good, _ := self.GetInt("good")
+	tags := self.GetString("tags")
+
+	iFile, iHandler, _ := self.GetFile("iconFile")
+	cFile, cHandler, _ := self.GetFile("cardFile")
+
+	iImageURL, _ := models.UploadFile(models.TYPE_CONNECTION_ICON_ID, iHandler.Filename, iFile)
+	cImageURL, _ := models.UploadFile(models.TYPE_CONNECTION_CARD_ID, cHandler.Filename, cFile)
+
+	err := models.AddConnection(phone, look, good, username, job, position, profess, agency, address, introduce, achieve, school, iImageURL, cImageURL, tags)
+
+	if err != nil {
+		self.ajaxMsg("添加失败 :"+err.Error(), -1)
+	}
+
+	self.ajaxMsg("success", 0)
+}

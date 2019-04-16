@@ -2,9 +2,6 @@ package controllers
 
 import (
 	"elite-admin/models"
-	"io/ioutil"
-
-	"github.com/astaxie/beego"
 )
 
 type PersonController struct {
@@ -36,10 +33,6 @@ func (self *PersonController) Table() {
 		models.DeletePersonTag(id)
 	}
 
-	if err == nil {
-		q = ""
-	}
-
 	result, count := models.GetPersonTagListSimple(q, limit, page)
 	list := make([]map[string]interface{}, len(result))
 	for k, v := range result {
@@ -60,10 +53,16 @@ func (self *PersonController) Add() {
 }
 
 func (self *PersonController) AddTag() {
-	req := self.Ctx.Request
-	body, err := ioutil.ReadAll(req.Body)
-	beego.Debug(body)
-	beego.Debug(err)
+	name := self.GetString("name")
+	file, fileHandler, _ := self.GetFile("file")
+
+	imageURL, _ := models.UploadFile(models.TYPE_ADD_PERSON_TAG, fileHandler.Filename, file)
+
+	err := models.AddPersonTag(name, imageURL)
+
+	if err != nil {
+		self.ajaxMsg("添加失败 :"+err.Error(), -1)
+	}
 
 	self.ajaxMsg("success", 0)
 }

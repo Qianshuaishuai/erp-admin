@@ -131,13 +131,13 @@ func (self *BaseController) SetTheStartMenu() {
 		AuthName: "数据操作",
 		AuthUrl:  " "})
 
-	list = append(list, StartMenu{
-		Id:       100,
-		Pid:      0,
-		Icon:     "fa-edit",
-		AuthName: "问题上报",
-		AuthUrl:  " ",
-	})
+	// list = append(list, StartMenu{
+	// 	Id:       100,
+	// 	Pid:      0,
+	// 	Icon:     "fa-edit",
+	// 	AuthName: "问题上报",
+	// 	AuthUrl:  " ",
+	// })
 
 	list = append(list, StartMenu{
 		Id:       200,
@@ -174,34 +174,41 @@ func (self *BaseController) SetTheStartMenu() {
 		list2 = append(list2, StartMenu{
 			Id:       13,
 			Pid:      1,
-			Icon:     "fa-search",
+			Icon:     "fa-star",
 			AuthName: "个人标签",
 			AuthUrl:  "/person/list",
 		})
 		list2 = append(list2, StartMenu{
 			Id:       14,
 			Pid:      1,
-			Icon:     "fa-search",
+			Icon:     "fa-list",
 			AuthName: "行业标签",
 			AuthUrl:  "/industry/list",
 		})
+		list2 = append(list2, StartMenu{
+			Id:       14,
+			Pid:      1,
+			Icon:     "fa-eye",
+			AuthName: "首页标签",
+			AuthUrl:  "/homepage/list",
+		})
 	}
 
-	list2 = append(list2, StartMenu{
-		Id:       12,
-		Pid:      1,
-		Icon:     "fa-eye",
-		AuthName: "审核数据",
-		AuthUrl:  "/check/list",
-	})
+	// list2 = append(list2, StartMenu{
+	// 	Id:       12,
+	// 	Pid:      1,
+	// 	Icon:     "fa-eye",
+	// 	AuthName: "审核数据",
+	// 	AuthUrl:  "/check/list",
+	// })
 
-	list2 = append(list2, StartMenu{
-		Id:       1000,
-		Pid:      100,
-		Icon:     "fa-list",
-		AuthName: "查看问题",
-		AuthUrl:  "/collect/list",
-	})
+	// list2 = append(list2, StartMenu{
+	// 	Id:       1000,
+	// 	Pid:      100,
+	// 	Icon:     "fa-list",
+	// 	AuthName: "查看问题",
+	// 	AuthUrl:  "/collect/list",
+	// })
 
 	list2 = append(list2, StartMenu{
 		Id:       2000,
