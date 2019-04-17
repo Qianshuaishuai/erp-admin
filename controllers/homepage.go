@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"elite-admin/models"
+	"strconv"
 )
 
 type HomePageController struct {
@@ -64,4 +65,51 @@ func (self *HomePageController) Table() {
 		list[k] = row
 	}
 	self.ajaxList("", 0, count, list)
+}
+
+func (self *HomePageController) Add() {
+	self.Data["pageTitle"] = "添加首页标签"
+	self.Data["ApiCss"] = true
+	self.Data["TypeIDs"] = models.GetHomePageType()
+	self.display()
+}
+
+func (self *HomePageController) AddHomeShow() {
+	name := self.GetString("name")
+	url := self.GetString("url")
+	typeID, _ := self.GetInt("type")
+	count, _ := self.GetInt("count")
+
+	iFile, iHandler, _ := self.GetFile("icon")
+
+	iImageURL, _ := models.UploadFile(models.TYPE_HOME_CONTENT_ID, iHandler.Filename, iFile)
+
+	var datas []models.HomePageContent
+
+	if count > 0 {
+		for i := 0; i < count; i++ {
+			var content models.HomePageContent
+			keyStr := "content" + strconv.Itoa(i)
+			if self.GetString(keyStr) == "undefined" || self.GetString(keyStr) == "" {
+				iFile, iHandler, err := self.GetFile(keyStr)
+				if err == nil {
+					iImageURL, _ := models.UploadFile(models.TYPE_HOME_CONTENT_ID, iHandler.Filename, iFile)
+					content.Content = iImageURL
+				}
+				content.TypeID = 1
+			} else {
+				content.TypeID = 2
+				content.Content = self.GetString(keyStr)
+			}
+			datas = append(datas, content)
+		}
+	}
+
+	err := models.AddNewHomeShow(name, typeID, iImageURL, url, datas)
+
+	if err != nil {
+		self.ajaxMsg("添加失败 :"+err.Error(), -1)
+	}
+
+	self.ajaxMsg("success", 0)
 }

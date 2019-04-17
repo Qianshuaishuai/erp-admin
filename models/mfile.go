@@ -19,6 +19,7 @@ const (
 	TYPE_PROJECT_BACKGROUND_ID = 104
 	TYPE_CONNECTION_ICON_ID    = 105
 	TYPE_CONNECTION_CARD_ID    = 106
+	TYPE_HOME_CONTENT_ID       = 107
 )
 
 func UploadFile(typeID int, fileName string, file multipart.File) (imageUrl string, err error) {
@@ -57,6 +58,10 @@ func UploadFile(typeID int, fileName string, file multipart.File) (imageUrl stri
 	case TYPE_CONNECTION_CARD_ID:
 		tag = "connection/system/card"
 		nFileName = strconv.Itoa(snowCurl.GetIntId(true)) + "-card" + ".png"
+		break
+	case TYPE_HOME_CONTENT_ID:
+		tag = "home/content"
+		nFileName = strconv.Itoa(snowCurl.GetIntId(true)) + "-content" + ".png"
 		break
 	default:
 		tag = "default"

@@ -79,3 +79,47 @@ func DeleteHomeShow(id int) error {
 
 	return nil
 }
+
+func GetHomePageType() (datas []HomePageType) {
+	var typeSimpleA HomePageType
+	typeSimpleA.ID = 1
+	typeSimpleA.Name = "正文标签"
+
+	var typeSimpleB HomePageType
+	typeSimpleB.ID = 2
+	typeSimpleB.Name = "外链标签"
+
+	datas = append(datas, typeSimpleA)
+	datas = append(datas, typeSimpleB)
+
+	return datas
+
+}
+
+func AddNewHomeShow(name string, typeID int, iconImageURL string, URL string, datas []HomePageContent) error {
+	var homeShow HomeShow
+	homeShow.Name = name
+	homeShow.Icon = iconImageURL
+	homeShow.Type = typeID
+	if typeID == 2 {
+		homeShow.URL = URL
+	}
+
+	err := GetEliteDb().Table("t_home_shows").Create(&homeShow).Error
+	if err != nil {
+		return errors.New("创建失败")
+	}
+
+	if typeID == 1 {
+		for d := range datas {
+			var content HomeContent
+			content.ID = homeShow.ID
+			content.Content = datas[d].Content
+			content.Type = datas[d].TypeID
+			content.Index = d + 1
+			GetEliteDb().Table("t_home_contents").Create(&content)
+		}
+	}
+
+	return nil
+}

@@ -20,3 +20,13 @@ type HomeShowDetail struct {
 	HomeShow     HomeShow      `json:"homeShow"`
 	HomeContents []HomeContent `json:"homeContents"`
 }
+
+type HomePageType struct {
+	ID   int
+	Name string
+}
+
+type HomePageContent struct {
+	TypeID  int
+	Content string
+}

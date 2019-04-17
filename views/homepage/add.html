@@ -8,18 +8,33 @@
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
-            <label class="layui-form-label">标签类型</label>
-            <div class="layui-input-block">
-                <input type="number" id="type" name="type" placeholder="类型1为内容标签，类型2为外链标签" class="layui-input"
-                    lay-verify="required" maxlength="1">
-            </div>
-        </div>
-
-        <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">标签图标</label>
             <input type="file" id="icon_upload" name="icon_upload" placeholder=""
                 style="margin-left:30px;margin-top:10px">
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">标签类型</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" value="0" title="正文标签" lay-filter="encrypt">
+                <input type="radio" name="type" value="1" title="外链标签" lay-filter="encrypt" checked>
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;" id="url-box">
+            <label class="layui-form-label">外链地址</label>
+            <div class="layui-input-block">
+                <input type="text" id="urlcontent" name="urlcontent" placeholder="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" style="margin-top: 20px;" id="content-box">
+            <label class="layui-form-label">正文内容</label>
+            <div class='layui-input-block' id="content-box-main">
+
+            </div>
+        </div>
+        <button class="layui-btn" lay-submit="" lay-filter="none" id="addcontent-main"
+            style="margin-left:30px;margin-top:20px">添加(正文)</button>
+        <button class="layui-btn" lay-submit="" lay-filter="none" id="addcontent-icon"
+            style="margin-left:30px;margin-top:20px">添加(图片)</button>
         <button class="layui-btn" id="add" lay-submit="" lay-filter="addTag"
             style="margin-left:30px;margin-top:20px">确定添加</button>
     </form>
@@ -33,8 +48,19 @@
         var $ = layui.$;
         var upload = layui.upload;
 
+        var typeIndex = 2
+
+        $("#content-box").hide();
+        $("#addcontent-icon").hide();
+        $("#addcontent-main").hide();
+
         var filearr = [];
+        var contentFileArr = new Array(100)
+        var contentMainArr = new Array(100)
         var file = document.getElementById('icon_upload');
+
+        var contentType = [];
+        var contentCount = 0;
 
         file.onchange = function () {
             var files = this.files;
@@ -43,31 +69,64 @@
             }
         }
 
+        var contentBox = document.getElementById("content-box-main");
+        var contentHtml = ""
+
+        $('#addcontent-icon').on('click', function () {
+            contentHtml = contentHtml + "<input type='file' id='card" + contentCount + "' name='card" + contentCount + "' style='margin-left:30px;margin-top:10px;width:100%'>"
+            contentBox.innerHTML = contentHtml
+
+            var file = document.getElementById('card'+contentCount);
+            index = contentCount
+            file.onchange = function () {
+                var files = this.files;
+                if (files.length > 0) {
+                    contentFileArr[index] = files[0]
+                }
+            }
+            contentType.push(1)
+            contentCount = contentCount + 1
+            return false
+        });
+
+        $('#addcontent-main').on('click', function () {
+            contentHtml = contentHtml + "<input type='text' id='main" + contentCount + "' name='main" + contentCount + "' style='margin-left:30px;margin-top:10px;width:100%;'>"
+            contentBox.innerHTML = contentHtml
+            contentCount = contentCount + 1
+            contentType.push(2)
+            return false
+        });
+
         form.on('submit(addTag)', function (data) {
             var form_data = data.field;
-            var send_data = {};
 
-            if (send_data.name == "") {
+            if (form_data.name == "") {
                 alert("标签名称不能为空")
                 return false
             }
 
-            //名称
-            send_data.name = form_data["name"];
-            send_data.file = filearr[0];
-            send_data.type = form_data["type"];
-
-            layer.load(2);
-
-            var dataObject = {
-                "name": send_data.name,
+            if (!filearr[0]) {
+                alert("标签图标不能为空")
+                return false
             }
 
             var formData = new FormData();
-            formData.append("name", send_data.name)
+            formData.append("name", form_data.name)
+            formData.append("icon", filearr[0])
+            formData.append("type", typeIndex)
+            formData.append("count", contentCount)
+            formData.append("url", form_data.urlcontent)
+
+            for (var i = 0; i < contentCount; i++) {
+                if (contentType[i] == 1) {
+                    formData.append("content" + i, contentFileArr[i])
+                } else {
+                    formData.append("content" + i, $("#main" + i).val())
+                }
+            }
 
             $.ajax({
-                url: '/homepage/addshow',
+                url: '/homepage/addhomeshow',
                 type: 'post',
                 data: formData,
                 processData: false,
@@ -153,6 +212,22 @@
             }
 
             return false;
+        });
+
+        form.on('radio(encrypt)', function (data) {
+            if (data.value == 0) {
+                typeIndex = 1
+                $("#url-box").hide();
+                $("#content-box").show();
+                $("#addcontent-icon").show();
+                $("#addcontent-main").show();
+            } else if (data.value == 1) {
+                typeIndex = 2
+                $("#url-box").show();
+                $("#content-box").hide();
+                $("#addcontent-icon").hide();
+                $("#addcontent-main").hide();
+            }
         });
     });
 </script>
