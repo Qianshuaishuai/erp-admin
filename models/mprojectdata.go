@@ -20,3 +20,8 @@ type Project struct {
 	IDCard     string    `gorm:"column:idcard" json:"idcard"`
 	Time       time.Time `gorm:"column:time" json:"time"`
 }
+
+type ProjectDetail struct {
+	Project   Project  `json:"project"`
+	Industrys []string `json:"industrys"`
+}

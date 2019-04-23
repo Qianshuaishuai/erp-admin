@@ -61,6 +61,17 @@ func ChangeProjectStatus(id int, status int) error {
 	return nil
 }
 
+func GetProjectDetail(id int64) (data ProjectDetail, err error) {
+	GetEliteDb().Table("t_projects").Where("id = ?", id).Find(&data.Project)
+
+	var industryIDs []int
+	GetEliteDb().Table("t_project_industrys").Where("project = ?", id).Pluck("industry", &industryIDs)
+
+	GetEliteDb().Table("t_industry_tags").Where("id in (?)", industryIDs).Pluck("name", &data.Industrys)
+
+	return data, nil
+}
+
 func AddProject(name, typeName, address, money, agency, introduce, addtip, idcard string, phone int, cardImageURL, backgroundImageURL string, industrys string) error {
 	var snowCurl MSnowflakCurl
 	var project Project

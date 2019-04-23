@@ -1,0 +1,218 @@
+<fieldset class="layui-elem-field">
+    <legend>专家详情</legend>
+    <div class="layui-layout layui-layout-admin" style="padding-left: 40px;margin-top: 20px;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">专家姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_id" value="{{.UserInfo.Username}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">联系电话</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Phone}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">职业</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Job}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">所在地</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Address}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">毕业院校</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.School}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">专业领域</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Profess}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">所属机构</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Agency}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">职位</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Position}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">个人简介</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Introduce}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">专业领域</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.UserInfo.Achieve}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">个人标签</label>
+                <div class="layui-input-block">
+                    <div class="site-block">
+                        {{range $index,$elem := .Tags}}
+                        <input type="checkbox" name="tag{{$index}}" value="{{$elem}}" checked title="{{$elem}}">
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">查看数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.Connection.Look}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">点赞数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.Connection.Good}}" readonly class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">专家头像</label>
+                <div class="layui-input-block">
+                    <img name="paper_time" src="{{.UserInfo.Icon}}">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">个人名片</label>
+                <div class="layui-input-block">
+                    <img name="paper_time" src="{{.Connection.Card}}">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">审核状态</label>
+                <div class="layui-input-block">
+                    <input type="text" name="paper_time" value="{{.Status}}" readonly class="layui-input">
+                </div>
+            </div>
+        </form>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" onclick="javascript:history.go(-1);">返回列表</button>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+<script>
+    layui.use(['form', 'element', 'layer', 'jquery', 'util'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var util = layui.util;
+
+        //Top按钮
+        util.fixbar({
+            bar1: false
+        });
+
+        form.on('submit(addTag)', function (data) {
+            var form_data = data.field;
+
+            if (form_data.username == "") {
+                alert("专家名字不能为空")
+                return false
+            }
+            if (form_data.phone == "") {
+                alert("联系方式不能为空")
+                return false
+            }
+            if (form_data.job == "") {
+                alert("职业不能为空")
+                return false
+            }
+            if (form_data.address == "") {
+                alert("所在地不能为空")
+                return false
+            }
+            if (form_data.school == "") {
+                alert("毕业院校不能为空")
+                return false
+            }
+            if (form_data.agency == "") {
+                alert("机构不能为空")
+                return false
+            }
+            if (form_data.profess == "") {
+                alert("所属领域不能为空")
+                return false
+            }
+            if (form_data.position == "") {
+                alert("职位不能为空")
+                return false
+            }
+            if (form_data.introduce == "") {
+                alert("个人简介不能为空")
+                return false
+            }
+            if (form_data.achieve == "") {
+                alert("专业成就不能为空")
+                return false
+            }
+            if (!filearr[0]) {
+                alert("请先上传专家头像")
+                return false
+            }
+            if (!filearr[1]) {
+                alert("请先上传专家名片")
+                return false
+            }
+
+            var formData = new FormData();
+            formData.append("username", form_data.username)
+            formData.append("phone", form_data.phone)
+            formData.append("job", form_data.job)
+            formData.append("address", form_data.address)
+            formData.append("school", form_data.school)
+            formData.append("agency", form_data.agency)
+            formData.append("profess", form_data.profess)
+            formData.append("position", form_data.position)
+            formData.append("introduce", form_data.introduce)
+            formData.append("achieve", form_data.achieve)
+            formData.append("good", form_data.good)
+            formData.append("look", form_data.look)
+            formData.append("iconFile", filearr[0])
+            formData.append("cardFile", filearr[1])
+            formData.append("tags", pro)
+
+            $.ajax({
+                url: '/connection/addconnection',
+                type: 'post',
+                data: formData,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 0) {
+                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+                            // 跳转到列表页
+                            window.location.href = "/connection/list";
+                        })
+                    } else {
+                        layer.msg(obj.message)
+                    }
+                },
+            });
+
+            return false;
+        });
+    })
+</script>

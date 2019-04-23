@@ -59,13 +59,14 @@ func (self *ConnectionController) Table() {
 		row["look"] = v.Look
 		row["card"] = v.Card
 		row["time"] = beego.Date(v.Time, "Y-m-d H:i:s")
-		if v.Status == 0 {
-			row["status"] = "未审核"
-		} else if v.Status == 1 {
-			row["status"] = "审核通过"
-		} else if v.Status == 2 {
-			row["status"] = "审核不通过"
-		}
+		// if v.Status == 0 {
+		// 	row["status"] = "未审核"
+		// } else if v.Status == 1 {
+		// 	row["status"] = "审核通过"
+		// } else if v.Status == 2 {
+		// 	row["status"] = "审核不通过"
+		// }
+		row["status"] = "无需审核"
 		list[k] = row
 	}
 	self.ajaxList("", 0, count, list)
@@ -76,6 +77,26 @@ func (self *ConnectionController) Add() {
 	self.Data["pageTitle"] = "添加新专家"
 	self.Data["ApiCss"] = true
 	self.Data["PersonTagList"] = personTags
+	self.display()
+}
+
+func (self *ConnectionController) Detail() {
+	phone, _ := self.GetInt64("phone", 0)
+	data, _ := models.GetConnectionDetail(phone)
+	self.Data["pageTitle"] = "专家详情"
+	self.Data["ApiCss"] = true
+	self.Data["Connection"] = data.Connection
+	self.Data["UserInfo"] = data.UserInfoSimple
+	self.Data["Tags"] = data.Tags
+
+	if data.Connection.Status == 0 {
+		self.Data["Status"] = "无需审核"
+	} else if data.Connection.Status == 1 {
+		self.Data["Status"] = "无需审核"
+	} else {
+		self.Data["Status"] = "无需审核"
+	}
+
 	self.display()
 }
 

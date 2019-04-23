@@ -67,6 +67,20 @@ func ChangeConnectionStatus(phone int, status int) error {
 	return nil
 }
 
+func GetConnectionDetail(phone int64) (data UserInfoDetail, err error) {
+	GetEliteDb().Table("t_connections").Where("phone = ?", phone).Find(&data.Connection)
+	GetEliteDb().Table("t_users").Where("phone = ?", phone).Find(&data.UserInfoSimple)
+
+	var tagIDs []int
+	GetEliteDb().Table("t_user_tags").Where("phone = ?", phone).Pluck("person", &tagIDs)
+
+	var tagName []string
+	GetEliteDb().Table("t_person_tags").Where("id in (?)", tagIDs).Pluck("name", &tagName)
+	data.Tags = tagName
+
+	return data, nil
+}
+
 func AddConnection(phone, look, good int, username, job, position, profess, agency, address, introduce, achieve, school, iconImageURL, cardImageURL string, tags string) error {
 	tx := GetEliteDb().Begin()
 

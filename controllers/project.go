@@ -87,6 +87,26 @@ func (self *ProjectController) Add() {
 	self.display()
 }
 
+func (self *ProjectController) Detail() {
+	id, _ := self.GetInt64("id", 0)
+	data, _ := models.GetProjectDetail(id)
+	self.Data["pageTitle"] = "项目详情"
+	self.Data["ApiCss"] = true
+	self.Data["Project"] = data.Project
+	self.Data["Industrys"] = data.Industrys
+	self.Data["Time"] = beego.Date(data.Project.Time, "Y-m-d H:i:s")
+
+	if data.Project.Status == 0 {
+		self.Data["Status"] = "未审核"
+	} else if data.Project.Status == 1 {
+		self.Data["Status"] = "审核通过"
+	} else {
+		self.Data["Status"] = "审核不通过"
+	}
+
+	self.display()
+}
+
 func (self *ProjectController) AddProject() {
 	name := self.GetString("name")
 	typeName := self.GetString("type")

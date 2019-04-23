@@ -15,8 +15,9 @@
     </table>
 
     <script type="text/html" id="bar">
-        <a class="layui-btn layui-btn-xs" lay-event="deal">通过</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="no-deal">不通过</a>
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看详情</a>
+        <!-- <a class="layui-btn layui-btn-xs" lay-event="deal">通过</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="no-deal">不通过</a> -->
     </script>
 </div>
 <script>
@@ -31,13 +32,13 @@
             elem: '#table_list'
             , url: '/connection/table'
             , cols: [[
-                {field: 'phone', title: '手机号码', width: '10%'}
-                , {field: 'card', title: '个人名片', width: '20%'}
-                , {field: 'good', title: '点赞数', width: '10%'}
-                , {field: 'look', title: '阅读数', width: '10%'}
-                , {field: 'status', title: '审核状态', width: '10%'}
-                , {field: 'time', title: '申请时间', sort: true}
-                , {fixed: 'right', title: '审核操作', width: '20%', align: 'center', toolbar: '#bar'}
+                { field: 'phone', title: '手机号码', width: '10%' }
+                , { field: 'card', title: '个人名片', width: '20%' }
+                , { field: 'good', title: '点赞数', width: '10%' }
+                , { field: 'look', title: '阅读数', width: '10%' }
+                , { field: 'status', title: '审核状态', width: '10%' }
+                , { field: 'time', title: '申请时间', sort: true }
+                , { fixed: 'right', title: '审核操作', width: '20%', align: 'center', toolbar: '#bar' }
             ]]
             , id: 'listReload'
             , page: true
@@ -59,17 +60,17 @@
             });
         });
 
-        layui.use(['form', 'layedit', 'laydate','element','jquery'], function() {
+        layui.use(['form', 'layedit', 'laydate', 'element', 'jquery'], function () {
             var form = layui.form,
-            layer = layui.layer,
-            element=layui.element,
-            $=layui.jquery;
-            $(document).on('click','#reload',function(){
+                layer = layui.layer,
+                element = layui.element,
+                $ = layui.jquery;
+            $(document).on('click', '#reload', function () {
                 table.reload('listReload', {
-                where: {
-                    q: $("#q").val()
-                    , sort: 0
-                }
+                    where: {
+                        q: $("#q").val()
+                        , sort: 0
+                    }
                 });
             });
         });
@@ -103,24 +104,26 @@
             var data = obj.data;
             if (obj.event === 'deal') {
                 table.reload('listReload', {
-                where: {
-                    id: data.phone
-                    , status: 1
-                }
-            });
+                    where: {
+                        id: data.phone
+                        , status: 1
+                    }
+                });
 
             } else if (obj.event === 'no-deal') {
                 table.reload('listReload', {
-                where: {
-                    id: data.phone
-                    , status: 2
-                }
-            });
-            }else {
+                    where: {
+                        id: data.phone
+                        , status: 2
+                    }
+                });
+
+            } else if (obj.event === 'detail') {
+                window.location.href = "/connection/detail?phone=" + data.phone
+            } else {
                 layer.msg('操作不存在');
             }
         });
     });
 
 </script>
-

@@ -19,3 +19,9 @@ type UserInfoSimple struct {
 	Achieve   string    `gorm:"column:achieve" json:"achieve"`
 	Register  time.Time `gorm:"column:register" json:"register"`
 }
+
+type UserInfoDetail struct {
+	UserInfoSimple UserInfoSimple `json:"userInfoSimple"`
+	Connection     Connection     `json:"connection"`
+	Tags           []string       `json:"tags"`
+}
