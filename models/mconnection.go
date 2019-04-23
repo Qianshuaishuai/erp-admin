@@ -67,6 +67,33 @@ func ChangeConnectionStatus(phone int, status int) error {
 	return nil
 }
 
+func DeleteConnectionSimple(phone int) (err error) {
+	tx := GetEliteDb().Begin()
+	err = tx.Table("t_connections").Where("phone = ?", phone).Delete(Connection{}).Error
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Table("t_users").Where("phone = ?", phone).Delete(UserInfoSimple{}).Error
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Table("t_user_tags").Where("phone = ?", phone).Delete(UserTag{}).Error
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+	return nil
+}
+
 func GetConnectionDetail(phone int64) (data UserInfoDetail, err error) {
 	GetEliteDb().Table("t_connections").Where("phone = ?", phone).Find(&data.Connection)
 	GetEliteDb().Table("t_users").Where("phone = ?", phone).Find(&data.UserInfoSimple)
@@ -121,6 +148,7 @@ func AddConnection(phone, look, good int, username, job, position, profess, agen
 	connection.Phone = phone
 	connection.Status = 1
 	connection.Time = time.Now()
+	connection.From = 1
 
 	var aCount int
 	tx.Table("t_connections").Where("phone = ?", phone).Count(&aCount)

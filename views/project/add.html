@@ -3,57 +3,56 @@
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">项目名称</label>
             <div class="layui-input-block">
-                <input type="text" id="name" name="name" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="name" name="name" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">项目类型</label>
             <div class="layui-input-block">
-                <input type="text" id="type" name="type" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="type" name="type" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">所在地</label>
             <div class="layui-input-block">
                 <input type="text" id="address" name="address" placeholder="按照格式，每一个层级空一格，例：中国 广东 深圳"
-                    class="layui-input" lay-verify="required">
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">所需资金</label>
             <div class="layui-input-block">
-                <input type="text" id="money" name="money" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="money" name="money" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">推荐人（机构）</label>
             <div class="layui-input-block">
-                <input type="text" id="agency" name="agency" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="agency" name="agency" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">项目简介</label>
             <div class="layui-input-block">
-                <input type="text" id="introduce" name="introduce" placeholder="" class="layui-input"
-                    lay-verify="required">
+                <input type="text" id="introduce" name="introduce" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">注册地址</label>
             <div class="layui-input-block">
-                <input type="text" id="addtip" name="addtip" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="addtip" name="addtip" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">身份证</label>
             <div class="layui-input-block">
-                <input type="text" id="idcard" name="idcard" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="idcard" name="idcard" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">联系方式</label>
             <div class="layui-input-block">
-                <input type="number" id="phone" name="phone" placeholder="" class="layui-input" lay-verify="required"
+                <input type="number" id="phone" name="phone" placeholder="" class="layui-input"
                     maxlength="11">
             </div>
         </div>
@@ -111,51 +110,6 @@
 
         form.on('submit(addTag)', function (data) {
             var form_data = data.field;
-
-            if (form_data.name == "") {
-                alert("项目名称不能为空")
-                return false
-            }
-            if (form_data.type == "") {
-                alert("项目类型不能为空")
-                return false
-            }
-            if (form_data.address == "") {
-                alert("所在地不能为空")
-                return false
-            }
-            if (form_data.money == "") {
-                alert("所需资金不能为空")
-                return false
-            }
-            if (form_data.agency == "") {
-                alert("推荐人（机构）不能为空")
-                return false
-            }
-            if (form_data.introduce == "") {
-                alert("项目简介不能为空")
-                return false
-            }
-            if (form_data.addtip == "") {
-                alert("注册地址不能为空")
-                return false
-            }
-            if (form_data.idcard == "") {
-                alert("身份证不能为空")
-                return false
-            }
-            if (form_data.phone == "") {
-                alert("联系方式不能为空")
-                return false
-            }
-            if (!filearr[0]) {
-                alert("请先上传个人名片")
-                return false
-            }
-            if (!filearr[1]) {
-                alert("请先上传背景图")
-                return false
-            }
 
             var pro = "";
             var count = 0;

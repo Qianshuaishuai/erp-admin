@@ -38,6 +38,10 @@ func (self *ConnectionController) Table() {
 		models.ChangeConnectionStatus(phone, status)
 	}
 
+	if phone >= 0 && status < 0 {
+		models.DeleteConnectionSimple(phone)
+	}
+
 	//看看q能不能变成ID
 	paperId, err := strconv.ParseInt(q, 10, 64)
 
@@ -59,6 +63,14 @@ func (self *ConnectionController) Table() {
 		row["look"] = v.Look
 		row["card"] = v.Card
 		row["time"] = beego.Date(v.Time, "Y-m-d H:i:s")
+		row["from"] = v.From
+
+		if v.From == 1 {
+			row["fromstr"] = "管理员添加"
+		} else {
+			row["fromstr"] = "用户加入"
+		}
+
 		// if v.Status == 0 {
 		// 	row["status"] = "未审核"
 		// } else if v.Status == 1 {
@@ -115,11 +127,21 @@ func (self *ConnectionController) AddConnection() {
 	good, _ := self.GetInt("good")
 	tags := self.GetString("tags")
 
+	var iImageURL, cImageURL string
 	iFile, iHandler, _ := self.GetFile("iconFile")
 	cFile, cHandler, _ := self.GetFile("cardFile")
 
-	iImageURL, _ := models.UploadFile(models.TYPE_CONNECTION_ICON_ID, iHandler.Filename, iFile)
-	cImageURL, _ := models.UploadFile(models.TYPE_CONNECTION_CARD_ID, cHandler.Filename, cFile)
+	if iFile != nil {
+		iImageURL, _ = models.UploadFile(models.TYPE_CONNECTION_ICON_ID, iHandler.Filename, iFile)
+	} else {
+		iImageURL = ""
+	}
+
+	if cFile != nil {
+		cImageURL, _ = models.UploadFile(models.TYPE_CONNECTION_CARD_ID, cHandler.Filename, cFile)
+	} else {
+		cImageURL = ""
+	}
 
 	err := models.AddConnection(phone, look, good, username, job, position, profess, agency, address, introduce, achieve, school, iImageURL, cImageURL, tags)
 

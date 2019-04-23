@@ -3,21 +3,20 @@
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">专家名称</label>
             <div class="layui-input-block">
-                <input type="text" id="username" name="username" placeholder="" class="layui-input"
-                    lay-verify="required">
+                <input type="text" id="username" name="username" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">联系方式</label>
             <div class="layui-input-block">
-                <input type="number" id="phone" name="phone" placeholder="" class="layui-input" lay-verify="required"
+                <input type="number" id="phone" name="phone" placeholder="" class="layui-input"
                     maxlength="11">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">职业</label>
             <div class="layui-input-block">
-                <input type="text" id="job" name="job" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="job" name="job" placeholder="" class="layui-input">
             </div>
         </div>
 
@@ -25,60 +24,58 @@
             <label class="layui-form-label">所在地</label>
             <div class="layui-input-block">
                 <input type="text" id="address" name="address" placeholder="按照格式，每一个层级空一格，例：中国 广东 深圳"
-                    class="layui-input" lay-verify="required">
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">毕业院校</label>
             <div class="layui-input-block">
-                <input type="text" id="school" name="school" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="school" name="school" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">机构</label>
             <div class="layui-input-block">
-                <input type="text" id="agency" name="agency" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="agency" name="agency" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">所属领域</label>
             <div class="layui-input-block">
-                <input type="text" id="profess" name="profess" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="profess" name="profess" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">职位</label>
             <div class="layui-input-block">
-                <input type="text" id="position" name="position" placeholder="" class="layui-input"
-                    lay-verify="required">
+                <input type="text" id="position" name="position" placeholder="" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">个人简介</label>
             <div class="layui-input-block">
-                <input type="text" id="introduce" name="introduce" placeholder="" class="layui-input"
-                    lay-verify="required">
+                <input type="text" id="introduce" name="introduce" placeholder="" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">专业成就</label>
             <div class="layui-input-block">
-                <input type="text" id="achieve" name="achieve" placeholder="" class="layui-input" lay-verify="required">
+                <input type="text" id="achieve" name="achieve" placeholder="" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">默认观看数</label>
             <div class="layui-input-block">
-                <input type="number" id="look" name="look" placeholder="" class="layui-input" lay-verify="required"
+                <input type="number" id="look" name="look" placeholder="" class="layui-input"
                     maxlength="5" value="0">
             </div>
         </div>
         <div class="layui-form-item" style="margin-top: 20px;">
             <label class="layui-form-label">默认点赞数</label>
             <div class="layui-input-block">
-                <input type="number" id="good" name="good" placeholder="" class="layui-input" lay-verify="required"
+                <input type="number" id="good" name="good" placeholder="" class="layui-input"
                     maxlength="5" value="0">
             </div>
         </div>
@@ -136,55 +133,6 @@
 
         form.on('submit(addTag)', function (data) {
             var form_data = data.field;
-
-            if (form_data.username == "") {
-                alert("专家名字不能为空")
-                return false
-            }
-            if (form_data.phone == "") {
-                alert("联系方式不能为空")
-                return false
-            }
-            if (form_data.job == "") {
-                alert("职业不能为空")
-                return false
-            }
-            if (form_data.address == "") {
-                alert("所在地不能为空")
-                return false
-            }
-            if (form_data.school == "") {
-                alert("毕业院校不能为空")
-                return false
-            }
-            if (form_data.agency == "") {
-                alert("机构不能为空")
-                return false
-            }
-            if (form_data.profess == "") {
-                alert("所属领域不能为空")
-                return false
-            }
-            if (form_data.position == "") {
-                alert("职位不能为空")
-                return false
-            }
-            if (form_data.introduce == "") {
-                alert("个人简介不能为空")
-                return false
-            }
-            if (form_data.achieve == "") {
-                alert("专业成就不能为空")
-                return false
-            }
-            if (!filearr[0]) {
-                alert("请先上传专家头像")
-                return false
-            }
-            if (!filearr[1]) {
-                alert("请先上传专家名片")
-                return false
-            }
 
             var pro = "";
             var count = 0;

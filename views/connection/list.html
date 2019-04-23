@@ -16,6 +16,7 @@
 
     <script type="text/html" id="bar">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看详情</a>
+        <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
         <!-- <a class="layui-btn layui-btn-xs" lay-event="deal">通过</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="no-deal">不通过</a> -->
     </script>
@@ -33,12 +34,13 @@
             , url: '/connection/table'
             , cols: [[
                 { field: 'phone', title: '手机号码', width: '10%' }
-                , { field: 'card', title: '个人名片', width: '20%' }
+                , { field: 'card', title: '个人名片', width: '15%' }
                 , { field: 'good', title: '点赞数', width: '10%' }
                 , { field: 'look', title: '阅读数', width: '10%' }
                 , { field: 'status', title: '审核状态', width: '10%' }
+                , { field: 'fromstr', title: '来源', width: '10%' }
                 , { field: 'time', title: '申请时间', sort: true }
-                , { fixed: 'right', title: '审核操作', width: '20%', align: 'center', toolbar: '#bar' }
+                , { fixed: 'right', title: '审核操作', width: '15%', align: 'center', toolbar: '#bar' }
             ]]
             , id: 'listReload'
             , page: true
@@ -120,6 +122,17 @@
 
             } else if (obj.event === 'detail') {
                 window.location.href = "/connection/detail?phone=" + data.phone
+            } else if (obj.event === 'delete') {
+                if (data.from == 1) {
+                    table.reload('listReload', {
+                        where: {
+                            id: data.phone,
+                            status: -1
+                        }
+                    });
+                } else {
+                    layer.msg('非后台添加人脉不允许删除');
+                }
             } else {
                 layer.msg('操作不存在');
             }

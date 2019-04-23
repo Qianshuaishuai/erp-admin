@@ -122,8 +122,19 @@ func (self *ProjectController) AddProject() {
 	cFile, cHandler, _ := self.GetFile("cardFile")
 	bFile, bHandler, _ := self.GetFile("backgroundFile")
 
-	cImageURL, _ := models.UploadFile(models.TYPE_PROJECT_CARD_ID, cHandler.Filename, cFile)
-	bImageURL, _ := models.UploadFile(models.TYPE_PROJECT_BACKGROUND_ID, bHandler.Filename, bFile)
+	var cImageURL, bImageURL string
+
+	if cFile == nil {
+		cImageURL = ""
+	} else {
+		cImageURL, _ = models.UploadFile(models.TYPE_PROJECT_CARD_ID, cHandler.Filename, cFile)
+	}
+
+	if bFile == nil {
+		bImageURL = ""
+	} else {
+		bImageURL, _ = models.UploadFile(models.TYPE_PROJECT_BACKGROUND_ID, bHandler.Filename, bFile)
+	}
 
 	err := models.AddProject(name, typeName, address, money, agency, introduce, addtip, idcard, phone, cImageURL, bImageURL, industrys)
 

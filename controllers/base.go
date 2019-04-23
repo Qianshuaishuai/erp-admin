@@ -172,6 +172,13 @@ func (self *BaseController) SetTheStartMenu() {
 			AuthUrl:  "/project/list",
 		})
 		list2 = append(list2, StartMenu{
+			Id:       14,
+			Pid:      1,
+			Icon:     "fa-eye",
+			AuthName: "首页标签",
+			AuthUrl:  "/homepage/list",
+		})
+		list2 = append(list2, StartMenu{
 			Id:       13,
 			Pid:      1,
 			Icon:     "fa-star",
@@ -184,13 +191,6 @@ func (self *BaseController) SetTheStartMenu() {
 			Icon:     "fa-list",
 			AuthName: "行业标签",
 			AuthUrl:  "/industry/list",
-		})
-		list2 = append(list2, StartMenu{
-			Id:       14,
-			Pid:      1,
-			Icon:     "fa-eye",
-			AuthName: "首页标签",
-			AuthUrl:  "/homepage/list",
 		})
 	}
 
