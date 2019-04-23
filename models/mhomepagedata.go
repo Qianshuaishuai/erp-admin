@@ -7,6 +7,7 @@ type HomeShow struct {
 	Icon    string `gorm:"column:icon" json:"icon"`
 	Type    int    `gorm:"column:type" json:"type"`
 	URL     string `gorm:"column:url" json:"url"`
+	Plain   int    `gorm:"column:plain" json:"plain"`
 }
 
 type HomeContent struct {

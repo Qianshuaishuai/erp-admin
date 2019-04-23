@@ -34,7 +34,12 @@ func (self *HomePageController) Table() {
 		models.DeleteHomeShow(id)
 	}
 
-	result, count := models.GetHomePageTagListSimple(q, limit, page)
+	sort, err := self.GetInt("sort")
+	if err != nil {
+		sort = 0
+	}
+
+	result, count := models.GetHomePageTagListSimple(q, limit, page, sort)
 	list := make([]map[string]interface{}, len(result))
 	for k, v := range result {
 		row := make(map[string]interface{})
@@ -42,6 +47,7 @@ func (self *HomePageController) Table() {
 		row["name"] = v.HomeShow.Name
 		row["icon"] = v.HomeShow.Icon
 		row["url"] = v.HomeShow.URL
+		row["plain"] = v.HomeShow.Plain
 		if v.HomeShow.Type == 2 {
 			row["type"] = "外链标签"
 		} else {
@@ -71,6 +77,23 @@ func (self *HomePageController) Add() {
 	self.Data["pageTitle"] = "添加首页标签"
 	self.Data["ApiCss"] = true
 	self.Data["TypeIDs"] = models.GetHomePageType()
+	self.display()
+}
+
+func (self *HomePageController) Edit() {
+	id, _ := self.GetInt64("id", 0)
+	data, _ := models.GetHomeShowDetail(id)
+	self.Data["pageTitle"] = "编辑首页标签"
+	self.Data["ApiCss"] = true
+	self.Data["HomeShow"] = data.HomeShow
+	self.Data["HomeContents"] = data.HomeContents
+
+	if data.HomeShow.Type == 1 {
+		self.Data["Desc"] = "正文标签"
+	} else {
+		self.Data["Desc"] = "外链标签"
+	}
+
 	self.display()
 }
 

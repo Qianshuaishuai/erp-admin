@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func GetHomePageTagListSimple(q string, limit int, page int) (list []HomeShowDetail, count int64) {
+func GetHomePageTagListSimple(q string, limit int, page int, sort int) (list []HomeShowDetail, count int64) {
 	db := GetEliteDb().Table("t_home_shows")
 	queryParams := make(map[string]interface{})
 	list = make([]HomeShowDetail, 0)
@@ -27,6 +27,11 @@ func GetHomePageTagListSimple(q string, limit int, page int) (list []HomeShowDet
 		qstring += "%"
 	}
 
+	var sortStr = "DESC" // 默认时间 降序
+	if sort == 1 {
+		sortStr = "ASC"
+	}
+
 	if len(qstring) > 0 {
 		db = db.Where("name LIKE ?", qstring)
 	}
@@ -37,6 +42,7 @@ func GetHomePageTagListSimple(q string, limit int, page int) (list []HomeShowDet
 
 	db.Limit(limit).
 		Offset(offset).
+		Order("plain " + sortStr).
 		Scan(&mlist)
 
 	var contents []HomeContent
@@ -55,6 +61,14 @@ func GetHomePageTagListSimple(q string, limit int, page int) (list []HomeShowDet
 		list = append(list, detail)
 	}
 	return
+}
+
+func GetHomeShowDetail(id int64) (data HomeShowDetail, err error) {
+
+	GetEliteDb().Table("t_home_shows").Where("id = ?", id).Find(&data.HomeShow)
+	GetEliteDb().Table("t_home_contents").Where("id = ?", id).Find(&data.HomeContents)
+
+	return data, nil
 }
 
 func DeleteHomeShow(id int) error {

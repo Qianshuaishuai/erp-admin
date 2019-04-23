@@ -1,0 +1,138 @@
+<fieldset class="layui-elem-field">
+    <legend>首页标签</legend>
+    <div class="layui-layout layui-layout-admin" style="padding-left: 40px;margin-top: 20px;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">标签名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" value="{{.HomeShow.Name}}" class="layui-input">
+                    <input type="text" name="id" value="{{.HomeShow.ID}}" class="layui-input" style="display:none">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">标签顺序</label>
+                <div class="layui-input-block">
+                    <input type="number" name="index" value="{{.HomeShow.Plain}}" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">标签图标</label>
+                <div class="layui-input-block">
+                    <img id="icon" name="icon" src="{{.HomeShow.Icon}}">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">更换图标</label>
+                <div class="layui-input-block">
+                    <input type="file" id="icon_upload_icon" name="icon_upload_icon" placeholder=""
+                        style="margin-left:30px;margin-top:10px">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标签类型</label>
+                <div class="layui-input-block">
+                    <input type="radio" id="type1" name="{{.HomeShow.Type}}" value="0" title="正文标签"
+                        lay-filter="encrypt">
+                    <input type="radio" id="type2" name="{{.HomeShow.Type}}" value="1" title="外链标签"
+                        lay-filter="encrypt">
+                </div>
+            </div>
+            <div class="layui-form-item" id="url" pane>
+                <label class="layui-form-label">外链地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="url" value="{{.HomeShow.URL}}" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" id="content">
+                <label class="layui-form-label">正文内容</label>
+                <div class="layui-input-block">
+                    {{range $index,$elem := .HomeContents}}
+                    <div class="site-block">
+                        <input type="text" id="content{{$index}}" name="content{{$index}}" value="{{$elem.Content}}"
+                            title="{{$elem.Content}}">
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+            <input type="text" name="tip" value="注:标签顺序决定前端显示标签顺序,0为优先级最高,依次往下排序!" readonly class="layui-input">
+            <button class="layui-btn" id="add" lay-submit="" lay-filter="editTag"
+                style="margin-left:30px;margin-top:20px">确定修改</button>
+        </form>
+    </div>
+</fieldset>
+
+<script>
+    layui.use(['form', 'element', 'layer', 'jquery', 'util'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var util = layui.util;
+
+        var filearr = new Array(1);
+        var iconFile = document.getElementById('icon_upload_icon');
+
+        var type1 = document.getElementById('type1');
+        var type2 = document.getElementById('type2');
+
+        if (type1.name && type1.name == 1) {
+            $("#type1").prop("checked", true);
+            $("#url").hide();
+            $("#content").show();
+            form.render(null);
+        } else if (type1.name && type1.name == 2) {
+            $("#type2").prop("checked", true);
+            $("#url").show();
+            $("#content").hide();
+            form.render(null);
+        }
+
+        iconFile.onchange = function () {
+            var files = this.files;
+            if (files.length > 0) {
+                filearr[0] = files[0]
+            }
+        }
+
+        //Top按钮
+        util.fixbar({
+            bar1: false
+        });
+
+        form.on('submit(editTag)', function (data) {
+            var form_data = data.field;
+
+            var formData = new FormData();
+            formData.append("id", form_data.id)
+            formData.append("name", form_data.name)
+            formData.append("index", form_data.index)
+
+            if (!filearr[0]) {
+                formData.append("image", form_data.icon)
+            } else {
+                formData.append("file", filearr[0])
+            }
+
+            $.ajax({
+                url: '/person/edittag',
+                type: 'post',
+                data: formData,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 0) {
+                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+                            // 跳转到列表页
+                            window.location.href = "/person/list";
+                        })
+                    } else {
+                        layer.msg(obj.message)
+                    }
+                },
+            });
+
+            return false;
+        });
+    })
+</script>
