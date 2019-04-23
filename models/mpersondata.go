@@ -3,9 +3,10 @@ package models
 import "mime/multipart"
 
 type PersonTag struct {
-	ID   int    `gorm:"column:id" json:"tagId"`
-	Name string `gorm:"column:name" json:"tagName"`
-	Icon string `gorm:"column:icon" json:"tagIcon"`
+	ID    int    `gorm:"column:id" json:"tagId"`
+	Name  string `gorm:"column:name" json:"tagName"`
+	Icon  string `gorm:"column:icon" json:"tagIcon"`
+	Plain int    `gorm:"column:plain" json:"plain"`
 }
 
 type UserTag struct {

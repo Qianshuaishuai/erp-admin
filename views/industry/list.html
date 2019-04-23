@@ -15,6 +15,7 @@
     </table>
 
     <script type="text/html" id="bar">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
     </script>
 </div>
@@ -30,8 +31,9 @@
             elem: '#table_list'
             , url: '/industry/table'
             , cols: [[
-                 {field: 'name', title: '标签名称', width: '70%'}
-                , {fixed: 'right', title: '修改操作', width: '30%', align: 'center', toolbar: '#bar'}
+                { field: 'name', title: '标签名称', width: '50%' }
+                ,{ field: 'plain', title: '标签顺序', width: '20%' , sort: true}
+                , { fixed: 'right', title: '修改操作', width: '30%', align: 'center', toolbar: '#bar' }
             ]]
             , id: 'listReload'
             , page: true
@@ -49,17 +51,17 @@
             });
         });
 
-        layui.use(['form', 'layedit', 'laydate','element','jquery'], function() {
+        layui.use(['form', 'layedit', 'laydate', 'element', 'jquery'], function () {
             var form = layui.form,
-            layer = layui.layer,
-            element=layui.element,
-            $=layui.jquery;
-            $(document).on('click','#reload',function(){
+                layer = layui.layer,
+                element = layui.element,
+                $ = layui.jquery;
+            $(document).on('click', '#reload', function () {
                 table.reload('listReload', {
-                where: {
-                    q: $("#q").val()
-                    , sort: 0
-                }
+                    where: {
+                        q: $("#q").val()
+                        , sort: 0
+                    }
                 });
             });
         });
@@ -91,17 +93,43 @@
                 });
             }
         });
+        
+        table.on('sort(table_filter)', function (obj) {
+            sortX = 0;
+            if (obj.type === 'asc') {
+                sortX = 1;
+            }
+
+            if ($('#q').val()) {
+                table.reload('listReload', {
+                    initSort: obj
+                    , where: {
+                        sort: sortX,
+                        q: $('#q').val()
+                    }
+                });
+            } else {
+                table.reload('listReload', {
+                    initSort: obj
+                    , where: {
+                        sort: sortX
+                    }
+                });
+            }
+        });
 
         //监听工具条
         table.on('tool(table_filter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'delete') {
                 table.reload('listReload', {
-                where: {
-                    id: data.id
-                }
-            });
+                    where: {
+                        id: data.id
+                    }
+                });
 
+            } else if (obj.event === 'edit') {
+                window.location.href = "/industry/edit?id=" + data.id
             } else {
                 layer.msg('操作不存在');
             }
@@ -109,4 +137,3 @@
     });
 
 </script>
-

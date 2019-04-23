@@ -33,13 +33,19 @@ func (self *PersonController) Table() {
 		models.DeletePersonTag(id)
 	}
 
-	result, count := models.GetPersonTagListSimple(q, limit, page)
+	sort, err := self.GetInt("sort")
+	if err != nil {
+		sort = 0
+	}
+
+	result, count := models.GetPersonTagListSimple(q, limit, page, sort)
 	list := make([]map[string]interface{}, len(result))
 	for k, v := range result {
 		row := make(map[string]interface{})
 		row["id"] = v.ID
 		row["name"] = v.Name
 		row["icon"] = v.Icon
+		row["plain"] = v.Plain
 
 		list[k] = row
 	}
@@ -50,6 +56,36 @@ func (self *PersonController) Add() {
 	self.Data["pageTitle"] = "添加标签"
 	self.Data["ApiCss"] = true
 	self.display()
+}
+
+func (self *PersonController) Edit() {
+	id, _ := self.GetInt64("id", 0)
+	data, _ := models.GetPersonDetail(id)
+	self.Data["pageTitle"] = "编辑个人标签"
+	self.Data["ApiCss"] = true
+	self.Data["PersonTag"] = data
+
+	self.display()
+}
+
+func (self *PersonController) EditTag() {
+	id, _ := self.GetInt("id")
+	index, _ := self.GetInt("index")
+	name := self.GetString("name")
+	imageURL := self.GetString("image")
+
+	if imageURL == "" {
+		file, fileHandler, _ := self.GetFile("file")
+		imageURL, _ = models.UploadFile(models.TYPE_ADD_PERSON_TAG, fileHandler.Filename, file)
+	}
+
+	err := models.EditPersonDetail(id, index, name, imageURL)
+
+	if err != nil {
+		self.ajaxMsg("编辑失败 :"+err.Error(), -1)
+	}
+
+	self.ajaxMsg("success", 0)
 }
 
 func (self *PersonController) AddTag() {

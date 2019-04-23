@@ -1,8 +1,9 @@
 package models
 
 type IndustryTag struct {
-	ID   int    `gorm:"column:id" json:"tagId"`
-	Name string `gorm:"column:name" json:"tagName"`
+	ID    int    `gorm:"column:id" json:"tagId"`
+	Name  string `gorm:"column:name" json:"tagName"`
+	Plain int    `gorm:"column:plain" json:"plain"`
 }
 
 type UserIndustry struct {

@@ -97,7 +97,7 @@ func AddProject(name, typeName, address, money, agency, introduce, addtip, idcar
 	}
 
 	industryIDs, _ := helper.TransformStringToInt64Arr(industrys)
-	industryTags, _ := GetIndustryTagListSimple("", 100, 1)
+	industryTags, _ := GetIndustryTagListSimple("", 100, 1, 0)
 
 	for i := range industryIDs {
 		var industry ProjectIndustry

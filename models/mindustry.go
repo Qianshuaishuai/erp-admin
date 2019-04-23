@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func GetIndustryTagListSimple(q string, limit int, page int) (list []IndustryTag, count int64) {
+func GetIndustryTagListSimple(q string, limit int, page int, sort int) (list []IndustryTag, count int64) {
 	db := GetEliteDb().Table("t_industry_tags")
 	queryParams := make(map[string]interface{})
 	list = make([]IndustryTag, 0)
@@ -31,15 +31,38 @@ func GetIndustryTagListSimple(q string, limit int, page int) (list []IndustryTag
 		db = db.Where("name LIKE ?", qstring)
 	}
 
+	var sortStr = "DESC" // 默认时间 降序
+	if sort == 1 {
+		sortStr = "ASC"
+	}
+
 	db = db.Model(IndustryTag{}).
 		Where(queryParams).
 		Count(&count)
 
 	db.Limit(limit).
 		Offset(offset).
+		Order("plain " + sortStr).
 		Scan(&list)
 
 	return
+}
+
+func GetIndustryDetail(id int64) (data IndustryTag, err error) {
+	GetEliteDb().Table("t_industry_tags").Where("id = ?", id).Find(&data)
+
+	return data, nil
+}
+
+func EditIndustryDetail(id, index int, newName string) (err error) {
+	var tag IndustryTag
+	tag.ID = int(id)
+	tag.Name = newName
+	tag.Plain = index
+
+	GetEliteDb().Table("t_industry_tags").Where("id = ?", id).Update(&tag)
+
+	return nil
 }
 
 func DeleteIndustryTag(id int) error {

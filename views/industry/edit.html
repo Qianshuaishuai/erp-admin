@@ -1,0 +1,68 @@
+<fieldset class="layui-elem-field">
+    <legend>行业标签</legend>
+    <div class="layui-layout layui-layout-admin" style="padding-left: 40px;margin-top: 20px;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">标签名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" value="{{.IndustryTag.Name}}" class="layui-input">
+                    <input type="text" name="id" value="{{.IndustryTag.ID}}" class="layui-input" style="display:none">
+                </div>
+            </div>
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">标签顺序</label>
+                <div class="layui-input-block">
+                    <input type="number" name="index" value="{{.IndustryTag.Plain}}" class="layui-input">
+                </div>
+            </div>
+            <input type="text" name="tip" value="注:标签顺序决定前端显示标签顺序,0为优先级最高,依次往下排序!" readonly class="layui-input">
+            <button class="layui-btn" id="add" lay-submit="" lay-filter="editTag"
+                style="margin-left:30px;margin-top:20px">确定修改</button>
+        </form>
+    </div>
+</fieldset>
+
+<script>
+    layui.use(['form', 'element', 'layer', 'jquery', 'util'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var util = layui.util;
+
+        //Top按钮
+        util.fixbar({
+            bar1: false
+        });
+
+        form.on('submit(editTag)', function (data) {
+            var form_data = data.field;
+
+            var formData = new FormData();
+            formData.append("id", form_data.id)
+            formData.append("name", form_data.name)
+            formData.append("index", form_data.index)
+
+            $.ajax({
+                url: '/industry/edittag',
+                type: 'post',
+                data: formData,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    if (obj.status == 0) {
+                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+                            // 跳转到列表页
+                            window.location.href = "/industry/list";
+                        })
+                    } else {
+                        layer.msg(obj.message)
+                    }
+                },
+            });
+
+            return false;
+        });
+    })
+</script>

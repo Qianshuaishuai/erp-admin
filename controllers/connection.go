@@ -85,7 +85,7 @@ func (self *ConnectionController) Table() {
 }
 
 func (self *ConnectionController) Add() {
-	personTags, _ := models.GetPersonTagListSimple("", 1000, 1)
+	personTags, _ := models.GetPersonTagListSimple("", 1000, 1, 0)
 	self.Data["pageTitle"] = "添加新专家"
 	self.Data["ApiCss"] = true
 	self.Data["PersonTagList"] = personTags

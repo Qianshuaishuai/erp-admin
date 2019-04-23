@@ -80,7 +80,7 @@ func (self *ProjectController) Table() {
 }
 
 func (self *ProjectController) Add() {
-	industrys, _ := models.GetIndustryTagListSimple("", 1000, 1)
+	industrys, _ := models.GetIndustryTagListSimple("", 1000, 1, 0)
 	self.Data["pageTitle"] = "添加新项目"
 	self.Data["ApiCss"] = true
 	self.Data["IndustryList"] = industrys

@@ -166,7 +166,7 @@ func AddConnection(phone, look, good int, username, job, position, profess, agen
 	}
 
 	tagIDs, _ := helper.TransformStringToInt64Arr(tags)
-	personTags, _ := GetPersonTagListSimple("", 100, 1)
+	personTags, _ := GetPersonTagListSimple("", 100, 1, 0)
 
 	for t := range tagIDs {
 		var userTag UserTag

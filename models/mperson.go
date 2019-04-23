@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func GetPersonTagListSimple(q string, limit int, page int) (list []PersonTag, count int64) {
+func GetPersonTagListSimple(q string, limit int, page int, sort int) (list []PersonTag, count int64) {
 	db := GetEliteDb().Table("t_person_tags")
 	queryParams := make(map[string]interface{})
 	list = make([]PersonTag, 0)
@@ -27,6 +27,11 @@ func GetPersonTagListSimple(q string, limit int, page int) (list []PersonTag, co
 		qstring += "%"
 	}
 
+	var sortStr = "DESC" // 默认时间 降序
+	if sort == 1 {
+		sortStr = "ASC"
+	}
+
 	if len(qstring) > 0 {
 		db = db.Where("name LIKE ?", qstring)
 	}
@@ -37,9 +42,28 @@ func GetPersonTagListSimple(q string, limit int, page int) (list []PersonTag, co
 
 	db.Limit(limit).
 		Offset(offset).
+		Order("plain " + sortStr).
 		Scan(&list)
 
 	return
+}
+
+func GetPersonDetail(id int64) (data PersonTag, err error) {
+	GetEliteDb().Table("t_person_tags").Where("id = ?", id).Find(&data)
+
+	return data, nil
+}
+
+func EditPersonDetail(id, index int, newName, imageURL string) (err error) {
+	var tag PersonTag
+	tag.ID = int(id)
+	tag.Name = newName
+	tag.Plain = index
+	tag.Icon = imageURL
+
+	GetEliteDb().Table("t_person_tags").Where("id = ?", id).Update(&tag)
+
+	return nil
 }
 
 func DeletePersonTag(id int) error {
