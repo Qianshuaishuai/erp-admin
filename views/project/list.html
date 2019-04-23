@@ -16,6 +16,7 @@
 
     <script type="text/html" id="bar">
         <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">查看详情</a>
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="delete">删除</a>
         <a class="layui-btn layui-btn-xs" lay-event="deal">通过</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="no-deal">不通过</a>
     </script>
@@ -119,6 +120,13 @@
                 });
             } else if (obj.event === 'detail') {
                 window.location.href = "/project/detail?id=" + data.id
+            } else if (obj.event === 'delete') {
+                table.reload('listReload', {
+                    where: {
+                        id: data.id,
+                        status: -1
+                    }
+                });
             } else {
                 layer.msg('操作不存在');
             }

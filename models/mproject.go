@@ -72,6 +72,26 @@ func GetProjectDetail(id int64) (data ProjectDetail, err error) {
 	return data, nil
 }
 
+func DeleteProjectDetail(id int) (err error) {
+	tx := GetEliteDb().Begin()
+	err = tx.Table("t_projects").Where("id = ?", id).Delete(Project{}).Error
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Table("t_project_industrys").Where("project = ?", id).Delete(ProjectIndustry{}).Error
+
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+	return nil
+}
+
 func AddProject(name, typeName, address, money, agency, introduce, addtip, idcard string, phone int, cardImageURL, backgroundImageURL string, industrys string) error {
 	var snowCurl MSnowflakCurl
 	var project Project

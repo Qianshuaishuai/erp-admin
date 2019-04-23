@@ -38,6 +38,10 @@ func (self *ProjectController) Table() {
 		models.ChangeProjectStatus(id, status)
 	}
 
+	if id >= 0 && status < 0 {
+		models.DeleteProjectDetail(id)
+	}
+
 	//看看q能不能变成ID
 	paperId, err := strconv.ParseInt(q, 10, 64)
 
