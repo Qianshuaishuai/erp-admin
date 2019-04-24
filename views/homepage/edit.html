@@ -6,7 +6,10 @@
                 <label class="layui-form-label">标签名称</label>
                 <div class="layui-input-block">
                     <input type="text" name="name" value="{{.HomeShow.Name}}" class="layui-input">
-                    <input type="text" name="id" value="{{.HomeShow.ID}}" class="layui-input" style="display:none">
+                    <input type="text" id="id" name="id" value="{{.HomeShow.ID}}" class="layui-input"
+                        style="display:none">
+                    <input type="text" id="data-content" value="{{.HomeContents}}" class="layui-input"
+                        style="display:none">
                 </div>
             </div>
             <div class="layui-form-item" pane>
@@ -40,16 +43,21 @@
             <div class="layui-form-item" id="url" pane>
                 <label class="layui-form-label">外链地址</label>
                 <div class="layui-input-block">
-                    <input type="text" name="url" value="{{.HomeShow.URL}}" class="layui-input">
+                    <input type="text" id="urlcontent" name="urlcontent" value="{{.HomeShow.URL}}" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item" id="content">
                 <label class="layui-form-label">正文内容</label>
-                <div class="layui-input-block">
+                <div class="layui-input-block" style="width:100%">
                     {{range $index,$elem := .HomeContents}}
-                    <div class="site-block">
-                        <input type="text" id="content{{$index}}" name="content{{$index}}" value="{{$elem.Content}}"
-                            title="{{$elem.Content}}">
+                    <div class="site-block" style="width:100%">
+                        <input style="width:100%;padding: 8px 8px 8px 8px;" type="text" id="contentText{{$index}}"
+                            name="contentText{{$index}}" value="{{$elem.Content}}" title="{{$elem.Content}}">
+                        <div class="site-block" style="width:100%">
+                            <img id="contentImg{{$index}}" name="{{$elem.Type}}" src="{{$elem.Content}}">
+                            <input type="file" id="contentUpload{{$index}}" name="contentUpload{{$index}}"
+                                placeholder="" style="margin-left:30px;margin-top:10px">
+                        </div>
                     </div>
                     {{end}}
                 </div>
@@ -68,6 +76,11 @@
         var layer = layui.layer;
         var util = layui.util;
 
+        var typeIndex = 2
+        var currentCount = 0
+
+        var filearrA = new Array(100)
+
         var filearr = new Array(1);
         var iconFile = document.getElementById('icon_upload_icon');
 
@@ -78,11 +91,15 @@
             $("#type1").prop("checked", true);
             $("#url").hide();
             $("#content").show();
+
+            typeIndex = 1
             form.render(null);
         } else if (type1.name && type1.name == 2) {
             $("#type2").prop("checked", true);
             $("#url").show();
             $("#content").hide();
+
+            typeIndex = 2
             form.render(null);
         }
 
@@ -93,10 +110,39 @@
             }
         }
 
+        //动态判断是文本还是图片
+        for (var i = 0; i < 20; i++) {
+            if (document.getElementById("contentImg" + i)) {
+                var type = document.getElementById("contentImg" + i).name
+
+                if (type == 1) {
+                    $("#contentImg" + i).show();
+                    $("#contentText" + i).hide();
+                    $("#contentUpload" + i).show();
+                    currentCount = currentCount + 1
+                } else if (type == 2) {
+                    $("#contentImg" + i).hide();
+                    $("#contentText" + i).show();
+                    $("#contentUpload" + i).hide();
+                    currentCount = currentCount + 1
+                }
+
+                var contentFile = document.getElementById("contentUpload" + i);
+                index = i
+                contentFile.onchange = function () {
+                    var files = this.files;
+                    if (files.length > 0) {
+                        filearrA[index] = files[0]
+                    }
+                }
+            }
+
+        }
+
         //Top按钮
         util.fixbar({
             bar1: false
-        });
+        }); 
 
         form.on('submit(editTag)', function (data) {
             var form_data = data.field;
@@ -105,6 +151,10 @@
             formData.append("id", form_data.id)
             formData.append("name", form_data.name)
             formData.append("index", form_data.index)
+            formData.append("type", typeIndex)
+            formData.append("count", currentCount)
+            formData.append("url", form_data.urlcontent)
+            formData.append("icon", filearr[0])
 
             if (!filearr[0]) {
                 formData.append("image", form_data.icon)
@@ -112,27 +162,54 @@
                 formData.append("file", filearr[0])
             }
 
-            $.ajax({
-                url: '/person/edittag',
-                type: 'post',
-                data: formData,
-                processData: false,
-                mimeType: "multipart/form-data",
-                contentType: false,
-                success: function (data) {
-                    var obj = JSON.parse(data);
-                    if (obj.status == 0) {
-                        layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
-                            // 跳转到列表页
-                            window.location.href = "/person/list";
-                        })
+            for (var i = 0; i < currentCount; i++) {
+                var type = document.getElementById("contentImg" + i).name
+                if (type == 1) {
+                    if (!filearrA[i]) {
+                        formData.append("contentImg" + i, filearrA[i])
                     } else {
-                        layer.msg(obj.message)
+                        formData.append("contentImg" + i, $('#contentImg' + i).src)
                     }
-                },
-            });
+                } else {
+                    formData.append("contentText" + i, $("#contentText" + i).val())
+                }
+            }
+
+            console.log(formData)
+
+            // $.ajax({
+            //     url: '/homepage/edittag',
+            //     type: 'post',
+            //     data: formData,
+            //     processData: false,
+            //     mimeType: "multipart/form-data",
+            //     contentType: false,
+            //     success: function (data) {
+            //         var obj = JSON.parse(data);
+            //         if (obj.status == 0) {
+            //             layer.msg("操作成功", { icon: 1, time: 2000 }, function () {
+            //                 // 跳转到列表页
+            //                 window.location.href = "/homepage/list";
+            //             })
+            //         } else {
+            //             layer.msg(obj.message)
+            //         }
+            //     },
+            // });
 
             return false;
+        });
+
+        form.on('radio(encrypt)', function (data) {
+            if (data.value == 0) {
+                typeIndex = 1
+                $("#url").hide();
+                $("#content").show();
+            } else if (data.value == 1) {
+                typeIndex = 2
+                $("#url").show();
+                $("#content").hide();
+            }
         });
     })
 </script>
