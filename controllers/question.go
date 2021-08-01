@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"elite-admin/helper"
-	"elite-admin/models"
+	"erp-admin/helper"
+	"erp-admin/models"
 	"strconv"
 	"strings"
 )

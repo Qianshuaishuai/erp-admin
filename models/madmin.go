@@ -17,7 +17,7 @@ type User struct {
 func AdminGetByName(loginName string) (*User, error) {
 	//查表
 	var newUser User
-	err := GetEliteDb().Table("t_admins").Where("F_user_name = ?", loginName).First(&newUser).Error
+	err := GetEliteDb().Table("admins").Where("F_user_name = ?", loginName).First(&newUser).Error
 
 	if err != nil {
 		return nil, errors.New("数据库异常" + err.Error())
@@ -29,7 +29,7 @@ func AdminGetByName(loginName string) (*User, error) {
 func AdminGetById(id int) (*User, error) {
 	//查表
 	var newUser User
-	err := GetEliteDb().Table("t_admins").Where("F_user_id = ?", id).First(&newUser).Error
+	err := GetEliteDb().Table("admins").Where("F_user_id = ?", id).First(&newUser).Error
 
 	if err != nil {
 		return nil, errors.New("数据库异常" + err.Error())
@@ -41,13 +41,13 @@ func AdminGetById(id int) (*User, error) {
 func HasUserName(userName string) bool {
 	//查表
 	var n User
-	notFound := GetEliteDb().Table("t_admins").Where(" binary F_user_name = ?", userName).Select("F_user_id").Find(&n).RecordNotFound()
+	notFound := GetEliteDb().Table("admins").Where(" binary F_user_name = ?", userName).Select("F_user_id").Find(&n).RecordNotFound()
 	return !notFound
 }
 
 func SaveUser(id int, userName string, Contact string, passMd5 string, passSalt string) error {
 	if id != 0 {
-		tx := GetEliteDb().Table("t_admins").Begin()
+		tx := GetEliteDb().Table("admins").Begin()
 		updated := make(map[string]interface{})
 
 		if len(userName) > 0 {
@@ -88,8 +88,8 @@ func GetAdminList(limit int, page int) (result []User, count int64) {
 		offset = (page - 1) * limit
 	}
 
-	GetEliteDb().Table("t_admins").Count(&count)
-	GetEliteDb().Table("t_admins").Limit(limit).Offset(offset).Find(&result)
+	GetEliteDb().Table("admins").Count(&count)
+	GetEliteDb().Table("admins").Limit(limit).Offset(offset).Find(&result)
 
 	return
 }
@@ -101,13 +101,13 @@ func ChangeUserStatus(newStatus, id int) error {
 
 	if id != 0 {
 		var roles []int
-		GetEliteDb().Table("t_admins").Model(&User{}).Where("F_user_id = ?", id).Pluck("F_role", &roles)
+		GetEliteDb().Table("admins").Model(&User{}).Where("F_user_id = ?", id).Pluck("F_role", &roles)
 
 		if len(roles) > 0 {
 			if roles[0] == ADMIN_SUPER {
 				return errors.New("不能修改Super的状态")
 			}
-			err := GetEliteDb().Table("t_admins").Model(&User{}).Where("F_user_id = ?", id).
+			err := GetEliteDb().Table("admins").Model(&User{}).Where("F_user_id = ?", id).
 				UpdateColumn("F_enable", newStatus).Error
 			return err
 		}
@@ -126,7 +126,7 @@ func AddUser(loginName string, contact string, passMd5 string, passSalt string, 
 		Enable:    1,
 	}
 
-	err := GetEliteDb().Table("t_admins").Create(&user).Error
+	err := GetEliteDb().Table("admins").Create(&user).Error
 	if err != nil {
 		return err
 	}

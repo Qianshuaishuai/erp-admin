@@ -144,7 +144,7 @@
 
 .kit-table .kit-table-header .kit-search-inputs .kit-search-more {
 	cursor: pointer;
-	color: #009688;
+	color: #006EFF;
 	position: absolute;
 	top: 15px;
 	right: -50px
@@ -165,7 +165,7 @@
 	height: 30px;
 	border: 0;
 	cursor: pointer;
-	background-color: #009688;
+	background-color: #006EFF;
 	color: #fff
 }
 

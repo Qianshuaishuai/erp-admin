@@ -1,8 +1,9 @@
 package models
 
 import (
-	"elite-admin/helper"
+	"erp-admin/helper"
 	"errors"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -138,6 +139,7 @@ func AddConnection(phone, look, good int, username, job, position, profess, agen
 
 	if err != nil {
 		tx.Rollback()
+		log.Println(err)
 		return errors.New("创建失败")
 	}
 
@@ -162,6 +164,7 @@ func AddConnection(phone, look, good int, username, job, position, profess, agen
 
 	if err != nil {
 		tx.Rollback()
+		log.Println(err)
 		return errors.New("创建失败")
 	}
 

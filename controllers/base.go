@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"elite-admin/helper"
-	"elite-admin/models"
+	"erp-admin/helper"
+	"erp-admin/models"
 	"strconv"
 	"strings"
 	"time"
@@ -78,7 +78,7 @@ func (self *BaseController) Prepare() {
 	controllerName, actionName := self.GetControllerAndAction()
 	self.controllerName = strings.ToLower(controllerName[0 : len(controllerName)-10])
 	self.actionName = strings.ToLower(actionName)
-	self.Data["siteName"] = "中南菁英网站后台管理"
+	self.Data["siteName"] = "进销存系统后台管理"
 
 	self.auth()
 
@@ -127,104 +127,21 @@ func (self *BaseController) SetTheStartMenu() {
 	list = append(list, StartMenu{
 		Id:       1,
 		Pid:      0,
-		Icon:     "fa-database",
-		AuthName: "数据操作",
+		Icon:     "fa-tag",
+		AuthName: "产品",
 		AuthUrl:  " "})
 
-	// list = append(list, StartMenu{
-	// 	Id:       100,
-	// 	Pid:      0,
-	// 	Icon:     "fa-edit",
-	// 	AuthName: "问题上报",
-	// 	AuthUrl:  " ",
-	// })
+		list2 := make([]StartMenu, 0)
 
-	list = append(list, StartMenu{
-		Id:       200,
-		Pid:      0,
-		Icon:     "fa-id-card",
-		AuthName: "账户管理",
-		AuthUrl:  " ",
-	})
-
-	list2 := make([]StartMenu, 0)
-
-	if self.isDataer() {
-		list2 = append(list2, StartMenu{
-			Id:       10,
-			Pid:      1,
-			Icon:     "fa-file-text",
-			AuthName: "用户列表",
-			AuthUrl:  "/user/list",
-		})
-		list2 = append(list2, StartMenu{
-			Id:       12,
-			Pid:      1,
-			Icon:     "fa-plus-circle",
-			AuthName: "人脉列表",
-			AuthUrl:  "/connection/list",
-		})
-		list2 = append(list2, StartMenu{
-			Id:       11,
-			Pid:      1,
-			Icon:     "fa-search",
-			AuthName: "项目列表",
-			AuthUrl:  "/project/list",
-		})
-		list2 = append(list2, StartMenu{
-			Id:       14,
-			Pid:      1,
-			Icon:     "fa-eye",
-			AuthName: "首页标签",
-			AuthUrl:  "/homepage/list",
-		})
-		list2 = append(list2, StartMenu{
-			Id:       13,
-			Pid:      1,
-			Icon:     "fa-star",
-			AuthName: "个人标签",
-			AuthUrl:  "/person/list",
-		})
-		list2 = append(list2, StartMenu{
-			Id:       14,
-			Pid:      1,
-			Icon:     "fa-list",
-			AuthName: "行业标签",
-			AuthUrl:  "/industry/list",
-		})
-	}
-
-	// list2 = append(list2, StartMenu{
-	// 	Id:       12,
-	// 	Pid:      1,
-	// 	Icon:     "fa-eye",
-	// 	AuthName: "审核数据",
-	// 	AuthUrl:  "/check/list",
-	// })
-
-	// list2 = append(list2, StartMenu{
-	// 	Id:       1000,
-	// 	Pid:      100,
-	// 	Icon:     "fa-list",
-	// 	AuthName: "查看问题",
-	// 	AuthUrl:  "/collect/list",
-	// })
-
-	list2 = append(list2, StartMenu{
-		Id:       2000,
-		Pid:      200,
-		Icon:     "fa-users",
-		AuthName: "查看账户",
-		AuthUrl:  "/admin/list",
-	})
-
-	list2 = append(list2, StartMenu{
-		Id:       2001,
-		Pid:      200,
-		Icon:     "fa-user-circle-o",
-		AuthName: "我的信息",
-		AuthUrl:  "/admin/info",
-	})
+		if self.isDataer() {
+			list2 = append(list2, StartMenu{
+				Id:       10,
+				Pid:      1,
+				Icon:     "fa-group",
+				AuthName: "产品管理",
+				AuthUrl:  "/product/list",
+			})
+		}	
 
 	self.Data["SideMenu1"] = list  //一级菜单
 	self.Data["SideMenu2"] = list2 //二级菜单

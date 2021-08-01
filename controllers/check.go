@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"elite-admin/helper"
-	"elite-admin/models"
 	"encoding/json"
+	"erp-admin/helper"
+	"erp-admin/models"
 	"strings"
 
 	"github.com/astaxie/beego"

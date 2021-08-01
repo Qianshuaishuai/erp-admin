@@ -1,6 +1,6 @@
 package controllers
 
-import "elite-admin/models"
+import "erp-admin/models"
 
 type IndustryController struct {
 	BaseController

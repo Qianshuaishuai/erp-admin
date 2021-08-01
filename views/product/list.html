@@ -1,0 +1,135 @@
+<div class="layui-layout layui-layout-admin" style="padding-left: 20px;">
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="search_text">
+            <form class="layui-form" action="" onsubmit="javascript:return false;">
+                <div class="layui-inline" style="width: 30%">
+                    <input class="layui-input" name="PaperName" id="q" autocomplete="off" placeholder="产品名称">
+                </div>
+                <button class="layui-btn" data-type="reload" id="reload">查询</button>
+                <button class="layui-btn" data-type="add" id="add">添加产品</button>
+            </form>
+        </div>
+    </div>
+
+    <table class="layui-hide" id="table_list" lay-filter="table_filter">
+    </table>
+
+    <script type="text/html" id="bar">
+        <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail">详情</a>
+    </script>
+</div>
+<script>
+    layui.use(['table', 'form', 'element'], function () {
+        var table = layui.table;
+        var form = layui.form;
+        var element = layui.element;
+        var $ = layui.$;
+
+        //方法级渲染
+        table.render({
+            elem: '#table_list'
+            , url: '/product/table'
+            , cols: [[
+                { field: 'name_sku', title: '品名/SKU', width: '15%' }
+                , { field: 'number', title: '型号', width: '8%' }
+                , { field: 'classify', title: '分类', width: '8%' }
+                , { field: 'purchase_cost', title: '采购成本', width: '8%' }
+                , { field: 'preferred_supplier', title: '供应商', width: '8%' }
+                , { field: 'delivery_time', title: '交期', width: '8%' }
+                , { field: 'sale_status', title: '状态', width: '8%' }
+                // , { field: 'time', title: '申请时间', width: '20%', sort: true }
+                , { fixed: 'right', title: '操作', width: '20%', align: 'center', toolbar: '#bar' }
+            ]]
+            , id: 'listReload'
+            , page: true
+            , limit: 20
+            , height: "full-130"
+            , loading: true
+        });
+
+        $('#add').on('click', function () {
+            window.location.href = "/project/add"
+        });
+
+        $('.demoTable .layui-btn').on('click', function () {
+            table.reload('listReload', {
+                where: {
+                    q: $("#q").val()
+                    , sort: 0
+                }
+            });
+        });
+
+        layui.use(['form', 'layedit', 'laydate', 'element', 'jquery'], function () {
+            var form = layui.form,
+                layer = layui.layer,
+                element = layui.element,
+                $ = layui.jquery;
+            $(document).on('click', '#reload', function () {
+                table.reload('listReload', {
+                    where: {
+                        q: $("#q").val()
+                        , sort: 0
+                    }
+                });
+            });
+        });
+
+        table.on('sort(table_filter)', function (obj) {
+            sortX = 0;
+            if (obj.type === 'asc') {
+                sortX = 1;
+            }
+
+            if ($('#q').val()) {
+                table.reload('listReload', {
+                    initSort: obj
+                    , where: {
+                        sort: sortX,
+                        q: $('#q').val()
+                    }
+                });
+            } else {
+                table.reload('listReload', {
+                    initSort: obj
+                    , where: {
+                        sort: sortX
+                    }
+                });
+            }
+        });
+
+        //监听工具条
+        table.on('tool(table_filter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'deal') {
+                table.reload('listReload', {
+                    where: {
+                        id: data.id
+                        , status: 1
+                    }
+                });
+
+            } else if (obj.event === 'no-deal') {
+                table.reload('listReload', {
+                    where: {
+                        id: data.id
+                        , status: 2
+                    }
+                });
+            } else if (obj.event === 'detail') {
+                window.location.href = "/project/detail?id=" + data.id
+            } else if (obj.event === 'delete') {
+                table.reload('listReload', {
+                    where: {
+                        id: data.id,
+                        status: -1
+                    }
+                });
+            } else {
+                layer.msg('操作不存在');
+            }
+        });
+    });
+
+</script>

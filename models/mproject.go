@@ -1,8 +1,9 @@
 package models
 
 import (
-	"elite-admin/helper"
+	"erp-admin/helper"
 	"errors"
+	"log"
 	"strings"
 	"time"
 )
@@ -113,6 +114,7 @@ func AddProject(name, typeName, address, money, agency, introduce, addtip, idcar
 	err := GetEliteDb().Table("t_projects").Create(&project).Error
 
 	if err != nil {
+		log.Println(err)
 		return errors.New("添加失败")
 	}
 

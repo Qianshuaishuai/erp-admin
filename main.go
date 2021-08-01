@@ -1,7 +1,7 @@
 package main
 
 import (
-	"elite-admin/models"
+	"erp-admin/models"
 	"fmt"
 	"runtime"
 
@@ -9,14 +9,15 @@ import (
 
 	"github.com/astaxie/beego/context"
 
-	"elite-admin/controllers"
-	_ "elite-admin/routers"
+	"erp-admin/controllers"
+	_ "erp-admin/routers"
 	"errors"
 
 	loglib "github.com/HYY-yu/LogLib"
 )
 
 func main() {
+	models.TestTranslateMoreProduct()
 	//连接数据库
 	models.InitGorm()
 	models.InitEliteDb()

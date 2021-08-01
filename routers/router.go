@@ -9,7 +9,7 @@
 package routers
 
 import (
-	"elite-admin/controllers"
+	"erp-admin/controllers"
 
 	"github.com/astaxie/beego"
 )
@@ -35,4 +35,5 @@ func init() {
 	beego.AutoRouter(&controllers.CollectController{})
 	beego.AutoRouter(&controllers.AdminController{})
 	beego.AutoRouter(&controllers.TempController{})
+	beego.AutoRouter(&controllers.ProductController{})
 }

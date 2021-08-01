@@ -1,7 +1,7 @@
 package models
 
 import (
-	"elite-admin/helper"
+	"erp-admin/helper"
 	"errors"
 	"strconv"
 	"strings"

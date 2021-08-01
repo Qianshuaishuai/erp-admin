@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"elite-admin/models"
+	"erp-admin/models"
 	"strconv"
 
 	"github.com/astaxie/beego"
